@@ -7,18 +7,18 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://visitor-badge.laobi.icu; connect-src 'self' https://formspree.io https://*.workers.dev https://*.googleapis.com https://accounts.google.com https://*.firebaseapp.com https://www.gstatic.com; frame-src https://accounts.google.com https://*.firebaseapp.com https://apis.google.com; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bisaya lebendig lernen — inspiriert von Birkenbihl</title>
-<meta name="description" content="Cebuano/Bisaya spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — inspiriert von der Birkenbihl-Lernphilosophie. Kostenlos starten.">
+<meta name="description" content="Cebuano/Bisaya, die philippinische Sprache der Visayas & Mindanaos, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — inspiriert von der Birkenbihl-Lernphilosophie. Kostenlos starten.">
 
 <!-- Social-Media-Vorschau (Open Graph / Twitter) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Bisaya lebendig lernen — inspiriert von Birkenbihl">
-<meta property="og:description" content="Cebuano/Bisaya spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
+<meta property="og:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
 <meta property="og:image" content="https://flamrolas.github.io/bisaya-lernen/og-image.jpg">
 <meta property="og:url" content="https://flamrolas.github.io/bisaya-lernen">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bisaya lebendig lernen — inspiriert von Birkenbihl">
-<meta name="twitter:description" content="Cebuano/Bisaya spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
+<meta name="twitter:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
 <meta name="twitter:image" content="https://flamrolas.github.io/bisaya-lernen/og-image.jpg">
 
 <!-- Favicon / App-Icons -->
@@ -168,6 +168,11 @@ h3{color:#5a4632; font-size:1.1rem; font-family:'Fredoka',cursive; font-weight:7
 .vip-pill{
   display:inline-block; background:linear-gradient(90deg,#c1502e,#d4782d); color:#fff; font-size:0.7rem;
   font-weight:800; padding:2px 9px; border-radius:20px; letter-spacing:0.4px; vertical-align:middle;
+}
+.origin-pill{
+  display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.55); color:#5a3418;
+  font-size:0.76rem; font-weight:700; padding:4px 12px; border-radius:20px; margin-top:6px;
+  border:1px solid rgba(193,80,46,0.35);
 }
 .vip-lockbox{
   background:repeating-linear-gradient(45deg,#f4efe3,#f4efe3 10px,#efe6d4 10px,#efe6d4 20px);
@@ -443,7 +448,12 @@ body.mode-en .mode-bis-only{display:none;}
     <span class="sun-badge">🌴☀️ 🇵🇭</span>
     <h1>Bisaya <span class="accent-word">lebendig</span> lernen</h1>
   </div>
-  <p id="headerSubtitle"><span class="mode-bis-only">Cebuano/Bisaya lernen — inspiriert von der Birkenbihl-Idee: dekodieren, verstehen, anwenden.</span><span class="mode-de-only">Pagtuon og German — dinasig sa ideya ni Birkenbihl: i-decode, sabta, gamita.</span><span class="mode-en-only">Learn Cebuano/Bisaya — inspired by the Birkenbihl method: decode, understand, use.</span></p>
+  <p id="headerSubtitle"><span class="mode-bis-only">Cebuano/Bisaya lernen — die Sprache der Philippinen — inspiriert von der Birkenbihl-Idee: dekodieren, verstehen, anwenden.</span><span class="mode-de-only">Pagtuon og German — dinasig sa ideya ni Birkenbihl: i-decode, sabta, gamita.</span><span class="mode-en-only">Learn Cebuano/Bisaya — a language of the Philippines — inspired by the Birkenbihl method: decode, understand, use.</span></p>
+  <div>
+    <span class="origin-pill mode-bis-only">🇵🇭 Philippinische Sprache — gesprochen in Cebu, Davao &amp; den Visayas/Mindanao</span>
+    <span class="origin-pill mode-de-only">🇵🇭 German — pinulongan sa Alemanya, Austria &amp; Switzerland</span>
+    <span class="origin-pill mode-en-only">🇵🇭 A Philippine language — spoken in Cebu, Davao &amp; the Visayas/Mindanao</span>
+  </div>
   <div class="profile-badge" id="profileBadge" style="display:none;">
     <span id="profileGreeting"></span>
     <button onclick="profileButtonAction()" id="profileActionBtn">Profil bearbeiten</button>
@@ -525,7 +535,7 @@ body.mode-en .mode-bis-only{display:none;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.16.1</div>
+  <div class="version-tag">v1.17.0</div>
 </section>
 
 <!-- METHODE -->
@@ -623,6 +633,19 @@ body.mode-en .mode-bis-only{display:none;}
   <div class="card mode-de-only">
     <h2>Bokabularyo Trainer</h2>
     <p class="small">I-klik ang kard aron makita ang German nga hubad. Human niana, i-marka kon husto kung nahibaw-an na nimo ang pulong o dili — ang imong kalamboan gitipigan lokal niini nga aparato. Gamita ang 🔊 aron madungog ang tinuod nga German nga paglitok. Ang 🎤 aron sulayan ang imong kaugalingong paglitok sa German nga pulong pinaagi sa mikropono — kini mas kasaligan kaysa sa Bisaya nga bersyon, kay ang German maayo nga gisuportahan sa Chrome. Wala pa ni gisuportahan sa Safari.</p>
+  </div>
+
+  <div class="card">
+    <label class="small" for="vocabSearch" style="display:block; margin-bottom:6px;">
+      <span class="mode-bis-only">🔍 Wort nachschlagen (was heißt z. B. "buntag"?):</span>
+      <span class="mode-de-only">🔍 Pangitaa ang Pulong (unsa'y buot ipasabot sa "buntag"?):</span>
+      <span class="mode-en-only">🔍 Look up a word (what does e.g. "buntag" mean?):</span>
+    </label>
+    <input type="text" id="vocabSearch" oninput="handleVocabSearch()" autocomplete="off" style="width:100%;">
+    <div id="vocabSearchResults" style="display:none; margin-top:14px; max-height:420px; overflow-y:auto;"></div>
+  </div>
+
+  <div class="card" id="vocabDeckCard">
     <div class="filterbar">
       <label class="small"><span class="mode-bis-only">Kategorie:</span><span class="mode-de-only">Kategoriya:</span><span class="mode-en-only">Category:</span>
         <select id="catFilter" onchange="refreshDeck()"></select>
@@ -6309,7 +6332,12 @@ function setMode(mode){
   document.querySelectorAll(".mode-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode));
   const activeBtn = document.querySelector("nav.tabs button.active");
   const activeView = activeBtn ? activeBtn.dataset.view : null;
-  if(activeView === "wortschatz"){ populateCatFilter(); refreshDeck(); }
+  if(activeView === "wortschatz"){
+    const vs = document.getElementById("vocabSearch");
+    if(vs) vs.value = "";
+    handleVocabSearch();
+    populateCatFilter(); refreshDeck();
+  }
   if(activeView === "wendungen") renderWendungen();
   if(activeView === "geschichten") renderStoryList();
   if(activeView === "lieder") renderLiedList();
@@ -6646,6 +6674,52 @@ function toggleLessonDone(id){
 /* ============ WORTSCHATZ / FLASHCARDS ============ */
 let deck = [];
 let deckIdx = 0;
+function handleVocabSearch(){
+  const input = document.getElementById("vocabSearch");
+  const deckCard = document.getElementById("vocabDeckCard");
+  const resultsEl = document.getElementById("vocabSearchResults");
+  const q = input.value.trim().toLowerCase();
+  if(!q){
+    resultsEl.style.display = "none";
+    resultsEl.innerHTML = "";
+    deckCard.style.display = "";
+    return;
+  }
+  deckCard.style.display = "none";
+  resultsEl.style.display = "block";
+  const mode = currentMode();
+  const isEn = mode === "learn-bis-en";
+  const isDe = mode === "learn-de";
+  const vipOk = isVipActive();
+  const matches = allVocab().filter(v=>{
+    if(v.bis && v.bis.toLowerCase().includes(q)) return true;
+    if(v.de && v.de.toLowerCase().includes(q)) return true;
+    if(isEn && v.en && v.en.toLowerCase().includes(q)) return true;
+    return false;
+  }).slice(0, 80);
+  if(matches.length===0){
+    const noResults = isEn ? "No matches found." : isDe ? "Walay nakit-an." : "Keine Treffer gefunden.";
+    resultsEl.innerHTML = `<p class="small">${noResults}</p>`;
+    return;
+  }
+  resultsEl.innerHTML = matches.map(v=>{
+    if(v.vip && !vipOk){
+      const headWord = isDe ? v.de : v.bis;
+      return `<div class="line-block"><div class="natural"><b>${headWord}</b> — <span class="vip-pill">⭐ VIP</span></div></div>`;
+    }
+    if(isDe){
+      return `<div class="line-block">
+        <div class="natural"><b>${v.de}</b> — ${v.bis}</div>
+        <div class="pron">${speakDeBtn(v.de)} ${micBtnDe(v.de)}</div>
+      </div>`;
+    }
+    const translation = isEn ? (v.en || v.de) : v.de;
+    return `<div class="line-block">
+      <div class="natural"><b>${v.bis}</b> — ${translation}</div>
+      <div class="pron">${speakBtn(v.bis, v.pron)} ${v.pron || ''} ${micBtn(v.bis)}</div>
+    </div>`;
+  }).join("");
+}
 function populateCatFilter(){
   const cats = Array.from(new Set(allVocab().map(v=>v.cat)));
   const sel = document.getElementById("catFilter");
