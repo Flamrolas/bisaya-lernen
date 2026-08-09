@@ -653,7 +653,7 @@ body.mode-en .mode-bis-only{display:none;}
   </div>
   <div class="card mode-en-only">
     <h2>Phrases — Everyday Sentences, Idioms &amp; Slang</h2>
-    <p class="small">Over 200 extra expressions from real everyday Bisaya: practical sentences for getting around, vivid idioms and proverbs (panultihon) with their literal meaning, and youth slang as it's actually spoken in Cebu today. All entries are also available as flashcards in the Vocabulary Trainer (categories "Alltagsphrasen", "Redewendungen", "Slang &amp; Jugendsprache").</p>
+    <p class="small">Over 200 extra expressions from real everyday Bisaya: practical sentences for getting around, vivid idioms and proverbs (panultihon) with their literal meaning, and youth slang as it's actually spoken in Cebu today. All entries are also available as flashcards in the Vocabulary Trainer (categories "Everyday Phrases", "Idioms", "Slang &amp; Youth Language").</p>
   </div>
   <div class="card mode-de-only">
     <h2>Mga Pulong-pulong — Adlaw-adlaw nga Prase &amp; Slang</h2>
@@ -982,10 +982,10 @@ body.mode-en .mode-bis-only{display:none;}
     <h2>Impressum</h2>
     <div class="small" style="line-height:1.7;">
       <p><b>Angaben gemäß § 5 DDG (Digitale-Dienste-Gesetz)</b></p>
-      <p>[DEIN VOR- UND NACHNAME]<br>[DEINE STRASSE, HAUSNUMMER]<br>[DEINE PLZ, ORT]<br>[DEIN LAND]</p>
-      <p><b>Kontakt</b><br>E-Mail: [DEINE-EMAIL@BEISPIEL.DE]</p>
+      <p>Dirk Schnettler<br>Rembrandtstr. 39<br>45147 Essen<br>Deutschland</p>
+      <p><b>Kontakt</b><br>E-Mail: dirkschnettler@icloud.com</p>
       <p><b>Umsatzsteuer-ID</b><br>[Falls vorhanden: USt-IdNr. gemäß § 27a UStG. Falls du Kleinunternehmer nach § 19 UStG bist, kannst du stattdessen ergänzen: "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."]</p>
-      <p><b>Verantwortlich für den Inhalt</b><br>[DEIN VOR- UND NACHNAME], [DEINE ADRESSE]</p>
+      <p><b>Verantwortlich für den Inhalt</b><br>Dirk Schnettler, Rembrandtstr. 39, 45147 Essen</p>
       <p style="opacity:0.7; font-size:0.78rem; border-top:1px dashed var(--line); padding-top:10px; margin-top:14px;">Dies ist eine allgemeine Vorlage, keine Rechtsberatung. Bitte die eckigen Platzhalter durch deine echten Angaben ersetzen und die Angaben im Zweifel mit einem Anwalt oder Impressum-Generator (z. B. e-recht24.de) prüfen, bevor die Seite dauerhaft live läuft.</p>
     </div>
   </div>
@@ -996,7 +996,7 @@ body.mode-en .mode-bis-only{display:none;}
     <span class="modal-close" onclick="hideDatenschutz()" title="Schließen">✕</span>
     <h2>Datenschutzerklärung</h2>
     <div class="small" style="line-height:1.7;">
-      <p><b>1. Verantwortlicher</b><br>[DEIN VOR- UND NACHNAME]<br>[DEINE STRASSE, HAUSNUMMER]<br>[DEINE PLZ, ORT]<br>[DEIN LAND]<br>E-Mail: [DEINE-EMAIL@BEISPIEL.DE]</p>
+      <p><b>1. Verantwortlicher</b><br>Dirk Schnettler<br>Rembrandtstr. 39<br>45147 Essen<br>Deutschland<br>E-Mail: dirkschnettler@icloud.com</p>
       <p><b>2. Übersicht</b><br>Diese App verarbeitet nur die Daten, die für Anmeldung, Lernfortschritt, Bestenliste und VIP-Mitgliedschaft nötig sind. Es sind aktuell keine Tracking- oder Analyse-Tools (z. B. Google Analytics) im Einsatz. Einige eingebundene Dienste (Google, Stripe, Cloudflare, GitHub) verarbeiten dabei Daten in eigener Verantwortung — Details dazu unten.</p>
       <p><b>3. Hosting</b><br>Diese Seite wird über GitHub Pages (GitHub Inc. / Microsoft, USA) bereitgestellt. Beim Aufruf verarbeitet GitHub automatisch technische Daten (u. a. IP-Adresse, Browsertyp, Zugriffszeit) in Server-Logs. Näheres: GitHub Privacy Statement (docs.github.com/site-policy).</p>
       <p><b>4. Google Fonts</b><br>Zur einheitlichen Darstellung lädt diese Seite Schriftarten direkt von Google-Servern (fonts.googleapis.com, fonts.gstatic.com). Dabei wird deine IP-Adresse an Google LLC / Google Ireland Limited übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einheitlicher Darstellung).</p>
@@ -6371,23 +6371,23 @@ function renderWendungen(){
   const mode = currentMode();
   const isEn = mode==="learn-bis-en";
   const groups = mode==="learn-de" ? [
-    ["Alltagsphrasen", "Praktikal nga mga tudling-pulong sa German para sa pag-abiabi, pagbiyahe, pag-order og pagkaon, ug uban pa."],
-    ["Redewendungen", "Mga German idioms uban sa ilang literal nga kahulogan, aron makita nimo kung giunsa 'maghunahuna' ang German."],
-    ["Slang & Jugendsprache", "Mao kini ang gigamit sa mga batan-on sa Germany karon — dili pormal apan kaylap gigamit."],
+    ["Alltagsphrasen", "Adlaw-adlaw nga mga Pulong", "Praktikal nga mga tudling-pulong sa German para sa pag-abiabi, pagbiyahe, pag-order og pagkaon, ug uban pa."],
+    ["Redewendungen", "Mga Idyoma", "Mga German idioms uban sa ilang literal nga kahulogan, aron makita nimo kung giunsa 'maghunahuna' ang German."],
+    ["Slang & Jugendsprache", "Slang & Pinulongan sa mga Batan-on", "Mao kini ang gigamit sa mga batan-on sa Germany karon — dili pormal apan kaylap gigamit."],
   ] : isEn ? [
-    ["Alltagsphrasen", "Practical everyday sentences for greetings, getting around, ordering food, haggling over prices and more."],
-    ["Redewendungen", "Vivid expressions — with their literal meaning, so you can see how Bisaya really \"thinks\"."],
-    ["Slang & Jugendsprache", "How people actually talk with friends in Cebu today — informal but widely used."],
+    ["Alltagsphrasen", "Everyday Phrases", "Practical everyday sentences for greetings, getting around, ordering food, haggling over prices and more."],
+    ["Redewendungen", "Idioms", "Vivid expressions — with their literal meaning, so you can see how Bisaya really \"thinks\"."],
+    ["Slang & Jugendsprache", "Slang & Youth Language", "How people actually talk with friends in Cebu today — informal but widely used."],
   ] : [
-    ["Alltagsphrasen", "Praktische Sätze für Begrüßung, Unterwegssein, Essen bestellen, Preise verhandeln u.v.m."],
-    ["Redewendungen", "Bildhafte Ausdrücke — mit ihrer wörtlichen Bedeutung, damit du siehst, wie Bisaya wirklich \"denkt\"."],
-    ["Slang & Jugendsprache", "So spricht man heute unter Freunden in Cebu — informell, aber weit verbreitet."],
+    ["Alltagsphrasen", "Alltagsphrasen", "Praktische Sätze für Begrüßung, Unterwegssein, Essen bestellen, Preise verhandeln u.v.m."],
+    ["Redewendungen", "Redewendungen", "Bildhafte Ausdrücke — mit ihrer wörtlichen Bedeutung, damit du siehst, wie Bisaya wirklich \"denkt\"."],
+    ["Slang & Jugendsprache", "Slang & Jugendsprache", "So spricht man heute unter Freunden in Cebu — informell, aber weit verbreitet."],
   ];
   let html = "";
-  groups.forEach(([cat, desc])=>{
+  groups.forEach(([cat, label, desc])=>{
     const items = PHRASES_VOCAB.filter(p=>p.cat===cat);
     if(items.length===0) return;
-    html += `<div class="card"><h3>${cat} <span class="small">(${items.length})</span></h3><p class="small">${desc}</p>`;
+    html += `<div class="card"><h3>${label} <span class="small">(${items.length})</span></h3><p class="small">${desc}</p>`;
     items.forEach(p=>{
       if(p.vip && !vipOk){
         html += `<div class="line-block">
