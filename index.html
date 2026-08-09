@@ -1,4 +1,23 @@
 <!DOCTYPE html>
+<!--
+  Bisaya lebendig lernen
+  © 2026 Dirk Schnettler. Alle Rechte vorbehalten.
+  Copyright © 2026 Dirk Schnettler. All rights reserved.
+
+  Dieser Quelltext sowie alle Inhalte (Texte, Übersetzungen, Vokabeldaten,
+  Lektionen, Audiodateien) sind urheberrechtlich geschützt. Jegliche
+  Vervielfältigung, Weiterverbreitung oder Nutzung — ganz oder in Teilen,
+  unverändert oder bearbeitet — ohne vorherige ausdrückliche schriftliche
+  Zustimmung des Rechteinhabers ist nicht gestattet.
+
+  This source code and all content (text, translations, vocabulary data,
+  lessons, audio files) is protected by copyright. Any reproduction,
+  redistribution, or use — in whole or in part, unmodified or modified —
+  without prior express written permission of the rights holder is
+  prohibited.
+
+  Kontakt / Contact: dirkschnettler@icloud.com
+-->
 <html lang="de" translate="no">
 <head>
 <meta charset="UTF-8">
@@ -535,7 +554,7 @@ body.mode-en .mode-bis-only{display:none;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.18.1</div>
+  <div class="version-tag">v1.18.3</div>
 </section>
 
 <!-- METHODE -->
@@ -997,6 +1016,7 @@ body.mode-en .mode-bis-only{display:none;}
     &nbsp;·&nbsp;
     <span class="steplink" onclick="showDatenschutz()">Datenschutz</span>
   </div>
+  <div style="margin-top:8px; opacity:0.65; font-size:0.75rem;">© 2026 Dirk Schnettler · Alle Rechte vorbehalten / All rights reserved</div>
 </footer>
 
 <div class="modal-overlay hidden" id="impressumOverlay">
@@ -1009,6 +1029,7 @@ body.mode-en .mode-bis-only{display:none;}
       <p><b>Kontakt</b><br>E-Mail: dirkschnettler@icloud.com</p>
       <p><b>Umsatzsteuer-ID</b><br>[Falls vorhanden: USt-IdNr. gemäß § 27a UStG. Falls du Kleinunternehmer nach § 19 UStG bist, kannst du stattdessen ergänzen: "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."]</p>
       <p><b>Verantwortlich für den Inhalt</b><br>Dirk Schnettler, Rembrandtstr. 39, 45147 Essen</p>
+      <p><b>Urheberrecht</b><br>© 2026 Dirk Schnettler. Alle Rechte vorbehalten. Die auf dieser Seite veröffentlichten Inhalte (Texte, Übersetzungen, Vokabeldaten, Lektionen, Audiodateien, Quellcode) sind urheberrechtlich geschützt. Jede Vervielfältigung, Verbreitung oder sonstige Nutzung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des Autors.</p>
       <p style="opacity:0.7; font-size:0.78rem; border-top:1px dashed var(--line); padding-top:10px; margin-top:14px;">Dies ist eine allgemeine Vorlage, keine Rechtsberatung. Bitte die eckigen Platzhalter durch deine echten Angaben ersetzen und die Angaben im Zweifel mit einem Anwalt oder Impressum-Generator (z. B. e-recht24.de) prüfen, bevor die Seite dauerhaft live läuft.</p>
     </div>
   </div>
@@ -5723,7 +5744,63 @@ const AUDIO_MAP = {
  "yugo": "8cae5b14b4c414ca.mp3",
  "yawe": "4a77d14da7cbf2cc.mp3",
  "yelo": "debe6bc0f5b20458.mp3",
- "yuta": "f55840c38474c190.mp3"
+ "yuta": "f55840c38474c190.mp3",
+ "matahom": "57a49f8d80436a67.mp3",
+ "aron": "9835260c7cabe24c.mp3",
+ "kalooy": "fc6ed6adb193e00e.mp3",
+ "motungas": "ec60aa16923e1cdc.mp3",
+ "molupad": "a956332483b52fcf.mp3",
+ "mosakay": "f4ef14ac704233c5.mp3",
+ "isip": "99be06020c03a155.mp3",
+ "makapahuway": "d7247b35ccedbfaa.mp3",
+ "mahimong": "0fd578d25157f2a1.mp3",
+ "kalisod": "d9f6d744bc1c7a85.mp3",
+ "dawaton": "f4bf72faffe30c3b.mp3",
+ "girekomenda": "1a843f238bbaec11.mp3",
+ "gibati": "2970f12619b44c58.mp3",
+ "nidaug": "e6d05ff041a8c5e1.mp3",
+ "naanad": "0d327b4512821346.mp3",
+ "Naa koy iro sa balay.": "8bac1265a40bfb0e.mp3",
+ "Nahadlok ko sa halas.": "5eed86d1fbaefc45.mp3",
+ "Unsa imong paboritong hayop?": "850b754b407e041a.mp3",
+ "Ganahan ko sa mga iring kay buotan sila.": "f74e466c056313d2.mp3",
+ "Sa uma, naa'y baka, kabaw, ug baboy.": "2fd681dadc86f3ad.mp3",
+ "Ang agila usa ka matahom nga langgam.": "19edbe85c5d88fdd.mp3",
+ "Matahom kaayo ang kadagatan diri.": "48e1c9c623c25c32.mp3",
+ "Gusto ko moadto sa baybayon.": "b1523485fbfdd2ec.mp3",
+ "Adunay lain nga isla duol ani.": "d81752c30362eb9e.mp3",
+ "Kini nga dapit makapahuway sa hunahuna.": "bfd14a221f19f8c4.mp3",
+ "Motungas ta sa bungtod aron makita ang tibuok siyudad.": "4b0d014baf5525a0.mp3",
+ "Gusto ka molangoy sa busay?": "95115a51d4c3b040.mp3",
+ "Naa koy bag-ong bisikleta.": "6e5e48917ff919d9.mp3",
+ "Kinsa ang drayber sa awto?": "8f46d89eaaf5b6ee.mp3",
+ "Kinahanglan na natong palitan og gasolina ang awto.": "186dfc21f14f41b6.mp3",
+ "Molupad ko padulong Cebu ugma.": "596a27c8d1785a85.mp3",
+ "Doktor ko sa usa ka klinika.": "5b9b3ecdb055fb8a.mp3",
+ "Unsaon nako pag-adto sa syudad?": "0015a1a49f02c4c5.mp3",
+ "Gusto ko mahimong enhinyero balang adlaw.": "6f9c70edd9f1d4e0.mp3",
+ "Pwede ka mosakay og traysikel o jeepney.": "f73657e6c1f690bf.mp3",
+ "Kalisod ang trabaho apan gusto nako kini.": "c79cd4021afae91d.mp3",
+ "Pwede ko mangayo og menu?": "06b24f5e30c8a2af.mp3",
+ "Nagtrabaho siya isip nars sa dakong ospital.": "944d7d5d7764a922.mp3",
+ "Lamesa para sa duha, palihug.": "62e9b331b089eb2d.mp3",
+ "Lami kaayo ang pagkaon diri!": "bd482f76a98f0a49.mp3",
+ "Ang akong igsoon usa ka magtutudlo sa eskwelahan.": "f1acec0691f4d1c4.mp3",
+ "Unsa may imong gibati?": "671391000d80ab93.mp3",
+ "Bill, palihug. Diri ba dawaton ang kard?": "e48f7659a44a7596.mp3",
+ "Naa ka'y hilanat?": "4765cc7179c3eb11.mp3",
+ "Usa ka kape ug usa ka piraso nga keyk, palihug.": "df19b6665ba220d9.mp3",
+ "Kinahanglan nimo mag-inom ani nga tambal tulo ka beses matag adlaw.": "82847607b9a0303c.mp3",
+ "Gamay ra, apan sakit ang akong tutunlan.": "9f5753f005b648d2.mp3",
+ "Pahulay lang og maayo, ug mag-ayo ka dayon.": "472401ac35b66d63.mp3",
+ "Unsa imong paboritong isport?": "53494f3d3ff873ba.mp3",
+ "Unsa imong girekomenda?": "f12c53b50a21d002.mp3",
+ "Ganahan kaayo ko og basketbol.": "ddae777508dca171.mp3",
+ "Mudula ta og bolibol karong hapon?": "12c09575944ab500.mp3",
+ "Naanad ko modagan matag buntag.": "92c448fb1f86c8a1.mp3",
+ "Sip-on ug ubo ko sukad kagahapon.": "9328c8a1d4f0e573.mp3",
+ "Kinsa ang nidaug sa dula gabii?": "cc8b65de3961a624.mp3",
+ "Maayong manlalaro siya, apan mapainubsanon gihapon.": "98201ea8513a6e58.mp3"
 };
 function ensureAudioMapLoaded(){ /* AUDIO_MAP ist bereits eingebettet, nichts zu tun */ }
 function playPregeneratedAudio(text, btnEl){
