@@ -296,6 +296,10 @@ body.mode-de .mode-bis-only{display:none;}
 .mode-en-only{display:none;}
 body.mode-en .mode-en-only{display:block;}
 body.mode-en .mode-bis-only{display:none;}
+/* .origin-pill braucht inline-flex statt block, sonst wird die Pille durch die
+   obigen mode-only-Regeln (gleiche Spezifitaet, spaeter im Stylesheet) zum vollen Balken gestreckt. */
+body.mode-de .origin-pill.mode-de-only{display:inline-flex;}
+body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 .codebox{
   font-size:1.8rem; font-weight:800; letter-spacing:6px; text-align:center; color:var(--accent);
   background:var(--chip); border-radius:10px; padding:12px; margin:12px 0;
@@ -555,7 +559,7 @@ body.mode-en .mode-bis-only{display:none;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.18.5</div>
+  <div class="version-tag">v1.18.7</div>
 </section>
 
 <!-- METHODE -->
@@ -6011,7 +6015,21 @@ function showRegOverlay(prefill){
   if(firebaseConfigured()){
     // Echtes Konto aktiv -> simulierten Ablauf komplett ausblenden, Firebase-Schritte zeigen
     const fbUser = fbAuth ? fbAuth.currentUser : null;
-    if(fbUser && !fbUser.emailVerified){ goToFbVerify(fbUser.email); }
+    if(fbUser && fbUser.emailVerified){
+      // Firebase-Sitzung ist eigentlich schon aktiv (z.B. beim Klick auf "Jetzt anmelden" fuer
+      // die Bestenliste, obwohl man technisch schon eingeloggt ist) -> kein erneutes Formular
+      // noetig, nur Profil/Bestenliste-Anzeige synchronisieren und Overlay wieder schliessen.
+      // Verhindert die "trotz Anmeldung wieder Anmeldeformular"-Schleife.
+      saveProfile({name: fbUser.displayName || (fbUser.email||"").split("@")[0], email: fbUser.email, confirmed:true, via:(prefill && prefill.via) || "firebase"});
+      afterAuthSuccess();
+      return;
+    }
+    if(fbUser && !fbUser.emailVerified){ goToFbVerify(fbUser.email); return; }
+    // Keine aktive Firebase-Sitzung. Wenn hier lokal schon mal ein bestaetigtes Firebase-Profil
+    // gespeichert war, ist es fast sicher ein bestehendes Konto (Sitzung z.B. nach Browser-Neustart
+    // verloren) -> direkt zum Login-Schritt statt "Konto erstellen" anzubieten, das sonst zu
+    // "E-Mail bereits registriert"-Fehlern und gefuehltem Endlos-Loop fuehrt.
+    if(prefill && prefill.confirmed && prefill.via && prefill.via.indexOf("firebase") !== -1){ goToFbLogin(); }
     else { goToFbSignup(); }
     return;
   }
