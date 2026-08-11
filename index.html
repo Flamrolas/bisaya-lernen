@@ -559,7 +559,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.18.9</div>
+  <div class="version-tag">v1.19.0</div>
 </section>
 
 <!-- METHODE -->
@@ -6241,7 +6241,17 @@ async function firebaseGoogleSignIn(){
     // (alle normalen JS-Variablen gehen sonst verloren).
     if(pendingView) localStorage.setItem("bisaya_fb_pending_view", pendingView);
     localStorage.setItem("bisaya_fb_redirect_attempted", "1");
-    fbAuth.signInWithRedirect(provider); // Seite navigiert weg, Ergebnis wird nach Rückkehr in firebaseHandleRedirectResult() verarbeitet
+    try{
+      // WICHTIG: awaiten + fangen. Falls signInWithRedirect() schon VOR der Weiterleitung
+      // scheitert (z.B. Konfigurationsfehler), navigiert die Seite nie weg — ohne dieses
+      // try/catch würde der echte Fehler unsichtbar verschluckt und beim nächsten Laden
+      // fälschlich als "Safari-Datenschutz blockiert" angezeigt.
+      await fbAuth.signInWithRedirect(provider); // bei Erfolg navigiert die Seite weg, Ergebnis kommt in firebaseHandleRedirectResult() an
+    } catch(e){
+      localStorage.removeItem("bisaya_fb_redirect_attempted");
+      console.error("signInWithRedirect sofort fehlgeschlagen:", e);
+      if(err) err.textContent = "Weiterleitung zu Google ist fehlgeschlagen: " + firebaseErrorMessage(e);
+    }
     return;
   }
   try{
@@ -6258,6 +6268,7 @@ async function firebaseHandleRedirectResult(){
   const wasAttempted = localStorage.getItem("bisaya_fb_redirect_attempted") === "1";
   try{
     const result = await fbAuth.getRedirectResult();
+    console.log("firebaseHandleRedirectResult: wasAttempted=", wasAttempted, "result=", result);
     if(result && result.user){
       localStorage.removeItem("bisaya_fb_redirect_attempted");
       const u = result.user;
@@ -6278,9 +6289,10 @@ async function firebaseHandleRedirectResult(){
     }
   } catch(e){
     localStorage.removeItem("bisaya_fb_redirect_attempted");
+    console.error("firebaseHandleRedirectResult fehlgeschlagen:", e);
     // Falls die Weiterleitung fehlschlägt, im Registrierungs-Fenster anzeigen (falls offen)
     const err = document.getElementById("fbSignupErr");
-    if(err) err.textContent = firebaseErrorMessage(e);
+    if(err) err.textContent = "getRedirectResult-Fehler: " + firebaseErrorMessage(e);
   }
 }
 function firebaseLogout(){
