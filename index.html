@@ -57,9 +57,69 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" defer onload="initGoogleSignIn()"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<!-- Firebase: moderne modulare SDK (statt der aelteren "compat"-Version) -- bessere Kompatibilitaet
+     mit Safari/iOS' strikter Speicher-Isolierung fuer eingebettete Cross-Origin-Inhalte, die die
+     Google-Anmeldung bei der alten compat-SDK dort haeufig scheitern liess. Stellt window.FB bereit,
+     das der Hauptscript weiter unten (klassisches <script>, kein Modul) darueber anspricht. -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, GoogleAuthProvider,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signInWithPopup, signInWithRedirect, getRedirectResult,
+  sendEmailVerification, sendPasswordResetEmail, signOut,
+  updateProfile, reload
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, deleteDoc,
+  collection, query, orderBy, limit, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+let resolveFbReady;
+window.FB = { ready: new Promise(r => { resolveFbReady = r; }) };
+
+// Dieselbe Konfiguration wie im Hauptscript (dort noch einmal zu Referenzzwecken vorhanden).
+const FB_CONFIG = {
+  apiKey: "AIzaSyC_GLIKYYLkTqYE_OUNbsSXGY8vsKophoU",
+  authDomain: "bisaya-lebendig.firebaseapp.com",
+  projectId: "bisaya-lebendig",
+  storageBucket: "bisaya-lebendig.firebasestorage.app",
+  messagingSenderId: "567617633237",
+  appId: "1:567617633237:web:74d095dff3723ad1b21b5c",
+  measurementId: "G-SQZV6T1GGQ"
+};
+
+try{
+  if(!FB_CONFIG.apiKey.includes("DEIN-FIREBASE-API-KEY")){
+    const app = initializeApp(FB_CONFIG);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    Object.assign(window.FB, {
+      app, auth, db,
+      onAuthStateChanged: (cb) => onAuthStateChanged(auth, cb),
+      createUserWithEmailAndPassword: (email, pw) => createUserWithEmailAndPassword(auth, email, pw),
+      signInWithEmailAndPassword: (email, pw) => signInWithEmailAndPassword(auth, email, pw),
+      updateUserProfile: (user, data) => updateProfile(user, data),
+      sendEmailVerification: (user) => sendEmailVerification(user),
+      reloadUser: (user) => reload(user),
+      sendPasswordResetEmail: (email) => sendPasswordResetEmail(auth, email),
+      GoogleAuthProvider,
+      signInWithPopup: (provider) => signInWithPopup(auth, provider),
+      signInWithRedirect: (provider) => signInWithRedirect(auth, provider),
+      getRedirectResult: () => getRedirectResult(auth),
+      signOut: () => signOut(auth),
+      docGet: (col, id) => getDoc(doc(db, col, id)),
+      docSet: (col, id, data) => setDoc(doc(db, col, id), data),
+      docDelete: (col, id) => deleteDoc(doc(db, col, id)),
+      serverTimestamp: () => serverTimestamp(),
+      queryTopDesc: (col, field, limitN) => getDocs(query(collection(db, col), orderBy(field, "desc"), limit(limitN)))
+    });
+  }
+} catch(e){
+  console.error("Firebase (modulare SDK) Initialisierung fehlgeschlagen:", e);
+}
+resolveFbReady();
+</script>
 <style>
 :root{
   --bg:#fbf7f0; --panel:rgba(255,255,255,0.90); --ink:#2b2420; --sub:#6b5f54;
@@ -568,7 +628,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.19.3</div>
+  <div class="version-tag">v1.20.0</div>
 </section>
 
 <!-- METHODE -->
@@ -6135,21 +6195,24 @@ const FIREBASE_CONFIG = {
 function firebaseConfigured(){ return !FIREBASE_CONFIG.apiKey.includes("DEIN-FIREBASE-API-KEY"); }
 let fbAuth = null;
 let fbDb = null;
-if(firebaseConfigured() && typeof firebase !== "undefined"){
-  try{
-    firebase.initializeApp(FIREBASE_CONFIG);
-    fbAuth = firebase.auth();
-    fbDb = firebase.firestore();
+// Firebase laeuft jetzt ueber die moderne modulare SDK (siehe <script type="module"> im <head>,
+// stellt window.FB bereit). Da Modul-Skripte immer verzoegert laufen, hier auf window.FB.ready
+// warten, statt sofort synchron zuzugreifen wie frueher bei der compat-SDK.
+if(firebaseConfigured() && window.FB){
+  window.FB.ready.then(function(){
+    if(!window.FB.auth) return; // Modul-Initialisierung ist fehlgeschlagen (siehe Konsole)
+    fbAuth = window.FB.auth;
+    fbDb = window.FB.db;
     // Wichtig: fbAuth.currentUser ist beim Seitenstart oft noch kurz "null", auch wenn
     // eigentlich schon eine gespeicherte Anmeldung existiert — Firebase braucht einen
     // Moment, um die Sitzung wiederherzustellen. Deshalb hier auf den tatsächlichen
     // Auth-Status warten und die Bestenliste-Anzeige danach neu rendern, statt nur
     // einmalig beim Laden zu prüfen (das führte zu "Jetzt anmelden" trotz Anmeldung).
-    fbAuth.onAuthStateChanged(function(){
+    window.FB.onAuthStateChanged(function(){
       if(typeof renderLeaderboardControls === "function") renderLeaderboardControls();
       if(typeof renderProfileBadge === "function") renderProfileBadge();
     });
-  } catch(e){ console.error("Firebase-Initialisierung fehlgeschlagen:", e); }
+  }).catch(function(e){ console.error("Firebase-Initialisierung fehlgeschlagen:", e); });
 }
 
 function hideAllRegSteps(){
@@ -6185,9 +6248,10 @@ async function firebaseSignUp(){
   if(!isValidEmail(email)){ err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; return; }
   if(pw.length < 6){ err.textContent = "Das Passwort muss mindestens 6 Zeichen haben."; return; }
   try{
-    const cred = await fbAuth.createUserWithEmailAndPassword(email, pw);
-    await cred.user.updateProfile({displayName: name});
-    await cred.user.sendEmailVerification();
+    await window.FB.ready;
+    const cred = await window.FB.createUserWithEmailAndPassword(email, pw);
+    await window.FB.updateUserProfile(cred.user, {displayName: name});
+    await window.FB.sendEmailVerification(cred.user);
     saveProfile({name, email, confirmed:false, via:"firebase"});
     goToFbVerify(email);
   } catch(e){
@@ -6202,7 +6266,8 @@ async function firebaseSignIn(){
   if(!isValidEmail(email)){ err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; return; }
   if(!pw){ err.textContent = "Bitte gib dein Passwort ein."; return; }
   try{
-    const cred = await fbAuth.signInWithEmailAndPassword(email, pw);
+    await window.FB.ready;
+    const cred = await window.FB.signInWithEmailAndPassword(email, pw);
     const u = cred.user;
     if(!u.emailVerified){ goToFbVerify(u.email); return; }
     saveProfile({name: u.displayName || email.split("@")[0], email: u.email, confirmed:true, via:"firebase"});
@@ -6216,7 +6281,7 @@ async function firebaseCheckVerified(){
   const u = fbAuth.currentUser;
   if(!u){ err.textContent = "Bitte melde dich erneut an."; goToFbLogin(); return; }
   try{
-    await u.reload();
+    await window.FB.reloadUser(u);
     if(u.emailVerified){
       saveProfile({name: u.displayName || u.email.split("@")[0], email: u.email, confirmed:true, via:"firebase"});
       afterAuthSuccess();
@@ -6229,19 +6294,20 @@ async function firebaseResendVerification(){
   const err = document.getElementById("fbVerifyErr");
   const u = fbAuth.currentUser;
   if(!u){ err.textContent = "Bitte melde dich erneut an."; return; }
-  try{ await u.sendEmailVerification(); err.textContent = "E-Mail erneut gesendet."; }
+  try{ await window.FB.sendEmailVerification(u); err.textContent = "E-Mail erneut gesendet."; }
   catch(e){ err.textContent = firebaseErrorMessage(e); }
 }
 async function firebaseForgotPassword(){
   const err = document.getElementById("fbLoginErr");
   const email = document.getElementById("fbLoginEmail").value.trim();
   if(!isValidEmail(email)){ err.textContent = "Bitte trag oben zuerst deine E-Mail-Adresse ein."; return; }
-  try{ await fbAuth.sendPasswordResetEmail(email); err.textContent = "E-Mail zum Zurücksetzen des Passworts wurde verschickt."; }
+  try{ await window.FB.sendPasswordResetEmail(email); err.textContent = "E-Mail zum Zurücksetzen des Passworts wurde verschickt."; }
   catch(e){ err.textContent = firebaseErrorMessage(e); }
 }
 async function firebaseGoogleSignIn(){
   const err = document.getElementById("fbSignupErr");
-  const provider = new firebase.auth.GoogleAuthProvider();
+  await window.FB.ready;
+  const provider = new window.FB.GoogleAuthProvider();
   // Safari (v.a. iOS/iPadOS) blockiert aus Datenschutzgründen häufig den Speicherzugriff,
   // den ein Popup-Login braucht ("operation-not-supported-in-this-environment").
   // Weiterleitung (signInWithRedirect) funktioniert dort zuverlässig, Popup nur auf den meisten Desktop-Browsern.
@@ -6255,7 +6321,7 @@ async function firebaseGoogleSignIn(){
       // scheitert (z.B. Konfigurationsfehler), navigiert die Seite nie weg — ohne dieses
       // try/catch würde der echte Fehler unsichtbar verschluckt und beim nächsten Laden
       // fälschlich als "Safari-Datenschutz blockiert" angezeigt.
-      await fbAuth.signInWithRedirect(provider); // bei Erfolg navigiert die Seite weg, Ergebnis kommt in firebaseHandleRedirectResult() an
+      await window.FB.signInWithRedirect(provider); // bei Erfolg navigiert die Seite weg, Ergebnis kommt in firebaseHandleRedirectResult() an
     } catch(e){
       localStorage.removeItem("bisaya_fb_redirect_attempted");
       console.error("signInWithRedirect sofort fehlgeschlagen:", e);
@@ -6264,7 +6330,7 @@ async function firebaseGoogleSignIn(){
     return;
   }
   try{
-    const result = await fbAuth.signInWithPopup(provider);
+    const result = await window.FB.signInWithPopup(provider);
     const u = result.user;
     saveProfile({name: u.displayName || (u.email||"").split("@")[0], email: u.email, confirmed:true, via:"google-firebase"});
     afterAuthSuccess();
@@ -6273,10 +6339,12 @@ async function firebaseGoogleSignIn(){
   }
 }
 async function firebaseHandleRedirectResult(){
-  if(!firebaseConfigured() || !fbAuth) return;
+  if(!firebaseConfigured()) return;
+  await window.FB.ready;
+  if(!window.FB.auth) return;
   const wasAttempted = localStorage.getItem("bisaya_fb_redirect_attempted") === "1";
   try{
-    const result = await fbAuth.getRedirectResult();
+    const result = await window.FB.getRedirectResult();
     console.log("firebaseHandleRedirectResult: wasAttempted=", wasAttempted, "result=", result);
     if(result && result.user){
       localStorage.removeItem("bisaya_fb_redirect_attempted");
@@ -6305,7 +6373,7 @@ async function firebaseHandleRedirectResult(){
   }
 }
 function firebaseLogout(){
-  if(fbAuth) fbAuth.signOut().catch(()=>{});
+  if(fbAuth && window.FB) window.FB.signOut().catch(()=>{});
   localStorage.removeItem(PROFILE_KEY);
   renderProfileBadge();
   goView("start");
@@ -7154,29 +7222,28 @@ async function submitScoreToLeaderboard(){
   const profile = loadProfile();
   const name = ((profile && profile.name) || u.displayName || "Anonym").slice(0,40);
   try{
-    const docRef = fbDb.collection(LEADERBOARD_COLLECTION).doc(u.uid);
     // Wichtig: die Punktzahl darf nie sinken. Falls auf diesem Gerät/Browser der lokale
     // Fortschritt fehlt (z.B. In-App-Browser ohne dauerhaften Speicher, neues Gerät),
     // würde sonst ein niedrigerer/leerer Stand den bisherigen Bestwert überschreiben.
     let bestScore = computeScore();
     try{
-      const existing = await docRef.get();
-      if(existing.exists){
+      const existing = await window.FB.docGet(LEADERBOARD_COLLECTION, u.uid);
+      if(existing.exists()){
         const existingScore = existing.data().score || 0;
         if(existingScore > bestScore) bestScore = existingScore;
       }
     } catch(e){ /* Lesen fehlgeschlagen -> einfach mit dem lokalen Wert weitermachen */ }
-    await docRef.set({
+    await window.FB.docSet(LEADERBOARD_COLLECTION, u.uid, {
       name: name,
       score: bestScore,
-      updated: firebase.firestore.FieldValue.serverTimestamp()
+      updated: window.FB.serverTimestamp()
     });
     lbLastSync = Date.now();
   } catch(e){ console.error("Bestenliste: Speichern fehlgeschlagen", e); }
 }
 async function removeFromLeaderboard(){
   if(!firebaseConfigured() || !fbDb || !fbAuth || !fbAuth.currentUser) return;
-  try{ await fbDb.collection(LEADERBOARD_COLLECTION).doc(fbAuth.currentUser.uid).delete(); }
+  try{ await window.FB.docDelete(LEADERBOARD_COLLECTION, fbAuth.currentUser.uid); }
   catch(e){ console.error("Bestenliste: Entfernen fehlgeschlagen", e); }
 }
 // Wird bei jedem Fortschritt aufgerufen, aber höchstens alle 20 Sekunden tatsächlich synchronisiert
@@ -7204,7 +7271,7 @@ async function loadLeaderboard(){
   }
   list.innerHTML = "<p class='small'>Lade...</p>";
   try{
-    const snap = await fbDb.collection(LEADERBOARD_COLLECTION).orderBy("score","desc").limit(20).get();
+    const snap = await window.FB.queryTopDesc(LEADERBOARD_COLLECTION, "score", 20);
     if(snap.empty){
       list.innerHTML = "<p class='small'>Noch keine Einträge — sei die erste Person auf der Liste!</p>";
       return;
