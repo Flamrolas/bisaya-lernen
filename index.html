@@ -639,7 +639,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.21.1</div>
+  <div class="version-tag">v1.22.0</div>
 </section>
 
 <!-- METHODE -->
@@ -2706,6 +2706,9 @@ const LESSON_VOCAB = {
  17:[{bis:"palihug",de:"bitte",en:"please",pron:"pah-LEE-hoog"},{bis:"girekomenda",de:"empfehlen",en:"to recommend",pron:"gee-reh-koh-MEN-dah"},{bis:"lami",de:"lecker",en:"delicious",pron:"LAH-mee"},{bis:"dawaton",de:"angenommen (werden)",en:"to be accepted",pron:"dah-WAH-ton"}],
  18:[{bis:"gibati",de:"Gefühl, Beschwerde",en:"feeling, symptom",pron:"gee-BAH-tee"},{bis:"sip-on",de:"Schnupfen",en:"runny nose",pron:"SEEP-on"},{bis:"hilanat",de:"Fieber",en:"fever",pron:"hee-LAH-nat"},{bis:"pahulay",de:"sich ausruhen",en:"to rest",pron:"pah-HOO-lai"}],
  19:[{bis:"nidaug",de:"gewonnen (hat)",en:"won",pron:"nee-dah-OOG"},{bis:"naanad",de:"gewohnt sein an",en:"to be used to",pron:"nah-AH-nad"},{bis:"manlalaro",de:"Spieler/in",en:"player",pron:"man-lah-LAH-roh"},{bis:"mapainubsanon",de:"bescheiden",en:"humble",pron:"mah-pah-ee-noob-SAH-non"}],
+ 20:[{bis:"sukod",de:"Größe, Maß",en:"size, measurement",pron:"SOO-kod"},{bis:"sul-obon",de:"anziehen, anprobieren",en:"to put on, try on",pron:"sool-oh-BON"},{bis:"laing",de:"anderer, andere, anderes",en:"another, other",pron:"LAH-eeng"},{bis:"bag-o",de:"neu",en:"new",pron:"BAHG-oh"}],
+ 21:[{bis:"asul",de:"blau",en:"blue",pron:"AH-sool"},{bis:"berde",de:"grün",en:"green",pron:"BEHR-deh"},{bis:"itom",de:"schwarz",en:"black",pron:"EE-tom"},{bis:"puti",de:"weiß",en:"white",pron:"POO-tee"},{bis:"nindot",de:"schön",en:"beautiful, nice",pron:"NEEN-dot"}],
+ 22:[{bis:"ulo",de:"Kopf",en:"head",pron:"OO-loh"},{bis:"tiyan",de:"Bauch",en:"stomach",pron:"TEE-yan"},{bis:"lawas",de:"Körper",en:"body",pron:"LAH-was"},{bis:"hilanat",de:"Fieber",en:"fever",pron:"hee-LAH-nat"}],
 };
 
 // Redewendungen, Alltagsphrasen und Slang (recherchiert, mit Quellenangabe in der Chat-Antwort)
@@ -3598,6 +3601,48 @@ const LESSONS = [
     {bis:"Maayong manlalaro siya, apan mapainubsanon gihapon.", decode:[["Maayong","guter"],["manlalaro","Spieler/in"],["siya","er/sie"],["apan","aber"],["mapainubsanon","bescheiden"],["gihapon","immer-noch"]], decodeEn:[["Maayong","good"],["manlalaro","player"],["siya","he/she"],["apan","but"],["mapainubsanon","humble"],["gihapon","still"]], natural:"Er/Sie ist ein guter Spieler, aber trotzdem bescheiden.", naturalEn:"He/She is a good player, but still humble.", pron:"mah-AH-yong man-lah-LAH-roh SEE-yah, AH-pan mah-pah-ee-noob-SAH-non gee-hah-PON"},
    ],
  },
+ {
+   id:20, title:"Roba ug Pamalit", subtitle:"Kleidung & Einkaufen",
+   note:"„Pwede ba\" (ist es möglich/darf ich) ist die Standardformel für höfliche Fragen nach Erlaubnis, z. B. beim Anprobieren. Zahlwort + Größe wird oft einfach als Lehnwort übernommen (Medium, Small, Large).",
+   noteEn:"\"Pwede ba\" (is it possible/may I) is the standard polite way to ask for permission, e.g. when trying something on. Clothing sizes are often simply borrowed English words (Medium, Small, Large).",
+   lines:[
+    {bis:"Mangita ko og bag-ong sinina.", decode:[["Mangita","suchen-werde"],["ko","ich"],["og","[Objektmarker]"],["bag-ong","neue"],["sinina","Kleidung"]], decodeEn:[["Mangita","will-look-for"],["ko","I"],["og","[object-marker]"],["bag-ong","new"],["sinina","clothes"]], natural:"Ich suche neue Kleidung.", naturalEn:"I'm looking for new clothes.", pron:"mahng-EE-tah koh og bahg-ONG see-NEE-nah"},
+    {bis:"Pwede ba nako sul-obon ni?", decode:[["Pwede","möglich"],["ba","[Fragepartikel]"],["nako","von-mir"],["sul-obon","angezogen-werden"],["ni","das"]], decodeEn:[["Pwede","possible"],["ba","[question-particle]"],["nako","by-me"],["sul-obon","to-be-worn"],["ni","this"]], natural:"Kann ich das anprobieren?", naturalEn:"Can I try this on?", pron:"PWEH-deh bah NAH-koh sool-oh-BON nee"},
+    {bis:"Unsa imong sukod?", decode:[["Unsa","was"],["imong","dein"],["sukod","Größe"]], decodeEn:[["Unsa","what"],["imong","your"],["sukod","size"]], natural:"Was ist deine Größe?", naturalEn:"What's your size?", pron:"OON-sah ee-MONG SOO-kod"},
+    {bis:"Medium ra ko.", decode:[["Medium","Medium"],["ra","nur"],["ko","ich"]], decodeEn:[["Medium","medium"],["ra","only"],["ko","I"]], natural:"Ich bin nur Medium.", naturalEn:"I'm just a medium.", pron:"MEE-dee-oom rah koh"},
+    {bis:"Naa ba ni sa laing kolor?", decode:[["Naa","vorhanden"],["ba","[Fragepartikel]"],["ni","das"],["sa","in"],["laing","anderer"],["kolor","Farbe"]], decodeEn:[["Naa","available"],["ba","[question-particle]"],["ni","this"],["sa","in"],["laing","another"],["kolor","color"]], natural:"Gibt es das in einer anderen Farbe?", naturalEn:"Is this available in another color?", pron:"NAH-ah bah nee sah LAH-eeng KOH-lor"},
+    {bis:"Mas gamay pa ba naa?", decode:[["Mas","mehr"],["gamay","klein"],["pa","noch"],["ba","[Fragepartikel]"],["naa","vorhanden"]], decodeEn:[["Mas","more"],["gamay","small"],["pa","still"],["ba","[question-particle]"],["naa","available"]], natural:"Gibt es das eine Nummer kleiner?", naturalEn:"Do you have one size smaller?", pron:"mahs GAH-mai pah bah NAH-ah"},
+    {bis:"Tagpila ni tanan?", decode:[["Tagpila","wie-viel-kostet"],["ni","das"],["tanan","alles"]], decodeEn:[["Tagpila","how-much-does-it-cost"],["ni","this"],["tanan","all"]], natural:"Wie viel kostet das alles?", naturalEn:"How much does all of this cost?", pron:"tag-PEE-lah nee tah-NAN"},
+   ],
+ },
+ {
+   id:21, title:"Kolor ug Deskripsyon", subtitle:"Farben & Beschreibungen",
+   note:"Steht ein Adjektiv direkt vor einem Nomen, verbindet meist der Linker „nga\" die beiden (dako nga balay = großes Haus). Endet das Adjektiv auf einen Vokal, verschmilzt „nga\" oft zu „-ng\" (bag-ong sinina statt bag-o nga sinina).",
+   noteEn:"When an adjective directly precedes a noun, they're usually connected by the linker \"nga\" (dako nga balay = big house). If the adjective ends in a vowel, \"nga\" often contracts to \"-ng\" (bag-ong sinina instead of bag-o nga sinina).",
+   lines:[
+    {bis:"Unsa ang paborito nimong kolor?", decode:[["Unsa","was"],["ang","[Subjektmarker]"],["paborito","Lieblings-"],["nimong","dein"],["kolor","Farbe"]], decodeEn:[["Unsa","what"],["ang","[subject-marker]"],["paborito","favorite"],["nimong","your"],["kolor","color"]], natural:"Was ist deine Lieblingsfarbe?", naturalEn:"What's your favorite color?", pron:"OON-sah ang pah-boh-REE-toh NEE-mong KOH-lor"},
+    {bis:"Ganahan ko sa asul ug berde.", decode:[["Ganahan","mögend"],["ko","ich"],["sa","[Objektmarker]"],["asul","blau"],["ug","und"],["berde","grün"]], decodeEn:[["Ganahan","fond-of"],["ko","I"],["sa","[object-marker]"],["asul","blue"],["ug","and"],["berde","green"]], natural:"Ich mag Blau und Grün.", naturalEn:"I like blue and green.", pron:"gah-NAH-han koh sah AH-sool oog BEHR-deh"},
+    {bis:"Pula kaayo kanang sapatos.", decode:[["Pula","rot"],["kaayo","sehr"],["kanang","jene"],["sapatos","Schuhe"]], decodeEn:[["Pula","red"],["kaayo","very"],["kanang","those"],["sapatos","shoes"]], natural:"Diese Schuhe sind sehr rot.", naturalEn:"Those shoes are very red.", pron:"POO-lah kah-AH-yo KAH-nang sah-PAH-tos"},
+    {bis:"Itom o puti, palihug.", decode:[["Itom","schwarz"],["o","oder"],["puti","weiß"],["palihug","bitte"]], decodeEn:[["Itom","black"],["o","or"],["puti","white"],["palihug","please"]], natural:"Schwarz oder weiß, bitte.", naturalEn:"Black or white, please.", pron:"EE-tom oh POO-tee, pah-LEE-hoog"},
+    {bis:"Dako kaayo ni nga balay.", decode:[["Dako","groß"],["kaayo","sehr"],["ni","dieses"],["nga","[Linker]"],["balay","Haus"]], decodeEn:[["Dako","big"],["kaayo","very"],["ni","this"],["nga","[linker]"],["balay","house"]], natural:"Das ist ein sehr großes Haus.", naturalEn:"This is a very big house.", pron:"DAH-koh kah-AH-yo nee ngah BAH-lai"},
+    {bis:"Gamay ra ang akong kwarto.", decode:[["Gamay","klein"],["ra","nur"],["ang","[Subjektmarker]"],["akong","mein"],["kwarto","Zimmer"]], decodeEn:[["Gamay","small"],["ra","only"],["ang","[subject-marker]"],["akong","my"],["kwarto","room"]], natural:"Mein Zimmer ist nur klein.", naturalEn:"My room is just small.", pron:"GAH-mai rah ang AH-kong KWAR-toh"},
+    {bis:"Nindot kaayo ang lugar.", decode:[["Nindot","schön"],["kaayo","sehr"],["ang","[Subjektmarker]"],["lugar","Ort"]], decodeEn:[["Nindot","beautiful"],["kaayo","very"],["ang","[subject-marker]"],["lugar","place"]], natural:"Der Ort ist sehr schön.", naturalEn:"The place is very beautiful.", pron:"NEEN-dot kah-AH-yo ang loo-GAR"},
+   ],
+ },
+ {
+   id:22, title:"Bahin sa Lawas", subtitle:"Körperteile & Gesundheit",
+   note:"Um Schmerzen auszudrücken, steht das Adjektiv „sakit\" (schmerzend) am Satzanfang, gefolgt vom Körperteil mit Possessivpronomen: „Sakit akong ulo\" = wörtlich „schmerzend mein Kopf\" = Mein Kopf tut weh.",
+   noteEn:"To express pain, the adjective \"sakit\" (hurting) comes first, followed by the body part with a possessive pronoun: \"Sakit akong ulo\" = literally \"hurting my head\" = My head hurts.",
+   lines:[
+    {bis:"Unsa'y sakit nimo?", decode:[["Unsa'y","was-ist"],["sakit","schmerzend"],["nimo","dir"]], decodeEn:[["Unsa'y","what-is"],["sakit","hurting"],["nimo","to-you"]], natural:"Was tut dir weh?", naturalEn:"What hurts?", pron:"OON-sigh SAH-kit NEE-moh"},
+    {bis:"Sakit akong ulo.", decode:[["Sakit","schmerzend"],["akong","mein"],["ulo","Kopf"]], decodeEn:[["Sakit","hurting"],["akong","my"],["ulo","head"]], natural:"Mein Kopf tut weh.", naturalEn:"My head hurts.", pron:"SAH-kit AH-kong OO-loh"},
+    {bis:"Sakit sad akong tiyan.", decode:[["Sakit","schmerzend"],["sad","auch"],["akong","mein"],["tiyan","Bauch"]], decodeEn:[["Sakit","hurting"],["sad","also"],["akong","my"],["tiyan","stomach"]], natural:"Mein Bauch tut auch weh.", naturalEn:"My stomach hurts too.", pron:"SAH-kit sahd AH-kong TEE-yan"},
+    {bis:"Kinahanglan ka moadto sa doktor.", decode:[["Kinahanglan","müssen"],["ka","du"],["moadto","gehen-werde"],["sa","zum"],["doktor","Arzt"]], decodeEn:[["Kinahanglan","must"],["ka","you"],["moadto","will-go"],["sa","to-the"],["doktor","doctor"]], natural:"Du musst zum Arzt gehen.", naturalEn:"You need to go to the doctor.", pron:"kee-nah-HANG-lan kah moh-AD-toh sah dok-TOR"},
+    {bis:"Init akong lawas, tingali hilanat ko.", decode:[["Init","heiß"],["akong","mein"],["lawas","Körper"],["tingali","vielleicht"],["hilanat","Fieber"],["ko","ich"]], decodeEn:[["Init","hot"],["akong","my"],["lawas","body"],["tingali","maybe"],["hilanat","fever"],["ko","I"]], natural:"Mein Körper ist heiß, ich habe vielleicht Fieber.", naturalEn:"My body is hot, I might have a fever.", pron:"EE-nit AH-kong LAH-was, teeng-AH-lee hee-LAH-nat koh"},
+    {bis:"Palihug pahulay una.", decode:[["Palihug","bitte"],["pahulay","ausruhen"],["una","zuerst"]], decodeEn:[["Palihug","please"],["pahulay","to-rest"],["una","first"]], natural:"Bitte ruh dich erstmal aus.", naturalEn:"Please rest first.", pron:"pah-LEE-hoog pah-HOO-lai OO-nah"},
+    {bis:"Maayo na ko karon, salamat.", decode:[["Maayo","gut"],["na","schon"],["ko","ich"],["karon","jetzt"],["salamat","danke"]], decodeEn:[["Maayo","good"],["na","already"],["ko","I"],["karon","now"],["salamat","thanks"]], natural:"Mir geht's jetzt wieder gut, danke.", naturalEn:"I'm feeling better now, thanks.", pron:"mah-AH-yoh nah koh KAH-ron, sah-LAH-mat"},
+   ],
+ },
 ];
 
 // Bisaya-Untertitel der Lektionsthemen für den German-Lernmodus (l.title ist bereits Bisaya).
@@ -3608,6 +3653,7 @@ const LESSON_SUBTITLE_BIS = {
   11:"Kalingawan & Mga Higala", 12:"Pagbiyahe & Pagpanamilit",
   13:"Mga Hayop", 14:"Matahom nga mga Dapit", 15:"Mga Sakyanan",
   16:"Trabaho ug Propesyon", 17:"Sa Cafe ug Restawran", 18:"Sa Doktor", 19:"Isport",
+  20:"Roba ug Pamalit", 21:"Kolor ug Deskripsyon", 22:"Bahin sa Lawas",
 };
 
 const GAP_EXERCISES = [
