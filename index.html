@@ -497,7 +497,8 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <div id="fbSignupStep" style="display:none;">
       <h2>Konto erstellen 🌴</h2>
       <p class="small">Um mit dem Lernen zu starten, brauchst du ein kostenloses Konto. Deine Daten werden über Firebase (Google) sicher verwaltet, und du bekommst eine echte Bestätigungs-E-Mail.</p>
-      <button class="action neutral" style="width:100%;" onclick="firebaseGoogleSignIn()">🔵 Mit Google fortfahren</button>
+      <button class="action neutral" style="width:100%;" id="fbGoogleBtn" onclick="firebaseGoogleSignIn()">🔵 Mit Google fortfahren</button>
+      <p class="small" id="fbGoogleSafariHint" style="display:none; color:var(--sub); margin-top:6px;">ℹ️ Die Google-Anmeldung funktioniert in Safari und auf iPhone/iPad aus technischen Gründen aktuell nicht zuverlässig. Bitte nutze stattdessen E-Mail + Passwort weiter unten.</p>
       <div class="divider-or"><span>oder mit E-Mail</span></div>
       <label for="fbName">Name</label>
       <input type="text" id="fbName" placeholder="z. B. Flamrolas">
@@ -638,7 +639,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.20.1</div>
+  <div class="version-tag">v1.21.1</div>
 </section>
 
 <!-- METHODE -->
@@ -6003,6 +6004,12 @@ function isSafariBrowser(){
   const ua = navigator.userAgent;
   return /^((?!chrome|crios|android).)*safari/i.test(ua);
 }
+// Brave gibt sich als Chrome aus (gleiche User-Agent-Basis), blockiert aber bewusst aus
+// Datenschutzgründen die Verbindung zu Googles Spracherkennungs-Server, den die Web Speech API
+// im Hintergrund braucht — das "navigator.brave"-Objekt ist der einzige zuverlässige Weg, das zu erkennen.
+function isBraveBrowser(){
+  return !!(navigator.brave);
+}
 function checkPronunciation(targetText, btnEl, lang){
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   const resultEl = btnEl.nextElementSibling;
@@ -6044,7 +6051,11 @@ function checkPronunciation(targetText, btnEl, lang){
     }
     if(e.error === "no-speech") msg = "Nichts gehört — bitte nochmal versuchen.";
     if(e.error === "audio-capture") msg = "Kein Mikrofon gefunden. Bitte prüfe, ob eins angeschlossen/aktiviert ist.";
-    if(e.error === "network") msg = "Netzwerkfehler — die Spracherkennung braucht eine Internetverbindung (die Auswertung läuft über den Server des Browsers). Bitte Verbindung prüfen oder Chrome verwenden.";
+    if(e.error === "network"){
+      msg = isBraveBrowser()
+        ? "Netzwerkfehler bei der Spracherkennung — das liegt an Brave: Brave blockiert aus Datenschutzgründen bewusst die Verbindung zu Googles Spracherkennungs-Server, den diese Funktion im Hintergrund braucht (kein Problem deiner Internetverbindung und kein Fehler dieser Seite). Bitte nutze für die Ausspracheprüfung mit Mikrofon Chrome — 🔊 Anhören funktioniert in Brave weiterhin normal."
+        : "Netzwerkfehler — die Spracherkennung braucht eine Internetverbindung (die Auswertung läuft über den Server des Browsers). Bitte Verbindung prüfen oder Chrome verwenden.";
+    }
     if(e.error === "language-not-supported") msg = "Diese Sprache wird von der Spracherkennung nicht unterstützt.";
     if(e.error === "aborted") return; // Nutzer/Seite hat abgebrochen, keine Fehlermeldung nötig
     if(resultEl) resultEl.innerHTML = `<span class="mic-fail">${msg}</span>`;
@@ -6235,6 +6246,9 @@ function goToFbSignup(){
   hideAllRegSteps();
   document.getElementById("fbSignupStep").style.display = "block";
   document.getElementById("fbSignupErr").textContent = "";
+  // In Safari/iOS zeigen wir den Hinweis direkt, statt erst auf einen zum Scheitern verurteilten Klick zu warten.
+  const hint = document.getElementById("fbGoogleSafariHint");
+  if(hint) hint.style.display = isSafariBrowser() ? "block" : "none";
 }
 function goToFbLogin(){
   hideAllRegSteps();
@@ -6316,29 +6330,22 @@ async function firebaseForgotPassword(){
 }
 async function firebaseGoogleSignIn(){
   const err = document.getElementById("fbSignupErr");
-  await window.FB.ready;
-  const provider = new window.FB.GoogleAuthProvider();
-  // Safari (v.a. iOS/iPadOS) blockiert aus Datenschutzgründen häufig den Speicherzugriff,
-  // den ein Popup-Login braucht ("operation-not-supported-in-this-environment").
-  // Weiterleitung (signInWithRedirect) funktioniert dort zuverlässig, Popup nur auf den meisten Desktop-Browsern.
+  // Google-Anmeldung über Firebase braucht ein verstecktes Cross-Origin-Iframe, um den Login-Status
+  // zwischen Google und dieser Seite abzugleichen. Safari (und alle WebKit-basierten iOS-Browser wie
+  // Chrome/Firefox für iOS) blockieren den dafür nötigen Speicherzugriff dauerhaft und ohne per
+  // Nutzer-Einstellung abschaltbar zu sein (ausführlich getestet: eigene Domain, moderne SDK,
+  // Tracking-Schutz aus, Pop-ups erlaubt — nichts davon hat geholfen). Deshalb hier gar nicht erst
+  // eine Weiterleitung versuchen, die ohnehin ins Leere läuft, sondern direkt zur E-Mail-Anmeldung leiten.
   if(isSafariBrowser()){
-    // pendingView muss überleben, da die Seite bei der Weiterleitung komplett neu lädt
-    // (alle normalen JS-Variablen gehen sonst verloren).
-    if(pendingView) localStorage.setItem("bisaya_fb_pending_view", pendingView);
-    localStorage.setItem("bisaya_fb_redirect_attempted", "1");
-    try{
-      // WICHTIG: awaiten + fangen. Falls signInWithRedirect() schon VOR der Weiterleitung
-      // scheitert (z.B. Konfigurationsfehler), navigiert die Seite nie weg — ohne dieses
-      // try/catch würde der echte Fehler unsichtbar verschluckt und beim nächsten Laden
-      // fälschlich als "Safari-Datenschutz blockiert" angezeigt.
-      await window.FB.signInWithRedirect(provider); // bei Erfolg navigiert die Seite weg, Ergebnis kommt in firebaseHandleRedirectResult() an
-    } catch(e){
-      localStorage.removeItem("bisaya_fb_redirect_attempted");
-      console.error("signInWithRedirect sofort fehlgeschlagen:", e);
-      if(err) err.textContent = "Weiterleitung zu Google ist fehlgeschlagen: " + firebaseErrorMessage(e);
-    }
+    const hint = document.getElementById("fbGoogleSafariHint");
+    if(hint) hint.style.display = "block";
+    if(err) err.textContent = "";
+    const nameField = document.getElementById("fbName");
+    if(nameField) nameField.focus();
     return;
   }
+  await window.FB.ready;
+  const provider = new window.FB.GoogleAuthProvider();
   try{
     const result = await window.FB.signInWithPopup(provider);
     const u = result.user;
