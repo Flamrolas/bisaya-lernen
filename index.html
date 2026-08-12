@@ -57,6 +57,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" defer onload="initGoogleSignIn()"></script>
+<!-- Modul-Skripte (siehe unten) fuehren IMMER verzoegert aus (wie "defer"), selbst ohne das Attribut --
+     das Hauptscript weiter unten im <body> ist aber ein normales, unverzoegertes <script> und laeuft
+     schon waehrend des Parsens, also VOR dem Modul-Skript. Ohne dieses winzige synchrone Stub-Skript
+     waere window.FB an der Stelle noch undefined ("TypeError: undefined is not an object (evaluating
+     'window.FB.ready')"), z.B. wenn firebaseHandleRedirectResult() ganz am Ende des Hauptscripts direkt
+     beim Laden aufgerufen wird. Dieses Stub legt window.FB.ready synchron an, das Modul-Skript fuellt
+     danach nur noch die eigentlichen Methoden hinein und loest das schon existierende Promise auf. -->
+<script>
+window.FB = { ready: new Promise(function(resolve){ window.__resolveFbReady = resolve; }) };
+</script>
 <!-- Firebase: moderne modulare SDK (statt der aelteren "compat"-Version) -- bessere Kompatibilitaet
      mit Safari/iOS' strikter Speicher-Isolierung fuer eingebettete Cross-Origin-Inhalte, die die
      Google-Anmeldung bei der alten compat-SDK dort haeufig scheitern liess. Stellt window.FB bereit,
@@ -75,8 +85,8 @@ import {
   collection, query, orderBy, limit, getDocs, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-let resolveFbReady;
-window.FB = { ready: new Promise(r => { resolveFbReady = r; }) };
+// window.FB.ready existiert bereits (siehe Stub-Skript oben), hier nur das passende resolve() holen.
+const resolveFbReady = window.__resolveFbReady;
 
 // Dieselbe Konfiguration wie im Hauptscript (dort noch einmal zu Referenzzwecken vorhanden).
 const FB_CONFIG = {
@@ -628,7 +638,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.20.0</div>
+  <div class="version-tag">v1.20.1</div>
 </section>
 
 <!-- METHODE -->
