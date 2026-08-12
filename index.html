@@ -639,7 +639,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.23.2</div>
+  <div class="version-tag">v1.23.3</div>
 </section>
 
 <!-- METHODE -->
@@ -6142,21 +6142,36 @@ const AUDIO_MAP = {
  "maghigugmaay": "1e9e1977b0c4f9e6.mp3"
 };
 function ensureAudioMapLoaded(){ /* AUDIO_MAP ist bereits eingebettet, nichts zu tun */ }
-function playPregeneratedAudio(text, btnEl){
+function playPregeneratedAudio(text, btnEl, onFail){
   if(!AUDIO_MAP || !AUDIO_MAP[text]) return false;
   const audio = new Audio("audio/" + AUDIO_MAP[text]);
+  let failed = false;
+  const fail = ()=>{
+    if(failed) return; // nur einmal auslösen (onerror + play().catch koennen beide feuern)
+    failed = true;
+    if(btnEl) btnEl.classList.remove("playing");
+    if(onFail) onFail();
+  };
   if(btnEl){
     audio.onplay = ()=>btnEl.classList.add("playing");
     audio.onended = ()=>btnEl.classList.remove("playing");
-    audio.onerror = ()=>btnEl.classList.remove("playing");
   }
-  audio.play().catch(()=>{ if(btnEl) btnEl.classList.remove("playing"); });
+  audio.onerror = fail; // z.B. Datei fehlt auf dem Server (404) oder ist beschaedigt
+  audio.play().catch(fail);
   return true;
 }
 
 function speak(bisText, pronText, btnEl){
   // 1) Falls eine hochwertige, vorgenerierte Audiodatei existiert: die nutzen.
-  if(playPregeneratedAudio(bisText, btnEl)) return;
+  //    Falls die Datei aus irgendeinem Grund nicht abspielbar ist (fehlt auf dem
+  //    Server, Netzwerkfehler etc.), NICHT stumm bleiben, sondern automatisch auf
+  //    die Browser-Sprachausgabe zurueckfallen (onFail-Callback).
+  const usedPregenerated = playPregeneratedAudio(bisText, btnEl, ()=>speakFallback(bisText, pronText, btnEl));
+  if(usedPregenerated) return;
+  speakFallback(bisText, pronText, btnEl);
+}
+
+function speakFallback(bisText, pronText, btnEl){
   // 2) Fallback: Browser-eigene Sprachausgabe (Qualität variiert je nach Gerät).
   if(!window.speechSynthesis){
     alert("Sprachausgabe wird von diesem Browser leider nicht unterstützt.");
