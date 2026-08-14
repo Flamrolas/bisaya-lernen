@@ -308,6 +308,29 @@ table.gram th, table.gram td{border:1px solid var(--line); padding:6px 8px; text
 table.gram th{background:var(--chip);}
 .progressbar{height:8px; background:var(--line); border-radius:6px; overflow:hidden; margin-top:6px;}
 .progressbar > div{height:100%; background:var(--accent2);}
+.reward-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
+.reward-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; flex:1 1 220px; min-width:200px;}
+.reward-card h4{margin:0 0 8px; font-size:0.82rem; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:0.03em;}
+.streak-display{display:flex; align-items:center; gap:10px;}
+.streak-flame{font-size:2rem; line-height:1;}
+.streak-num{font-size:1.6rem; font-weight:800; color:var(--accent);}
+.streak-sub{font-size:0.78rem; color:var(--sub);}
+.level-name{font-size:1.15rem; font-weight:800; color:var(--accent2); margin-bottom:2px;}
+.level-sub{font-size:0.78rem; color:var(--sub); margin-bottom:6px;}
+.daily-goal-wrap{display:flex; align-items:center; gap:12px;}
+.daily-ring{width:56px; height:56px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:800; color:var(--accent);
+  background:conic-gradient(var(--accent2) calc(var(--pct,0) * 1%), var(--line) 0);}
+.daily-ring > span{background:var(--panel); border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center;}
+.badge-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:10px; margin-top:10px;}
+.badge-item{display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:8px 4px; border-radius:10px; background:var(--panel); border:1px solid var(--line);}
+.badge-item .badge-icon{font-size:1.6rem; filter:grayscale(1); opacity:0.35;}
+.badge-item.unlocked{border-color:var(--accent2);}
+.badge-item.unlocked .badge-icon{filter:none; opacity:1;}
+.badge-item .badge-label{font-size:0.66rem; color:var(--sub); line-height:1.15;}
+.badge-toast-wrap{position:fixed; top:16px; right:16px; z-index:9999; display:flex; flex-direction:column; gap:8px; transition:opacity 0.6s;}
+.badge-toast{display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--accent2); border-radius:12px; padding:10px 16px; box-shadow:0 6px 20px rgba(0,0,0,0.25); font-size:0.85rem;}
+.badge-toast-icon{font-size:1.6rem;}
+.badge-toast-fade{opacity:0;}
 .lb-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
 .lb-row{display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px;}
 .lb-row.lb-me{border-color:var(--accent); background:var(--chip);}
@@ -639,7 +662,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
   </div>
-  <div class="version-tag">v1.23.5</div>
+  <div class="version-tag">v1.24.0</div>
 </section>
 
 <!-- METHODE -->
@@ -939,7 +962,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <div class="statgrid">
       <div class="stat"><div class="num" id="statKnown">0</div><div class="lbl mode-bis-only">Wörter gekonnt</div><div class="lbl mode-de-only">Mga pulong nahibaw-an</div><div class="lbl mode-en-only">Words known</div></div>
       <div class="stat"><div class="num" id="statLearning">0</div><div class="lbl mode-bis-only">in Übung</div><div class="lbl mode-de-only">gibansay pa</div><div class="lbl mode-en-only">in practice</div></div>
-      <div class="stat"><div class="num" id="statLessons">0/19</div><div class="lbl mode-bis-only">Lektionen abgeschlossen</div><div class="lbl mode-de-only">Leksyon nahuman</div><div class="lbl mode-en-only">Lessons completed</div></div>
+      <div class="stat"><div class="num" id="statLessons">0/30</div><div class="lbl mode-bis-only">Lektionen abgeschlossen</div><div class="lbl mode-de-only">Leksyon nahuman</div><div class="lbl mode-en-only">Lessons completed</div></div>
     </div>
     <div class="progressbar"><div id="overallBar" style="width:0%"></div></div>
     <p class="small mode-bis-only" style="margin-top:16px;">Dein Fortschritt wird nur lokal in diesem Browser gespeichert (localStorage) — nicht in der Cloud. Öffne die Datei immer im selben Browser, um deinen Stand zu behalten.</p>
@@ -948,6 +971,39 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <button class="action neutral mode-bis-only" onclick="resetProgress()">Fortschritt zurücksetzen</button>
     <button class="action neutral mode-de-only" onclick="resetProgress()">I-reset ang Kalamboan</button>
     <button class="action neutral mode-en-only" onclick="resetProgress()">Reset progress</button>
+  </div>
+
+  <div class="card">
+    <h2 class="mode-bis-only">🏆 Belohnungen</h2>
+    <h2 class="mode-de-only">🏆 Mga Ganti</h2>
+    <h2 class="mode-en-only">🏆 Rewards</h2>
+    <div class="reward-row">
+      <div class="reward-card">
+        <h4 class="mode-bis-only">Streak</h4><h4 class="mode-de-only">Streak</h4><h4 class="mode-en-only">Streak</h4>
+        <div class="streak-display">
+          <div class="streak-flame" id="streakFlame">🔥</div>
+          <div>
+            <div class="streak-num" id="streakNum">0</div>
+            <div class="streak-sub" id="streakSub"></div>
+          </div>
+        </div>
+      </div>
+      <div class="reward-card">
+        <h4 class="mode-bis-only">Level</h4><h4 class="mode-de-only">Level</h4><h4 class="mode-en-only">Level</h4>
+        <div class="level-name" id="levelName">—</div>
+        <div class="level-sub" id="levelSub"></div>
+        <div class="progressbar"><div id="levelBar" style="width:0%"></div></div>
+      </div>
+      <div class="reward-card">
+        <h4 class="mode-bis-only">Tagesziel</h4><h4 class="mode-de-only">Tumong sa Adlaw</h4><h4 class="mode-en-only">Daily Goal</h4>
+        <div class="daily-goal-wrap">
+          <div class="daily-ring" id="dailyRing" style="--pct:0"><span id="dailyRingPct">0%</span></div>
+          <div class="streak-sub" id="dailyGoalSub"></div>
+        </div>
+      </div>
+    </div>
+    <h4 class="mode-bis-only">Abzeichen</h4><h4 class="mode-de-only">Mga Badge</h4><h4 class="mode-en-only">Badges</h4>
+    <div class="badge-grid" id="badgeGrid"></div>
   </div>
 </section>
 
@@ -6883,6 +6939,121 @@ function saveState(){
   if(typeof maybeSyncLeaderboard === "function") maybeSyncLeaderboard();
 }
 
+/* ============ BELOHNUNGSSYSTEM (XP/Level, Streak, Tagesziel, Achievements) ============ */
+// Alle drei Bausteine nutzen dieselbe Punktzahl wie die Bestenliste (computeScore(): 1 Punkt
+// pro gekonntem Wort, 5 Punkte pro abgeschlossener Lektion) — ein System statt vieler Insellösungen.
+function todayStr(offsetDays){
+  const d = new Date();
+  d.setDate(d.getDate() + (offsetDays || 0));
+  return d.toISOString().slice(0,10);
+}
+// Wird zu Beginn jeder fortschritt-erzeugenden Aktion aufgerufen (markCard, toggleLessonDone),
+// BEVOR die Aktion den Punktestand verändert — so merkt sich dailyGoalXpStart den Stand vom
+// Tagesbeginn, unabhängig davon, wie oft am selben Tag weiter gelernt wird.
+function touchDaily(){
+  const today = todayStr();
+  if(state.dailyGoalDate !== today){
+    state.dailyGoalDate = today;
+    state.dailyGoalXpStart = computeScore();
+  }
+}
+function touchStreak(){
+  const today = todayStr();
+  if(state.lastActiveDate === today) return; // heute schon gezählt
+  const yesterday = todayStr(-1);
+  state.streak = (state.lastActiveDate === yesterday) ? (state.streak || 0) + 1 : 1;
+  state.lastActiveDate = today;
+}
+const DAILY_GOAL_XP = 10; // z.B. 10 neue Wörter oder 2 Lektionen an einem Tag
+function dailyGoalProgress(){
+  const start = (state.dailyGoalDate === todayStr()) ? (state.dailyGoalXpStart || 0) : computeScore();
+  const earnedToday = Math.max(0, computeScore() - start);
+  return { earned: earnedToday, goal: DAILY_GOAL_XP, pct: Math.min(100, Math.round(earnedToday / DAILY_GOAL_XP * 100)) };
+}
+
+const XP_LEVELS = [
+  {xp:0,    de:"Anfänger",          bis:"Nagsugod pa",              en:"Beginner"},
+  {xp:15,   de:"Lernender",         bis:"Nagkat-on",                en:"Learner"},
+  {xp:40,   de:"Fleißiger Schüler", bis:"Kugihan nga Estudyante",   en:"Diligent Student"},
+  {xp:80,   de:"Wortsammler",       bis:"Tigtigom og Pulong",       en:"Word Collector"},
+  {xp:150,  de:"Fortgeschritten",   bis:"Nagpauswag na",            en:"Advanced"},
+  {xp:250,  de:"Sprachjongleur",    bis:"Batid na sa Pinulongan",   en:"Language Juggler"},
+  {xp:400,  de:"Bisaya-Kenner",     bis:"Sinati sa Bisaya",         en:"Bisaya Connoisseur"},
+  {xp:600,  de:"Experte",           bis:"Eksperto",                 en:"Expert"},
+  {xp:900,  de:"Meister",           bis:"Agalon",                   en:"Master"},
+  {xp:1300, de:"Bisaya-Champion",   bis:"Kampyon sa Bisaya",        en:"Bisaya Champion"}
+];
+function levelInfo(){
+  const xp = computeScore();
+  let idx = 0;
+  for(let i=0;i<XP_LEVELS.length;i++){ if(xp >= XP_LEVELS[i].xp) idx = i; }
+  const cur = XP_LEVELS[idx];
+  const next = XP_LEVELS[idx+1] || null;
+  const pct = next ? Math.round((xp - cur.xp) / (next.xp - cur.xp) * 100) : 100;
+  return { level: idx+1, xp, name: cur, next, pct: Math.max(0, Math.min(100, pct)) };
+}
+
+const ACHIEVEMENTS = [
+  {id:"lesson1",  icon:"📖", cond:s=>s.lessonsDone>=1,  de:"Erste Lektion geschafft",       bis:"Una nga Leksyon Nahuman",           en:"First lesson done"},
+  {id:"lesson5",  icon:"📚", cond:s=>s.lessonsDone>=5,  de:"5 Lektionen geschafft",          bis:"5 ka Leksyon Nahuman",              en:"5 lessons done"},
+  {id:"lesson15", icon:"🎓", cond:s=>s.lessonsDone>=15, de:"15 Lektionen geschafft",         bis:"15 ka Leksyon Nahuman",             en:"15 lessons done"},
+  {id:"lesson30", icon:"🏅", cond:s=>s.lessonsDone>=30, de:"Alle 30 Lektionen geschafft",    bis:"Tanang 30 ka Leksyon Nahuman",      en:"All 30 lessons done"},
+  {id:"words25",  icon:"🧠", cond:s=>s.known>=25,       de:"25 Wörter gekonnt",              bis:"25 ka Pulong Nahibaw-an",           en:"25 words known"},
+  {id:"words100", icon:"🧠", cond:s=>s.known>=100,      de:"100 Wörter gekonnt",             bis:"100 ka Pulong Nahibaw-an",          en:"100 words known"},
+  {id:"words250", icon:"🧠", cond:s=>s.known>=250,      de:"250 Wörter gekonnt",             bis:"250 ka Pulong Nahibaw-an",          en:"250 words known"},
+  {id:"words500", icon:"🧠", cond:s=>s.known>=500,      de:"500 Wörter gekonnt",             bis:"500 ka Pulong Nahibaw-an",          en:"500 words known"},
+  {id:"streak3",  icon:"🔥", cond:s=>s.streak>=3,       de:"3 Tage in Folge gelernt",        bis:"3 ka Adlaw Sunod-sunod",            en:"3-day streak"},
+  {id:"streak7",  icon:"🔥", cond:s=>s.streak>=7,       de:"7 Tage in Folge gelernt",        bis:"7 ka Adlaw Sunod-sunod",            en:"7-day streak"},
+  {id:"streak30", icon:"🔥", cond:s=>s.streak>=30,      de:"30 Tage in Folge gelernt",       bis:"30 ka Adlaw Sunod-sunod",           en:"30-day streak"},
+  {id:"dailygoal",icon:"🎯", cond:s=>s.dailyGoalHitCount>=1, de:"Erstes Tagesziel erreicht", bis:"Una nga Tumong sa Adlaw Nakab-ot",  en:"First daily goal hit"}
+];
+function achievementStats(){
+  const words = allVocab();
+  return {
+    known: words.filter(v=>state.words[v.bis]==="known").length,
+    lessonsDone: Object.values(state.lessonsDone).filter(Boolean).length,
+    streak: state.streak || 0,
+    dailyGoalHitCount: state.dailyGoalHitCount || 0
+  };
+}
+// Prüft nach jeder Aktion, ob neue Achievements freigeschaltet wurden, merkt sie sich dauerhaft
+// in state.badgesUnlocked und zeigt für neu freigeschaltete kurz einen Toast an.
+function checkAchievements(){
+  if(!state.badgesUnlocked) state.badgesUnlocked = [];
+  // Tagesziel-Treffer separat zählen (nicht Teil von ACHIEVEMENTS' cond-Datenbasis, da sie
+  // sich selbst wieder verändern würde) — einmal pro Tag, wenn das Ziel erreicht wird.
+  const dg = dailyGoalProgress();
+  if(dg.earned >= dg.goal && state.dailyGoalHitDate !== todayStr()){
+    state.dailyGoalHitDate = todayStr();
+    state.dailyGoalHitCount = (state.dailyGoalHitCount || 0) + 1;
+  }
+  const freshStats = achievementStats();
+  const newlyUnlocked = [];
+  ACHIEVEMENTS.forEach(a=>{
+    if(state.badgesUnlocked.includes(a.id)) return;
+    if(a.cond(freshStats)){
+      state.badgesUnlocked.push(a.id);
+      newlyUnlocked.push(a);
+    }
+  });
+  if(newlyUnlocked.length) saveState();
+  return newlyUnlocked;
+}
+function showBadgeToasts(badges){
+  if(!badges || !badges.length) return;
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const wrap = document.createElement("div");
+  wrap.className = "badge-toast-wrap";
+  wrap.innerHTML = badges.map(a=>{
+    const label = mode==="learn-de" ? a.bis : isEn ? a.en : a.de;
+    const heading = mode==="learn-de" ? "Bag-ong Badge!" : isEn ? "New badge!" : "Neues Abzeichen!";
+    return `<div class="badge-toast"><span class="badge-toast-icon">${a.icon}</span><div><b>${heading}</b><br>${label}</div></div>`;
+  }).join("");
+  document.body.appendChild(wrap);
+  setTimeout(()=>{ wrap.classList.add("badge-toast-fade"); setTimeout(()=>wrap.remove(), 600); }, 3200);
+}
+
 /* ============ APP-MODUS (Bisaya lernen / German lernen) ============ */
 // "learn-bis": Standard-Modus dieser App, deutsche Oberfläche, lehrt Bisaya (Bisaya-Wort zuerst).
 // "learn-de": Bisaya-Oberfläche, lehrt German (German-Wort zuerst) — für Bisaya-Muttersprachler.
@@ -7238,8 +7409,11 @@ function openLesson(id){
   window.scrollTo(0,0);
 }
 function toggleLessonDone(id){
-  state.lessonsDone[id] = !state.lessonsDone[id];
+  const nowDone = !state.lessonsDone[id];
+  if(nowDone){ touchDaily(); touchStreak(); } // nur bei "als erledigt markieren" zählen, nicht beim Rückgängigmachen
+  state.lessonsDone[id] = nowDone;
   saveState();
+  if(nowDone) showBadgeToasts(checkAchievements());
   openLesson(id);
 }
 
@@ -7416,8 +7590,10 @@ function flipCard(){ document.getElementById("flashCard").classList.toggle("flip
 function markCard(status){
   if(deck.length===0) return;
   const v = deck[deckIdx % deck.length];
+  touchDaily(); touchStreak();
   state.words[v.bis] = status;
   saveState();
+  showBadgeToasts(checkAchievements());
   nextCard();
 }
 function nextCard(){ deckIdx++; showCard(); }
@@ -7510,9 +7686,49 @@ function renderProgress(){
   const lessonsDone = Object.values(state.lessonsDone).filter(Boolean).length;
   document.getElementById("statKnown").textContent = known;
   document.getElementById("statLearning").textContent = learning;
-  document.getElementById("statLessons").textContent = lessonsDone + "/19";
+  document.getElementById("statLessons").textContent = lessonsDone + "/30";
   const pct = Math.round((known / words.length) * 100);
   document.getElementById("overallBar").style.width = pct + "%";
+  renderRewards();
+}
+function renderRewards(){
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const isBis = mode==="learn-de";
+
+  // Streak
+  const streak = state.streak || 0;
+  const streakActiveToday = state.lastActiveDate === todayStr();
+  document.getElementById("streakNum").textContent = streak;
+  document.getElementById("streakFlame").style.opacity = streak>0 ? "1" : "0.3";
+  document.getElementById("streakSub").textContent = streak===0
+    ? (isBis ? "Sugdi karon!" : isEn ? "Start today!" : "Heute starten!")
+    : streakActiveToday
+      ? (isBis ? "ka adlaw sunod-sunod — nahuman na karon" : isEn ? "days in a row — done for today" : "Tage in Folge — heute schon erledigt")
+      : (isBis ? "ka adlaw sunod-sunod — karon pa mag-eskuyla aron dili mawala" : isEn ? "days in a row — learn today to keep it going" : "Tage in Folge — heute noch lernen, damit sie weiterläuft");
+
+  // Level / XP
+  const li = levelInfo();
+  document.getElementById("levelName").textContent = "Lv. " + li.level + " · " + (isBis ? li.name.bis : isEn ? li.name.en : li.name.de);
+  document.getElementById("levelSub").textContent = li.next
+    ? (li.xp + " / " + li.next.xp + " XP")
+    : (li.xp + " XP · " + (isBis ? "Kinatas-ang Level!" : isEn ? "Max level!" : "Höchstes Level!"));
+  document.getElementById("levelBar").style.width = li.pct + "%";
+
+  // Tagesziel
+  const dg = dailyGoalProgress();
+  document.getElementById("dailyRing").style.setProperty("--pct", dg.pct);
+  document.getElementById("dailyRingPct").textContent = dg.pct + "%";
+  document.getElementById("dailyGoalSub").textContent = (dg.earned + " / " + dg.goal + " XP") + (dg.pct>=100 ? " ✅" : "");
+
+  // Badges
+  const stats = achievementStats();
+  const unlocked = state.badgesUnlocked || [];
+  document.getElementById("badgeGrid").innerHTML = ACHIEVEMENTS.map(a=>{
+    const isUnlocked = unlocked.includes(a.id);
+    const label = isBis ? a.bis : isEn ? a.en : a.de;
+    return `<div class="badge-item${isUnlocked?' unlocked':''}"><div class="badge-icon">${a.icon}</div><div class="badge-label">${label}</div></div>`;
+  }).join("");
 }
 function resetProgress(){
   if(confirm("Wirklich den gesamten Fortschritt zurücksetzen?")){
