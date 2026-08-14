@@ -26,18 +26,18 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://visitor-badge.laobi.icu; connect-src 'self' https://formspree.io https://*.workers.dev https://*.googleapis.com https://accounts.google.com https://*.firebaseapp.com https://www.gstatic.com https://auth.learn-bisaya.com; frame-src https://accounts.google.com https://*.firebaseapp.com https://apis.google.com https://auth.learn-bisaya.com; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bisaya lebendig lernen — inspiriert von Birkenbihl</title>
-<meta name="description" content="Cebuano/Bisaya, die philippinische Sprache der Visayas & Mindanaos, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — inspiriert von der Birkenbihl-Lernphilosophie. Kostenlos starten.">
+<meta name="description" content="Cebuano/Bisaya, die philippinische Sprache der Visayas & Mindanaos, spielerisch lernen: Vokabeln, Geschichten, Aussprache und Bestenliste — inspiriert von der Birkenbihl-Lernphilosophie. Kostenlos starten.">
 
 <!-- Social-Media-Vorschau (Open Graph / Twitter) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Bisaya lebendig lernen — inspiriert von Birkenbihl">
-<meta property="og:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
+<meta property="og:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache und Bestenliste — kostenlos starten.">
 <meta property="og:image" content="https://flamrolas.github.io/bisaya-lernen/og-image.jpg">
 <meta property="og:url" content="https://flamrolas.github.io/bisaya-lernen">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bisaya lebendig lernen — inspiriert von Birkenbihl">
-<meta name="twitter:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache mit Mikrofon und Bestenliste — kostenlos starten.">
+<meta name="twitter:description" content="Cebuano/Bisaya, die philippinische Sprache, spielerisch lernen: Vokabeln, Geschichten, Aussprache und Bestenliste — kostenlos starten.">
 <meta name="twitter:image" content="https://flamrolas.github.io/bisaya-lernen/og-image.jpg">
 
 <!-- Favicon / App-Icons -->
@@ -241,19 +241,6 @@ h3{color:#5a4632; font-size:1.1rem; font-family:'Fredoka',cursive; font-weight:7
 .speak-btn:active{transform:scale(0.92);}
 .speak-btn.playing{background:var(--accent3); color:#fff;}
 .audio-note{font-size:0.78rem; color:var(--sub); font-style:italic;}
-.mic-btn{
-  border:1px solid var(--line); background:#fff; color:var(--warn); cursor:pointer;
-  border-radius:50%; width:26px; height:26px; font-size:0.85rem; line-height:1; display:inline-flex;
-  align-items:center; justify-content:center; padding:0; flex-shrink:0; margin-left:2px;
-}
-.mic-btn:hover{background:var(--chip);}
-.mic-btn:active{transform:scale(0.92);}
-.mic-btn:disabled{opacity:0.5; cursor:wait;}
-.mic-result{font-size:0.82rem; font-family:'Poppins',sans-serif; font-weight:600; margin-left:4px;}
-.mic-listening{color:var(--accent3);}
-.mic-good{color:var(--good);}
-.mic-ok{color:#b5860a;}
-.mic-bad, .mic-fail{color:var(--warn);}
 .vip-pill{
   display:inline-block; background:linear-gradient(90deg,#c1502e,#d4782d); color:#fff; font-size:0.7rem;
   font-weight:800; padding:2px 9px; border-radius:20px; letter-spacing:0.4px; vertical-align:middle;
@@ -660,9 +647,9 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
   </div>
   <div class="card mode-de-only">
     <h3>Unsa imong makat-onan niini nga modyul</h3>
-    <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok, ug 🎤 aron sulayan ang imong kaugalingong paglitok sa German (nga mas maayo mo-suporta sa mga browser kaysa Bisaya).</p>
+    <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.24.0</div>
+  <div class="version-tag">v1.25.0</div>
 </section>
 
 <!-- METHODE -->
@@ -751,15 +738,15 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 <section class="view" id="view-wortschatz">
   <div class="card mode-bis-only">
     <h2>Wortschatz-Trainer</h2>
-    <p class="small">Klicke auf die Karte, um die Übersetzung zu sehen. Markiere danach ehrlich, ob du das Wort schon kannst — dein Fortschritt wird lokal auf diesem Gerät gespeichert. Mit 🎤 kannst du deine eigene Aussprache direkt per Mikrofon prüfen (Browser fragt einmalig nach Mikrofon-Zugriff; Cebuano wird von keinem Browser direkt unterstützt, daher ist die Bewertung ein bestmöglicher Näherungswert über die verwandte Filipino-Spracherkennung — kein Ersatz für echtes Feedback von Muttersprachlern). <b>Hinweis:</b> die Mikrofon-Prüfung funktioniert zuverlässig in Chrome; Safari (auch auf dem Mac) unterstützt diese Funktion bislang nicht — dort steht dir aber weiterhin 🔊 zum Anhören zur Verfügung.</p>
+    <p class="small">Klicke auf die Karte, um die Übersetzung zu sehen. Markiere danach ehrlich, ob du das Wort schon kannst — dein Fortschritt wird lokal auf diesem Gerät gespeichert. Mit 🔊 kannst du dir die Aussprache anhören.</p>
   </div>
   <div class="card mode-en-only">
     <h2>Vocabulary Trainer</h2>
-    <p class="small">Click the card to see the translation. Then honestly mark whether you already know the word — your progress is saved locally on this device. Use 🎤 to check your own pronunciation directly with the microphone (your browser will ask for mic access once; no browser directly supports Cebuano, so this is a best-effort approximation via the related Filipino speech recognition — not a substitute for real feedback from native speakers). <b>Note:</b> the microphone check works reliably in Chrome; Safari (even on Mac) doesn't support this feature yet — but 🔊 for listening still works there.</p>
+    <p class="small">Click the card to see the translation. Then honestly mark whether you already know the word — your progress is saved locally on this device. Use 🔊 to listen to the pronunciation.</p>
   </div>
   <div class="card mode-de-only">
     <h2>Bokabularyo Trainer</h2>
-    <p class="small">I-klik ang kard aron makita ang German nga hubad. Human niana, i-marka kon husto kung nahibaw-an na nimo ang pulong o dili — ang imong kalamboan gitipigan lokal niini nga aparato. Gamita ang 🔊 aron madungog ang tinuod nga German nga paglitok. Ang 🎤 aron sulayan ang imong kaugalingong paglitok sa German nga pulong pinaagi sa mikropono — kini mas kasaligan kaysa sa Bisaya nga bersyon, kay ang German maayo nga gisuportahan sa Chrome. Wala pa ni gisuportahan sa Safari.</p>
+    <p class="small">I-klik ang kard aron makita ang German nga hubad. Human niana, i-marka kon husto kung nahibaw-an na nimo ang pulong o dili — ang imong kalamboan gitipigan lokal niini nga aparato. Gamita ang 🔊 aron madungog ang tinuod nga German nga paglitok.</p>
   </div>
 
   <div class="card">
@@ -1188,11 +1175,10 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
       <p><b>5. Registrierung &amp; Anmeldung</b><br>Für Fortschritt, Bestenliste und VIP-Zugang kannst du dich per E-Mail/Passwort oder per Google-Konto anmelden (Firebase Authentication, Google Ireland Limited / Google LLC, USA). Gespeichert werden dabei deine E-Mail-Adresse, ein verschlüsseltes Passwort (bei E-Mail-Anmeldung) bzw. die von Google bereitgestellten Profildaten (Name, E-Mail, ggf. Profilbild) sowie eine eindeutige Nutzer-ID. Bei der Google-Anmeldung wird zusätzlich dein Google-ID-Token direkt aus deinem Browser zur Prüfung an Google (oauth2.googleapis.com) gesendet. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung / Nutzerkonto).</p>
       <p><b>6. Bestenliste</b><br>Die Bestenliste ist freiwillig (Opt-in). Aktivierst du sie, werden dein gewählter Anzeigename, deine Punktzahl und ein Zeitstempel in einer Cloud-Firestore-Datenbank (Google Ireland Limited) gespeichert und für andere Nutzer sichtbar. Du kannst die Teilnahme jederzeit wieder deaktivieren — dein Eintrag wird dann gelöscht. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).</p>
       <p><b>7. VIP-Mitgliedschaft &amp; Zahlung</b><br>Für die kostenpflichtige VIP-Mitgliedschaft wirst du zur Zahlungsabwicklung an Stripe (Stripe Payments Europe Ltd., Irland) weitergeleitet — dort gibst du deine Zahlungsdaten ein, diese Seite erhält sie nie. Deine E-Mail-Adresse sowie dein Abo-Status (aktiv/inaktiv) werden zusätzlich in einem Cloudflare-Worker-Speicher (Cloudflare Inc., USA) hinterlegt, um deinen Zugang freizuschalten. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).</p>
-      <p><b>8. Ausspracheprüfung mit Mikrofon</b><br>Die optionale Ausspracheprüfung nutzt die im Browser eingebaute Spracherkennung (Web Speech API). Dein Browser fragt dabei jedes Mal aktiv um Mikrofon-Erlaubnis. In Chrome wird die Audioaufnahme zur Verarbeitung an Google-Server gesendet; diese App selbst speichert keine Audiodaten. Ohne Erlaubnis funktioniert weiterhin das Anhören (🔊), nur nicht die Aufnahme.</p>
-      <p><b>9. Lokale Speicherung im Browser</b><br>Lernfortschritt, Profil und Geräteeinstellungen werden im localStorage deines Browsers gespeichert — das bleibt auf deinem Gerät und wird nicht an uns übertragen. Da dies für die Grundfunktion der App notwendig ist, ist dafür keine gesonderte Einwilligung nach § 25 TTDSG erforderlich.</p>
-      <p><b>10. Besucherzähler</b><br>Im Footer wird ein Besucherzähler-Bild vom externen Dienst visitor-badge.laobi.icu eingebunden. Beim Laden wird dabei deine IP-Adresse an diesen Anbieter übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.</p>
-      <p><b>11. Kein Tracking</b><br>Es sind aktuell keine Analyse- oder Werbe-Tools (z. B. Google Analytics, Facebook-Pixel) aktiv. Sollte sich das ändern, wird diese Erklärung entsprechend aktualisiert.</p>
-      <p><b>12. Empfänger &amp; Drittlandübermittlung</b><br>Ein Teil der oben genannten Anbieter (Google, Stripe, Cloudflare, GitHub/Microsoft) verarbeitet Daten auch in den USA. Diese Anbieter haben sich zu Standardvertragsklauseln bzw. vergleichbaren Garantien nach Art. 46 DSGVO verpflichtet.</p>
+      <p><b>8. Lokale Speicherung im Browser</b><br>Lernfortschritt, Profil und Geräteeinstellungen werden im localStorage deines Browsers gespeichert — das bleibt auf deinem Gerät und wird nicht an uns übertragen. Da dies für die Grundfunktion der App notwendig ist, ist dafür keine gesonderte Einwilligung nach § 25 TTDSG erforderlich.</p>
+      <p><b>9. Besucherzähler</b><br>Im Footer wird ein Besucherzähler-Bild vom externen Dienst visitor-badge.laobi.icu eingebunden. Beim Laden wird dabei deine IP-Adresse an diesen Anbieter übertragen. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.</p>
+      <p><b>10. Kein Tracking</b><br>Es sind aktuell keine Analyse- oder Werbe-Tools (z. B. Google Analytics, Facebook-Pixel) aktiv. Sollte sich das ändern, wird diese Erklärung entsprechend aktualisiert.</p>
+      <p><b>11. Empfänger &amp; Drittlandübermittlung</b><br>Ein Teil der oben genannten Anbieter (Google, Stripe, Cloudflare, GitHub/Microsoft) verarbeitet Daten auch in den USA. Diese Anbieter haben sich zu Standardvertragsklauseln bzw. vergleichbaren Garantien nach Art. 46 DSGVO verpflichtet.</p>
       <p><b>13. Speicherdauer</b><br>Konto- und Fortschrittsdaten werden gespeichert, bis du dein Konto löschen lässt. Bestenlisten-Einträge werden bei Deaktivierung sofort gelöscht. Abrechnungsdaten bei Stripe unterliegen deren gesetzlichen Aufbewahrungsfristen.</p>
       <p><b>14. Deine Rechte</b><br>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch gegen die Verarbeitung (Art. 15–21 DSGVO) sowie das Recht, eine erteilte Einwilligung jederzeit zu widerrufen. Wende dich dazu an die oben genannte Kontakt-E-Mail. Du hast außerdem das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren.</p>
       <p style="opacity:0.7; font-size:0.78rem; border-top:1px dashed var(--line); padding-top:10px; margin-top:14px;">Dies ist eine allgemeine Vorlage, keine Rechtsberatung. Bitte die eckigen Platzhalter durch deine echten Angaben ersetzen und den Text vor dauerhaftem Live-Betrieb von einem Anwalt oder Datenschutz-Generator (z. B. e-recht24.de) prüfen lassen — insbesondere wegen der Auftragsverarbeitungsverträge (AVV), die du mit Google/Firebase, Stripe und Cloudflare separat abschließen solltest.</p>
@@ -6285,112 +6271,9 @@ function speakDeBtn(text){
   const safe = text.replace(/'/g,"\\'");
   return `<button class="speak-btn" title="Paminawa (German nga tingog sa browser)" onclick="event.stopPropagation(); speakDe('${safe}', this)">🔊</button>`;
 }
-function micBtnDe(text){
-  const safe = text.replace(/'/g,"\\'");
-  return `<button class="mic-btn" title="Sulayi ang imong German nga paglitok" onclick="event.stopPropagation(); checkPronunciation('${safe}', this, 'de-DE')">🎤</button><span class="mic-result"></span>`;
-}
-
-/* ============ AUSSPRACHE-ÜBUNG MIT MIKROFON ============ */
-// Nutzt die Web Speech API (SpeechRecognition) — läuft komplett im Browser,
-// es werden keine Aufnahmen auf einem eigenen Server gespeichert.
-function micBtn(bisText){
-  const safe = bisText.replace(/'/g,"\\'");
-  return `<button class="mic-btn" title="Aussprache mit Mikrofon üben" onclick="event.stopPropagation(); checkPronunciation('${safe}', this)">🎤</button><span class="mic-result"></span>`;
-}
-
-function normalizeForCompare(s){
-  return (s||"").toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9\s]/g,"")
-    .replace(/\s+/g," ").trim();
-}
-function levenshtein(a,b){
-  const m=a.length, n=b.length;
-  const dp = Array.from({length:m+1},()=>new Array(n+1).fill(0));
-  for(let i=0;i<=m;i++) dp[i][0]=i;
-  for(let j=0;j<=n;j++) dp[0][j]=j;
-  for(let i=1;i<=m;i++){
-    for(let j=1;j<=n;j++){
-      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
-    }
-  }
-  return dp[m][n];
-}
-function textSimilarity(a,b){
-  const na = normalizeForCompare(a), nb = normalizeForCompare(b);
-  if(!na || !nb) return 0;
-  const dist = levenshtein(na,nb);
-  const maxLen = Math.max(na.length, nb.length);
-  return maxLen===0 ? 1 : 1-(dist/maxLen);
-}
-
-let activeRecognition = null;
 function isSafariBrowser(){
   const ua = navigator.userAgent;
   return /^((?!chrome|crios|android).)*safari/i.test(ua);
-}
-// Brave gibt sich als Chrome aus (gleiche User-Agent-Basis), blockiert aber bewusst aus
-// Datenschutzgründen die Verbindung zu Googles Spracherkennungs-Server, den die Web Speech API
-// im Hintergrund braucht — das "navigator.brave"-Objekt ist der einzige zuverlässige Weg, das zu erkennen.
-function isBraveBrowser(){
-  return !!(navigator.brave);
-}
-function checkPronunciation(targetText, btnEl, lang){
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const resultEl = btnEl.nextElementSibling;
-  if(!SpeechRec){
-    const tip = isSafariBrowser()
-      ? "Spracherkennung wird von Safari nicht unterstützt. Bitte nutze Chrome für die Ausspracheprüfung mit Mikrofon (🔊 Anhören funktioniert in Safari weiterhin normal)."
-      : "Spracherkennung wird von diesem Browser nicht unterstützt.";
-    if(resultEl) resultEl.innerHTML = `<span class="mic-fail">${tip}</span>`;
-    return;
-  }
-  if(activeRecognition){ try{ activeRecognition.stop(); }catch(e){} }
-  const recog = new SpeechRec();
-  activeRecognition = recog;
-  // Cebuano wird von keiner Browser-Spracherkennung direkt unterstützt — "fil-PH" (Filipino)
-  // liegt lautlich am nächsten und liefert die brauchbarsten Ergebnisse als Näherung.
-  // Für Deutsch (German-Lernmodus) wird "de-DE" übergeben — das ist echt und zuverlässig unterstützt.
-  recog.lang = lang || "fil-PH";
-  recog.maxAlternatives = 3;
-  recog.interimResults = false;
-  btnEl.disabled = true;
-  if(resultEl) resultEl.innerHTML = `<span class="mic-listening">🎙️ Höre zu…</span>`;
-  recog.onresult = (e)=>{
-    const alts = Array.from(e.results[0]).map(r=>r.transcript);
-    let best = 0;
-    alts.forEach(t=>{ const s = textSimilarity(t, targetText); if(s>best) best=s; });
-    let verdict;
-    if(best >= 0.8) verdict = `<span class="mic-good">✅ Sehr gut! (erkannt: "${escapeHtml(alts[0])}")</span>`;
-    else if(best >= 0.5) verdict = `<span class="mic-ok">🟡 Schon nah dran (erkannt: "${escapeHtml(alts[0])}") — nochmal versuchen</span>`;
-    else verdict = `<span class="mic-bad">🔁 Noch nicht ganz (erkannt: "${escapeHtml(alts[0])}") — versuch's nochmal</span>`;
-    if(resultEl) resultEl.innerHTML = verdict;
-  };
-  recog.onerror = (e)=>{
-    let msg = "Fehler bei der Spracherkennung (Code: " + (e.error||"unbekannt") + "). Bitte erneut versuchen.";
-    if(e.error === "not-allowed" || e.error === "permission-denied") msg = "Mikrofon-Zugriff wurde nicht erlaubt. Bitte in den Browser-/Website-Einstellungen freigeben.";
-    if(e.error === "service-not-allowed"){
-      msg = isSafariBrowser()
-        ? "Safari unterstützt die Live-Spracherkennung nicht zuverlässig (bekannte Einschränkung von Safari, keine Frage der Website). Bitte nutze Chrome für die Ausspracheprüfung — 🔊 Anhören funktioniert in Safari weiterhin normal."
-        : "Der Browser blockiert die Spracherkennung auf dieser Seite (evtl. weil sie nicht über https läuft, oder wegen Browser-Einstellungen).";
-    }
-    if(e.error === "no-speech") msg = "Nichts gehört — bitte nochmal versuchen.";
-    if(e.error === "audio-capture") msg = "Kein Mikrofon gefunden. Bitte prüfe, ob eins angeschlossen/aktiviert ist.";
-    if(e.error === "network"){
-      msg = isBraveBrowser()
-        ? "Netzwerkfehler bei der Spracherkennung — das liegt an Brave: Brave blockiert aus Datenschutzgründen bewusst die Verbindung zu Googles Spracherkennungs-Server, den diese Funktion im Hintergrund braucht (kein Problem deiner Internetverbindung und kein Fehler dieser Seite). Bitte nutze für die Ausspracheprüfung mit Mikrofon Chrome — 🔊 Anhören funktioniert in Brave weiterhin normal."
-        : "Netzwerkfehler — die Spracherkennung braucht eine Internetverbindung (die Auswertung läuft über den Server des Browsers). Bitte Verbindung prüfen oder Chrome verwenden.";
-    }
-    if(e.error === "language-not-supported") msg = "Diese Sprache wird von der Spracherkennung nicht unterstützt.";
-    if(e.error === "aborted") return; // Nutzer/Seite hat abgebrochen, keine Fehlermeldung nötig
-    if(resultEl) resultEl.innerHTML = `<span class="mic-fail">${msg}</span>`;
-  };
-  recog.onend = ()=>{ btnEl.disabled = false; activeRecognition = null; };
-  try{ recog.start(); }
-  catch(err){
-    if(resultEl) resultEl.innerHTML = `<span class="mic-fail">Mikrofon konnte nicht gestartet werden.</span>`;
-    btnEl.disabled = false;
-  }
 }
 
 /* ============ REGISTRIERUNG / PROFIL ============ */
@@ -7169,14 +7052,14 @@ function renderWendungen(){
       if(mode==="learn-de"){
         html += `<div class="line-block">
           <div class="natural"><b>${p.de}</b> — ${p.bis}</div>
-          <div class="pron">${speakDeBtn(p.de)} ${micBtnDe(p.de)}</div>
+          <div class="pron">${speakDeBtn(p.de)}</div>
         </div>`;
         return;
       }
       const translation = isEn ? (p.en || p.de) : p.de;
       html += `<div class="line-block">
         <div class="natural"><b>${p.bis}</b> — ${translation}</div>
-        <div class="pron">${speakBtn(p.bis, p.pron)} ${p.pron || ''} ${micBtn(p.bis)}</div>
+        <div class="pron">${speakBtn(p.bis, p.pron)} ${p.pron || ''}</div>
         ${p.note ? `<div class="note">💡 ${p.note}</div>` : ''}
       </div>`;
     });
@@ -7227,9 +7110,9 @@ function openStory(i){
   const isEn = mode==="learn-bis-en";
   const backLabel = mode==="learn-de" ? "← tanang Sugilanon" : isEn ? "← all stories" : "← alle Geschichten";
   const introText = mode==="learn-de"
-    ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German, ug 🎤 aron sulayan ang imong German nga paglitok."
+    ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German."
     : isEn
-    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen and 🎤 to try your own pronunciation."
+    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen."
     : "Deutsch zuerst, dann Bisaya — genau wie beim Dekodieren nach dieser Lernidee. Nutze 🔊 zum Anhören.";
   let html = `<div class="card">
     <span class="backlink" onclick="renderStoryList()">${backLabel}</span>
@@ -7238,7 +7121,7 @@ function openStory(i){
   s.lines.forEach((line, idx)=>{
     if(mode==="learn-de"){
       html += `<div class="story-line">
-        <div class="de-line"><span class="num">${idx+1}.</span>${line.de} ${speakDeBtn(line.de)} ${micBtnDe(line.de)}</div>
+        <div class="de-line"><span class="num">${idx+1}.</span>${line.de} ${speakDeBtn(line.de)}</div>
         <div class="bis-line">${line.bis}</div>
       </div>`;
     } else {
@@ -7247,7 +7130,6 @@ function openStory(i){
         <div class="de-line"><span class="num">${idx+1}.</span>${translation}</div>
         <div class="bis-line">${speakBtn(line.bis, line.pron)} ${line.bis}
           <span class="bis-pron">${line.pron || ''}</span>
-          ${micBtn(line.bis)}
         </div>
       </div>`;
     }
@@ -7297,9 +7179,9 @@ function openLied(i){
   const isEn = mode==="learn-bis-en";
   const backLabel = mode==="learn-de" ? "← tanang Awit" : isEn ? "← all songs" : "← alle Lieder";
   const introText = mode==="learn-de"
-    ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German, ug 🎤 aron sulayan ang imong German nga paglitok."
+    ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German."
     : isEn
-    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen and 🎤 to try your own pronunciation."
+    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen."
     : "Deutsch zuerst, dann Bisaya — genau wie beim Dekodieren nach dieser Lernidee. Nutze 🔊 zum Anhören.";
   let html = `<div class="card">
     <span class="backlink" onclick="renderLiedList()">${backLabel}</span>
@@ -7312,7 +7194,7 @@ function openLied(i){
     if(mode==="learn-de"){
       html += `<div class="story-line">
         ${chord}
-        <div class="de-line"><span class="num">${idx+1}.</span>${line.de} ${speakDeBtn(line.de)} ${micBtnDe(line.de)}</div>
+        <div class="de-line"><span class="num">${idx+1}.</span>${line.de} ${speakDeBtn(line.de)}</div>
         <div class="bis-line">${line.bis}</div>
       </div>`;
     } else {
@@ -7322,7 +7204,6 @@ function openLied(i){
         <div class="de-line"><span class="num">${idx+1}.</span>${translation}</div>
         <div class="bis-line">${speakBtn(line.bis, line.pron)} ${line.bis}
           <span class="bis-pron">${line.pron || ''}</span>
-          ${micBtn(line.bis)}
         </div>
       </div>`;
     }
@@ -7368,7 +7249,7 @@ function openLesson(id){
       <p class="small">${subtitle}</p>`;
     l.lines.forEach(line=>{
       html += `<div class="story-line">
-        <div class="de-line">${line.natural} ${speakDeBtn(line.natural)} ${micBtnDe(line.natural)}</div>
+        <div class="de-line">${line.natural} ${speakDeBtn(line.natural)}</div>
         <div class="bis-line">${line.bis}</div>
       </div>`;
     });
@@ -7393,7 +7274,7 @@ function openLesson(id){
       <div class="interlinear">` +
         decodeArr.map(([w,g])=>`<div class="tok"><div class="w">${w}</div><div class="g">${g}</div></div>`).join("") +
       `</div>
-      <div class="pron">${speakBtn(line.bis, line.pron)} ${line.pron} ${micBtn(line.bis)}</div>
+      <div class="pron">${speakBtn(line.bis, line.pron)} ${line.pron}</div>
       <div class="natural"><b>→</b> ${naturalText}</div>
     </div>`;
   });
@@ -7456,13 +7337,13 @@ function handleVocabSearch(){
     if(isDe){
       return `<div class="line-block">
         <div class="natural"><b>${v.de}</b> — ${v.bis}</div>
-        <div class="pron">${speakDeBtn(v.de)} ${micBtnDe(v.de)}</div>
+        <div class="pron">${speakDeBtn(v.de)}</div>
       </div>`;
     }
     const translation = isEn ? (v.en || v.de) : v.de;
     return `<div class="line-block">
       <div class="natural"><b>${v.bis}</b> — ${translation}</div>
-      <div class="pron">${speakBtn(v.bis, v.pron)} ${v.pron || ''} ${micBtn(v.bis)}</div>
+      <div class="pron">${speakBtn(v.bis, v.pron)} ${v.pron || ''}</div>
     </div>`;
   }).join("");
 }
@@ -7563,12 +7444,12 @@ function showCard(){
          </div>`;
       return;
     }
-    document.getElementById("flashPron").innerHTML = speakDeBtn(v.de) + " " + micBtnDe(v.de);
+    document.getElementById("flashPron").innerHTML = speakDeBtn(v.de);
     document.getElementById("flashBack").innerHTML = `<div style="font-size:1.2rem; font-weight:700; color:var(--accent2)">${v.bis}</div><div class="small">${v.cat}</div>`;
     return;
   }
   const isEn = mode==="learn-bis-en";
-  // Bisaya-Lernmodus: Bisaya-Wort zuerst (mit Aussprache/Mikrofon direkt sichtbar), Übersetzung auf der Rückseite.
+  // Bisaya-Lernmodus: Bisaya-Wort zuerst (mit Aussprache direkt sichtbar), Übersetzung auf der Rückseite.
   document.getElementById("flashFront").textContent = v.bis;
   if(locked){
     document.getElementById("flashPron").innerHTML = `<span class="vip-pill">⭐ VIP</span>`;
@@ -7582,7 +7463,7 @@ function showCard(){
     return;
   }
   const listenFallback = isEn ? " Listen to pronunciation" : " Aussprache anhören";
-  document.getElementById("flashPron").innerHTML = speakBtn(v.bis, v.pron) + (v.pron ? " "+v.pron : listenFallback) + " " + micBtn(v.bis);
+  document.getElementById("flashPron").innerHTML = speakBtn(v.bis, v.pron) + (v.pron ? " "+v.pron : listenFallback);
   const backText = isEn ? (v.en || v.de) : v.de;
   document.getElementById("flashBack").innerHTML = `<div style="font-size:1.2rem; font-weight:700; color:var(--accent2)">${backText}</div><div class="small">${v.cat}</div>`;
 }
