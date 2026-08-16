@@ -318,6 +318,23 @@ table.gram th{background:var(--chip);}
 .badge-toast{display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--accent2); border-radius:12px; padding:10px 16px; box-shadow:0 6px 20px rgba(0,0,0,0.25); font-size:0.85rem;}
 .badge-toast-icon{font-size:1.6rem;}
 .badge-toast-fade{opacity:0;}
+.quiz-locked, .quiz-intro{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; text-align:center;}
+.quiz-progress{margin-bottom:10px; color:var(--sub);}
+.quiz-prompt{font-size:1.25rem; font-weight:800; color:var(--accent2); margin-bottom:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.quiz-options{display:flex; flex-direction:column; gap:8px;}
+.quiz-opt{text-align:left; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel); cursor:pointer; font-size:0.95rem; font-family:inherit;}
+.quiz-opt:hover:not(:disabled){background:var(--chip);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-opt.quiz-correct{border-color:var(--good); background:rgba(47,122,95,0.15); font-weight:700;}
+.quiz-opt.quiz-wrong{border-color:var(--warn); background:rgba(193,80,46,0.15);}
+.quiz-feedback{margin-top:12px; font-weight:700;}
+.quiz-fb-good{color:var(--good);}
+.quiz-fb-bad{color:var(--warn);}
+.quiz-decode{margin-top:8px; display:flex; flex-wrap:wrap; gap:8px;}
+.quiz-decode .decode-pair{display:flex; flex-direction:column; align-items:center; background:var(--chip); border-radius:8px; padding:4px 8px; font-size:0.8rem;}
+.quiz-decode .decode-pair small{color:var(--sub);}
+.quiz-summary{text-align:center; padding:10px;}
+.quiz-summary .quiz-score{font-size:2rem; font-weight:800; color:var(--accent); margin:10px 0;}
 .lb-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px;}
 .lb-row{display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 12px;}
 .lb-row.lb-me{border-color:var(--accent); background:var(--chip);}
@@ -584,6 +601,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
   <button data-view="geschichten"><span class="mode-bis-only">📖 Geschichten</span><span class="mode-de-only">📖 Sugilanon</span><span class="mode-en-only">📖 Stories</span></button>
   <button data-view="lieder"><span class="mode-bis-only">🎵 Lieder</span><span class="mode-de-only">🎵 mga Awit</span><span class="mode-en-only">🎵 Songs</span></button>
   <button data-view="anwenden"><span class="mode-bis-only">Anwenden</span><span class="mode-de-only">Gamiton</span><span class="mode-en-only">Practice</span></button>
+  <button data-view="quiz">🧩 <span class="mode-bis-only">Quiz</span><span class="mode-de-only">Quiz</span><span class="mode-en-only">Quiz</span></button>
   <button data-view="grammatik"><span class="mode-bis-only">Grammatik-Spickzettel</span><span class="mode-de-only">Giya sa Gramatika</span><span class="mode-en-only">Grammar Cheat Sheet</span></button>
   <button data-view="fortschritt"><span class="mode-bis-only">Fortschritt</span><span class="mode-de-only">Kalamboan</span><span class="mode-en-only">Progress</span></button>
   <button data-view="bestenliste"><span class="mode-bis-only">🏆 Bestenliste</span><span class="mode-de-only">🏆 Ranggo</span><span class="mode-en-only">🏆 Leaderboard</span></button>
@@ -649,7 +667,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.25.1</div>
+  <div class="version-tag">v1.26.0</div>
 </section>
 
 <!-- METHODE -->
@@ -849,6 +867,19 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3 class="mode-bis-only">Freie Anwendung — schreib &amp; sprich</h3>
     <h3 class="mode-en-only">Free Practice — write &amp; speak</h3>
     <div id="freeExercises"></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="view" id="view-quiz">
+  <div class="card">
+    <h2 class="mode-bis-only">🧩 Quiz — Bonus für Fortgeschrittene</h2>
+    <h2 class="mode-de-only">🧩 Quiz — Ganti para sa mga Batid</h2>
+    <h2 class="mode-en-only">🧩 Quiz — Bonus for Advanced Learners</h2>
+    <p class="small mode-bis-only">6 Fragen aus Lektionen, die du schon abgeschlossen hast — als zusätzliche Übung, nicht als Ersatz für das Dekodieren &amp; Hören.</p>
+    <p class="small mode-de-only">6 ka pangutana gikan sa mga Leksyon nga imo nang nahuman — dugang nga pagbansay, dili puli sa pag-decode ug pagpaminaw.</p>
+    <p class="small mode-en-only">6 questions from lessons you've already completed — an extra bonus exercise, not a replacement for decoding &amp; listening.</p>
+    <div id="quizPlay"></div>
   </div>
 </section>
 
@@ -6279,7 +6310,7 @@ function isSafariBrowser(){
 const PROFILE_KEY = "bisaya_profile_v1";
 // Rubriken, die zum Lernen gehören — hier wird erst zur Registrierung aufgefordert,
 // wenn der Gast tatsächlich damit anfangen will. Start/Methode/Grammatik/VIP/Support bleiben frei.
-const GATED_VIEWS = ["lektionen","wortschatz","wendungen","geschichten","lieder","anwenden","fortschritt"];
+const GATED_VIEWS = ["lektionen","wortschatz","wendungen","geschichten","lieder","anwenden","fortschritt","quiz"];
 let pendingView = null;
 function loadProfile(){
   try{ return JSON.parse(localStorage.getItem(PROFILE_KEY)) || null; }
@@ -6887,7 +6918,9 @@ const ACHIEVEMENTS = [
   {id:"streak3",  icon:"🔥", cond:s=>s.streak>=3,       de:"3 Tage in Folge gelernt",        bis:"3 ka Adlaw Sunod-sunod",            en:"3-day streak"},
   {id:"streak7",  icon:"🔥", cond:s=>s.streak>=7,       de:"7 Tage in Folge gelernt",        bis:"7 ka Adlaw Sunod-sunod",            en:"7-day streak"},
   {id:"streak30", icon:"🔥", cond:s=>s.streak>=30,      de:"30 Tage in Folge gelernt",       bis:"30 ka Adlaw Sunod-sunod",           en:"30-day streak"},
-  {id:"dailygoal",icon:"🎯", cond:s=>s.dailyGoalHitCount>=1, de:"Erstes Tagesziel erreicht", bis:"Una nga Tumong sa Adlaw Nakab-ot",  en:"First daily goal hit"}
+  {id:"dailygoal",icon:"🎯", cond:s=>s.dailyGoalHitCount>=1, de:"Erstes Tagesziel erreicht", bis:"Una nga Tumong sa Adlaw Nakab-ot",  en:"First daily goal hit"},
+  {id:"quiz1",     icon:"🧩", cond:s=>s.quizRoundsCompleted>=1, de:"Erstes Quiz gespielt",    bis:"Una nga Quiz Nahuman",              en:"First quiz played"},
+  {id:"quizperfect",icon:"🌟", cond:s=>s.quizPerfectCount>=1, de:"Perfekte Quiz-Runde (6/6)", bis:"Perpekto nga Quiz (6/6)",           en:"Perfect quiz round (6/6)"}
 ];
 function achievementStats(){
   const words = allVocab();
@@ -6895,7 +6928,9 @@ function achievementStats(){
     known: words.filter(v=>state.words[v.bis]==="known").length,
     lessonsDone: Object.values(state.lessonsDone).filter(Boolean).length,
     streak: state.streak || 0,
-    dailyGoalHitCount: state.dailyGoalHitCount || 0
+    dailyGoalHitCount: state.dailyGoalHitCount || 0,
+    quizRoundsCompleted: state.quizRoundsCompleted || 0,
+    quizPerfectCount: state.quizPerfectCount || 0
   };
 }
 // Prüft nach jeder Aktion, ob neue Achievements freigeschaltet wurden, merkt sie sich dauerhaft
@@ -6936,6 +6971,203 @@ function showBadgeToasts(badges){
   setTimeout(()=>{ wrap.classList.add("badge-toast-fade"); setTimeout(()=>wrap.remove(), 600); }, 3200);
 }
 
+/* ============ QUIZ (Bonus für Fortgeschrittene, ab Level 3) ============ */
+// Bewusst kein Ersatz für die Kernmethode: Fragen kommen nur aus bereits abgeschlossenen
+// Lektionen (bekannter Kontext), Multiple-Choice statt Freitext (kein Test-Druck), und nach
+// jeder Antwort werden Audio + Wort-für-Wort-Dekodierung nochmal gezeigt — der Birkenbihl-Effekt
+// bleibt also auch im Quiz-Moment erhalten, statt reines Abfragen zu sein.
+const QUIZ_MIN_LEVEL = 3;
+const QUIZ_QUESTIONS_PER_ROUND = 6;
+let quizState = null;
+
+function quizPromptAndAnswer(item, mode){
+  if(mode==="learn-de") return { prompt: item.de, answer: item.bis, promptLang:"de" };
+  const isEn = mode==="learn-bis-en";
+  return { prompt: item.bis, answer: isEn ? item.en : item.de, promptLang:"bis" };
+}
+// Nur abgeschlossene Lektionen liefern die eigentlichen Frage-/Antwort-Paare (bekannter Kontext).
+function completedLessonQuizPool(){
+  const doneIds = Object.keys(state.lessonsDone).filter(id=>state.lessonsDone[id]).map(Number);
+  const items = [];
+  doneIds.forEach(id=>{
+    const lesson = LESSONS.find(l=>l.id===id);
+    if(lesson){
+      lesson.lines.forEach(line=>{
+        items.push({kind:"line", bis:line.bis, de:line.natural, en:line.naturalEn, pron:line.pron, decode:line.decode, decodeEn:line.decodeEn});
+      });
+    }
+    (LESSON_VOCAB[id] || []).forEach(v=>{
+      items.push({kind:"word", bis:v.bis, de:v.de, en:v.en, pron:v.pron, decode:null});
+    });
+  });
+  return items;
+}
+// Distraktoren dürfen aus dem gesamten Datenbestand kommen — sie sind ja nie die eigentliche
+// Frage, sondern nur falsche Auswahlmöglichkeiten daneben.
+function globalQuizDistractorPool(){
+  const items = [];
+  LESSONS.forEach(lesson=>{
+    lesson.lines.forEach(line=>{
+      items.push({kind:"line", bis:line.bis, de:line.natural, en:line.naturalEn});
+    });
+  });
+  Object.keys(LESSON_VOCAB).forEach(id=>{
+    LESSON_VOCAB[id].forEach(v=>{
+      items.push({kind:"word", bis:v.bis, de:v.de, en:v.en});
+    });
+  });
+  return items;
+}
+function quizAvailablePoolSize(){ return completedLessonQuizPool().length; }
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function buildQuizRound(){
+  const mode = currentMode();
+  const pool = shuffleArr(completedLessonQuizPool());
+  const distractorPool = globalQuizDistractorPool();
+  const chosen = [];
+  const seenPrompts = new Set();
+  for(const item of pool){
+    const pa = quizPromptAndAnswer(item, mode);
+    if(!pa.answer || !pa.prompt || seenPrompts.has(pa.prompt)) continue;
+    seenPrompts.add(pa.prompt);
+    chosen.push(item);
+    if(chosen.length >= QUIZ_QUESTIONS_PER_ROUND) break;
+  }
+  return chosen.map(item=>{
+    const pa = quizPromptAndAnswer(item, mode);
+    const sameKind = shuffleArr(distractorPool.filter(d=>d.kind===item.kind));
+    const seen = new Set([pa.answer]);
+    const distractors = [];
+    for(const d of sameKind){
+      const dAnswer = quizPromptAndAnswer(d, mode).answer;
+      if(!dAnswer || seen.has(dAnswer)) continue;
+      seen.add(dAnswer);
+      distractors.push(dAnswer);
+      if(distractors.length >= 3) break;
+    }
+    const options = shuffleArr([pa.answer, ...distractors]);
+    return { item, prompt: pa.prompt, correct: pa.answer, promptLang: pa.promptLang, options };
+  }).filter(q=>q.options.length >= 2);
+}
+function renderQuizView(){
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const li = levelInfo();
+  const el = document.getElementById("quizPlay");
+  quizState = null;
+  if(li.level < QUIZ_MIN_LEVEL){
+    el.innerHTML = `<div class="quiz-locked">
+      <p>${isBis?`Ang Quiz makuha ra gikan sa Level ${QUIZ_MIN_LEVEL} — aktuwal ka Level ${li.level}.`:isEn?`The quiz unlocks at Level ${QUIZ_MIN_LEVEL} — you're currently Level ${li.level}.`:`Das Quiz schaltet sich ab Level ${QUIZ_MIN_LEVEL} frei — du bist aktuell Level ${li.level}.`}</p>
+      <p class="small">${isBis?"Padayon sa pagkat-on aron makab-ot ang lebel!":isEn?"Keep learning to reach it!":"Lern einfach weiter im Wortschatz-Trainer, dann schaltest du es bald frei."}</p>
+    </div>`;
+    return;
+  }
+  const poolSize = quizAvailablePoolSize();
+  if(poolSize < QUIZ_QUESTIONS_PER_ROUND){
+    el.innerHTML = `<div class="quiz-locked">
+      <p>${isBis?`Kinahanglan pa nimo og pipila ka nahuman nga Leksyon (${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} nga posibleng pangutana karon).`:isEn?`Complete a few more lessons first (${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} possible questions so far).`:`Schließe noch ein paar weitere Lektionen ab (aktuell ${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} möglichen Fragen).`}</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML = `<div class="quiz-intro">
+    <p>${isBis?"6 ka pangutana gikan sa imong nahuman nga mga Leksyon. Andam ka na?":isEn?"6 questions from the lessons you've already completed. Ready?":"6 Fragen aus deinen bereits abgeschlossenen Lektionen. Bereit?"}</p>
+    <button class="action primary" onclick="startQuiz()">${isBis?"Sugdan ang Quiz 🧩":isEn?"Start Quiz 🧩":"Quiz starten 🧩"}</button>
+  </div>`;
+}
+function startQuiz(){
+  const questions = buildQuizRound();
+  if(questions.length === 0){ renderQuizView(); return; }
+  quizState = { questions, idx:0, correctCount:0, answered:false };
+  renderQuizQuestion();
+}
+function renderQuizQuestion(){
+  if(!quizState) return;
+  if(quizState.idx >= quizState.questions.length){ renderQuizSummary(); return; }
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const q = quizState.questions[quizState.idx];
+  const el = document.getElementById("quizPlay");
+  const progressLabel = (isBis?"Pangutana ":isEn?"Question ":"Frage ") + (quizState.idx+1) + " / " + quizState.questions.length;
+  const correctLabel = isBis?"Husto":isEn?"Correct":"Richtig";
+  const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : speakBtn(q.prompt, q.item.pron || "");
+  el.innerHTML = `
+    <div class="small quiz-progress">${progressLabel} · ${correctLabel}: ${quizState.correctCount}</div>
+    <div class="quiz-prompt">${q.prompt} ${promptAudio}</div>
+    <div class="quiz-options" id="quizOptions">
+      ${q.options.map((opt,i)=>`<button class="quiz-opt" data-idx="${i}" onclick="answerQuiz(${i})">${opt}</button>`).join("")}
+    </div>
+    <div id="quizFeedback"></div>
+  `;
+}
+function answerQuiz(i){
+  if(!quizState || quizState.answered) return;
+  quizState.answered = true;
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const q = quizState.questions[quizState.idx];
+  const chosen = q.options[i];
+  const correct = chosen === q.correct;
+  if(correct) quizState.correctCount++;
+  document.querySelectorAll("#quizOptions .quiz-opt").forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(q.options[idx]===q.correct) btn.classList.add("quiz-correct");
+    else if(idx===i) btn.classList.add("quiz-wrong");
+  });
+  const decodePairs = q.item.kind==="line" && q.item.decode ? (isEn ? q.item.decodeEn : q.item.decode) : null;
+  const decodeHtml = decodePairs
+    ? `<div class="quiz-decode">${decodePairs.map(([a,b])=>`<span class="decode-pair"><b>${a}</b><small>${b}</small></span>`).join("")}</div>`
+    : "";
+  // Audio zur Zielsprache (Bisaya, außer im German-Lernmodus) noch einmal anbieten, damit der
+  // Hör-Kanal auch beim Feedback präsent bleibt.
+  const bisAudio = mode==="learn-de" ? speakBtn(q.item.bis, q.item.pron || "") : "";
+  const feedbackHead = correct
+    ? (isBis?"✅ Husto!":isEn?"✅ Correct!":"✅ Richtig!")
+    : (isBis?`❌ Sayop. Ang tama: "${q.correct}"`:isEn?`❌ Not quite. Correct answer: "${q.correct}"`:`❌ Leider nicht. Richtig wäre: "${q.correct}"`);
+  const nextLabel = isBis?"Sunod →":isEn?"Next →":"Weiter →";
+  document.getElementById("quizFeedback").innerHTML = `
+    <div class="quiz-feedback ${correct?'quiz-fb-good':'quiz-fb-bad'}">${feedbackHead} ${bisAudio}</div>
+    ${decodeHtml}
+    <button class="action primary" style="margin-top:10px;" onclick="nextQuizQuestion()">${nextLabel}</button>
+  `;
+}
+function nextQuizQuestion(){
+  if(!quizState) return;
+  quizState.idx++;
+  quizState.answered = false;
+  renderQuizQuestion();
+}
+function renderQuizSummary(){
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const total = quizState.questions.length;
+  const score = quizState.correctCount;
+  const perfect = score === total;
+  touchDaily(); touchStreak();
+  state.quizRoundsCompleted = (state.quizRoundsCompleted || 0) + 1;
+  if(perfect) state.quizPerfectCount = (state.quizPerfectCount || 0) + 1;
+  saveState();
+  const newly = checkAchievements();
+  const el = document.getElementById("quizPlay");
+  const heading = perfect
+    ? (isBis?"🌟 Perpekto!":isEn?"🌟 Perfect!":"🌟 Perfekte Runde!")
+    : (isBis?"Nahuman ang Quiz!":isEn?"Quiz complete!":"Quiz abgeschlossen!");
+  el.innerHTML = `<div class="quiz-summary">
+    <h3>${heading}</h3>
+    <div class="quiz-score">${score} / ${total}</div>
+    <button class="action primary" onclick="startQuiz()">${isBis?"Bag-ong Quiz 🧩":isEn?"New Quiz 🧩":"Neues Quiz 🧩"}</button>
+  </div>`;
+  showBadgeToasts(newly);
+  if(document.querySelector('nav.tabs button[data-view="fortschritt"].active')) renderProgress();
+}
+
 /* ============ APP-MODUS (Bisaya lernen / German lernen) ============ */
 // "learn-bis": Standard-Modus dieser App, deutsche Oberfläche, lehrt Bisaya (Bisaya-Wort zuerst).
 // "learn-de": Bisaya-Oberfläche, lehrt German (German-Wort zuerst) — für Bisaya-Muttersprachler.
@@ -6969,6 +7201,7 @@ function setMode(mode){
   if(activeView === "lektionen") renderLessonList();
   if(activeView === "fortschritt") renderProgress();
   if(activeView === "anwenden") renderAnwenden();
+  if(activeView === "quiz") renderQuizView();
 }
 function initModeToggle(){
   const mode = currentMode();
@@ -7010,6 +7243,7 @@ function goView(name){
   if(name==="wendungen") renderWendungen();
   if(name==="geschichten") renderStoryList();
   if(name==="lieder") renderLiedList();
+  if(name==="quiz") renderQuizView();
   if(name==="vip") renderVipStatus();
   if(name==="bestenliste"){ renderLeaderboardControls(); loadLeaderboard(); }
   window.scrollTo(0,0);
