@@ -667,7 +667,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.27.0</div>
+  <div class="version-tag">v1.27.1</div>
 </section>
 
 <!-- METHODE -->
@@ -6983,10 +6983,14 @@ const QUIZ_QUESTIONS_PER_CARD = 6;
 const QUIZ_RECENT_WINDOW = 3; // so viele zurückliegende Karten werden bei der Auswahl möglichst gemieden
 let quizState = null;
 
+// Die Antwortoptionen sind immer in der Sprache, die gerade GELERNT wird (das eigentliche
+// Testziel) — die Frage steht in der jeweils anderen (Referenz-)Sprache.
+// learn-bis: Referenz Deutsch -> Ziel Bisaya. learn-de: Referenz Bisaya -> Ziel Deutsch.
+// learn-bis-en: Referenz Englisch -> Ziel Bisaya.
 function quizPromptAndAnswer(item, mode){
-  if(mode==="learn-de") return { prompt: item.de, answer: item.bis, promptLang:"de" };
+  if(mode==="learn-de") return { prompt: item.bis, answer: item.de, promptLang:"bis" };
   const isEn = mode==="learn-bis-en";
-  return { prompt: item.bis, answer: isEn ? item.en : item.de, promptLang:"bis" };
+  return { prompt: isEn ? item.en : item.de, answer: item.bis, promptLang: isEn ? "en" : "de" };
 }
 // Nur abgeschlossene Lektionen liefern die eigentlichen Frage-/Antwort-Paare (bekannter Kontext).
 function completedLessonQuizPool(){
@@ -7107,7 +7111,7 @@ function renderQuizQuestion(){
   const el = document.getElementById("quizPlay");
   const cardLabel = (isBis?"Kard ":isEn?"Card ":"Karte ") + quizState.cardNum;
   const progressLabel = (isBis?"Pangutana ":isEn?"Question ":"Frage ") + (quizState.idx+1) + " / " + quizState.questions.length;
-  const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : speakBtn(q.prompt, q.item.pron || "");
+  const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : q.promptLang==="bis" ? speakBtn(q.prompt, q.item.pron || "") : "";
   el.innerHTML = `
     <div class="small quiz-progress">${cardLabel} · ${progressLabel}</div>
     <div class="quiz-prompt">${q.prompt} ${promptAudio}</div>
@@ -7137,9 +7141,9 @@ function answerQuiz(i){
   const decodeHtml = decodePairs
     ? `<div class="quiz-decode">${decodePairs.map(([a,b])=>`<span class="decode-pair"><b>${a}</b><small>${b}</small></span>`).join("")}</div>`
     : "";
-  // Audio zur Zielsprache (Bisaya, außer im German-Lernmodus) noch einmal anbieten, damit der
-  // Hör-Kanal auch beim Feedback präsent bleibt.
-  const bisAudio = mode==="learn-de" ? speakBtn(q.item.bis, q.item.pron || "") : "";
+  // Audio der Zielsprache (dem, was gerade gelernt wird) beim Feedback noch einmal anbieten,
+  // damit der Hör-Kanal auch hier präsent bleibt.
+  const targetAudio = mode==="learn-de" ? speakDeBtn(q.correct) : speakBtn(q.correct, q.item.pron || "");
   const feedbackHead = correct
     ? (isBis?"✅ Husto!":isEn?"✅ Correct!":"✅ Richtig!")
     : (isBis?`❌ Sayop. Ang tama: "${q.correct}"`:isEn?`❌ Not quite. Correct answer: "${q.correct}"`:`❌ Leider nicht. Richtig wäre: "${q.correct}"`);
@@ -7148,7 +7152,7 @@ function answerQuiz(i){
     ? (isBis?"Resulta sa Kard →":isEn?"Card result →":"Kartenergebnis →")
     : (isBis?"Sunod →":isEn?"Next →":"Weiter →");
   document.getElementById("quizFeedback").innerHTML = `
-    <div class="quiz-feedback ${correct?'quiz-fb-good':'quiz-fb-bad'}">${feedbackHead} ${bisAudio}</div>
+    <div class="quiz-feedback ${correct?'quiz-fb-good':'quiz-fb-bad'}">${feedbackHead} ${targetAudio}</div>
     ${decodeHtml}
     <button class="action primary" style="margin-top:10px;" onclick="nextQuizQuestion()">${nextLabel}</button>
   `;
