@@ -667,7 +667,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.26.0</div>
+  <div class="version-tag">v1.27.0</div>
 </section>
 
 <!-- METHODE -->
@@ -876,9 +876,9 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h2 class="mode-bis-only">🧩 Quiz — Bonus für Fortgeschrittene</h2>
     <h2 class="mode-de-only">🧩 Quiz — Ganti para sa mga Batid</h2>
     <h2 class="mode-en-only">🧩 Quiz — Bonus for Advanced Learners</h2>
-    <p class="small mode-bis-only">6 Fragen aus Lektionen, die du schon abgeschlossen hast — als zusätzliche Übung, nicht als Ersatz für das Dekodieren &amp; Hören.</p>
-    <p class="small mode-de-only">6 ka pangutana gikan sa mga Leksyon nga imo nang nahuman — dugang nga pagbansay, dili puli sa pag-decode ug pagpaminaw.</p>
-    <p class="small mode-en-only">6 questions from lessons you've already completed — an extra bonus exercise, not a replacement for decoding &amp; listening.</p>
+    <p class="small mode-bis-only">Karten mit je 6 Fragen aus Lektionen, die du schon abgeschlossen hast, sooft du willst — als zusätzliche Übung, nicht als Ersatz für das Dekodieren &amp; Hören.</p>
+    <p class="small mode-de-only">Mga kard nga adunay tag-6 ka pangutana gikan sa mga Leksyon nga imo nang nahuman, kutob sa imong gusto — dugang nga pagbansay, dili puli sa pag-decode ug pagpaminaw.</p>
+    <p class="small mode-en-only">Cards with 6 questions each from lessons you've already completed, as many as you like — an extra bonus exercise, not a replacement for decoding &amp; listening.</p>
     <div id="quizPlay"></div>
   </div>
 </section>
@@ -6976,8 +6976,11 @@ function showBadgeToasts(badges){
 // Lektionen (bekannter Kontext), Multiple-Choice statt Freitext (kein Test-Druck), und nach
 // jeder Antwort werden Audio + Wort-für-Wort-Dekodierung nochmal gezeigt — der Birkenbihl-Effekt
 // bleibt also auch im Quiz-Moment erhalten, statt reines Abfragen zu sein.
+// Trivial-Pursuit-Prinzip: jede "Karte" hat 6 Fragen, danach geht's nahtlos mit der nächsten
+// Karte weiter — ein fortlaufendes Deck statt einer einzelnen Runde, die schnell vorbei ist.
 const QUIZ_MIN_LEVEL = 3;
-const QUIZ_QUESTIONS_PER_ROUND = 6;
+const QUIZ_QUESTIONS_PER_CARD = 6;
+const QUIZ_RECENT_WINDOW = 3; // so viele zurückliegende Karten werden bei der Auswahl möglichst gemieden
 let quizState = null;
 
 function quizPromptAndAnswer(item, mode){
@@ -7024,19 +7027,27 @@ function shuffleArr(arr){
   for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
   return a;
 }
-function buildQuizRound(){
+// excludePrompts: Prompts aus den letzten Karten, die nach Möglichkeit gemieden werden —
+// reicht der Pool nicht aus, wird trotzdem eine volle 6er-Karte gebaut (Wiederholungen über
+// viele Karten hinweg sind pädagogisch sogar erwünscht, nur nicht direkt hintereinander).
+function buildQuizCard(excludePrompts){
   const mode = currentMode();
-  const pool = shuffleArr(completedLessonQuizPool());
+  const fullPool = shuffleArr(completedLessonQuizPool());
   const distractorPool = globalQuizDistractorPool();
   const chosen = [];
   const seenPrompts = new Set();
-  for(const item of pool){
-    const pa = quizPromptAndAnswer(item, mode);
-    if(!pa.answer || !pa.prompt || seenPrompts.has(pa.prompt)) continue;
-    seenPrompts.add(pa.prompt);
-    chosen.push(item);
-    if(chosen.length >= QUIZ_QUESTIONS_PER_ROUND) break;
-  }
+  const pickFrom = (allowExcluded)=>{
+    for(const item of fullPool){
+      const pa = quizPromptAndAnswer(item, mode);
+      if(!pa.answer || !pa.prompt || seenPrompts.has(pa.prompt)) continue;
+      if(!allowExcluded && excludePrompts && excludePrompts.has(pa.prompt)) continue;
+      seenPrompts.add(pa.prompt);
+      chosen.push(item);
+      if(chosen.length >= QUIZ_QUESTIONS_PER_CARD) break;
+    }
+  };
+  pickFrom(false);
+  if(chosen.length < QUIZ_QUESTIONS_PER_CARD) pickFrom(true); // Pool zu klein -> Wiederholungen erlauben
   return chosen.map(item=>{
     const pa = quizPromptAndAnswer(item, mode);
     const sameKind = shuffleArr(distractorPool.filter(d=>d.kind===item.kind));
@@ -7068,36 +7079,37 @@ function renderQuizView(){
     return;
   }
   const poolSize = quizAvailablePoolSize();
-  if(poolSize < QUIZ_QUESTIONS_PER_ROUND){
+  if(poolSize < QUIZ_QUESTIONS_PER_CARD){
     el.innerHTML = `<div class="quiz-locked">
-      <p>${isBis?`Kinahanglan pa nimo og pipila ka nahuman nga Leksyon (${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} nga posibleng pangutana karon).`:isEn?`Complete a few more lessons first (${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} possible questions so far).`:`Schließe noch ein paar weitere Lektionen ab (aktuell ${poolSize}/${QUIZ_QUESTIONS_PER_ROUND} möglichen Fragen).`}</p>
+      <p>${isBis?`Kinahanglan pa nimo og pipila ka nahuman nga Leksyon (${poolSize}/${QUIZ_QUESTIONS_PER_CARD} nga posibleng pangutana karon).`:isEn?`Complete a few more lessons first (${poolSize}/${QUIZ_QUESTIONS_PER_CARD} possible questions so far).`:`Schließe noch ein paar weitere Lektionen ab (aktuell ${poolSize}/${QUIZ_QUESTIONS_PER_CARD} möglichen Fragen).`}</p>
     </div>`;
     return;
   }
   el.innerHTML = `<div class="quiz-intro">
-    <p>${isBis?"6 ka pangutana gikan sa imong nahuman nga mga Leksyon. Andam ka na?":isEn?"6 questions from the lessons you've already completed. Ready?":"6 Fragen aus deinen bereits abgeschlossenen Lektionen. Bereit?"}</p>
-    <button class="action primary" onclick="startQuiz()">${isBis?"Sugdan ang Quiz 🧩":isEn?"Start Quiz 🧩":"Quiz starten 🧩"}</button>
+    <p>${isBis?"Usa ka dili matapos nga Deck sa Kard: 6 ka pangutana matag kard, sunod-sunod hangtod imong gusto mohunong. Gikan sa imong nahuman nga mga Leksyon.":isEn?"An ongoing deck of cards: 6 questions per card, one after another for as long as you like. Drawn from the lessons you've already completed.":"Ein fortlaufendes Karten-Deck: 6 Fragen pro Karte, danach geht's direkt mit der nächsten weiter — so lange du willst. Aus deinen bereits abgeschlossenen Lektionen."}</p>
+    <button class="action primary" onclick="startQuiz()">${isBis?"1. Kard ipakita 🧩":isEn?"Draw Card 1 🧩":"Karte 1 ziehen 🧩"}</button>
   </div>`;
 }
 function startQuiz(){
-  const questions = buildQuizRound();
-  if(questions.length === 0){ renderQuizView(); return; }
-  quizState = { questions, idx:0, correctCount:0, answered:false };
+  const cardQuestions = buildQuizCard(null);
+  if(cardQuestions.length === 0){ renderQuizView(); return; }
+  quizState = { cardNum:1, questions:cardQuestions, idx:0, correctCount:0, answered:false,
+    sessionCorrect:0, sessionTotal:0, recentPrompts: cardQuestions.map(q=>q.prompt) };
   renderQuizQuestion();
 }
 function renderQuizQuestion(){
   if(!quizState) return;
-  if(quizState.idx >= quizState.questions.length){ renderQuizSummary(); return; }
+  if(quizState.idx >= quizState.questions.length){ renderCardComplete(); return; }
   const mode = currentMode();
   const isBis = mode==="learn-de";
   const isEn = mode==="learn-bis-en";
   const q = quizState.questions[quizState.idx];
   const el = document.getElementById("quizPlay");
+  const cardLabel = (isBis?"Kard ":isEn?"Card ":"Karte ") + quizState.cardNum;
   const progressLabel = (isBis?"Pangutana ":isEn?"Question ":"Frage ") + (quizState.idx+1) + " / " + quizState.questions.length;
-  const correctLabel = isBis?"Husto":isEn?"Correct":"Richtig";
   const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : speakBtn(q.prompt, q.item.pron || "");
   el.innerHTML = `
-    <div class="small quiz-progress">${progressLabel} · ${correctLabel}: ${quizState.correctCount}</div>
+    <div class="small quiz-progress">${cardLabel} · ${progressLabel}</div>
     <div class="quiz-prompt">${q.prompt} ${promptAudio}</div>
     <div class="quiz-options" id="quizOptions">
       ${q.options.map((opt,i)=>`<button class="quiz-opt" data-idx="${i}" onclick="answerQuiz(${i})">${opt}</button>`).join("")}
@@ -7114,7 +7126,8 @@ function answerQuiz(i){
   const q = quizState.questions[quizState.idx];
   const chosen = q.options[i];
   const correct = chosen === q.correct;
-  if(correct) quizState.correctCount++;
+  if(correct){ quizState.correctCount++; quizState.sessionCorrect++; }
+  quizState.sessionTotal++;
   document.querySelectorAll("#quizOptions .quiz-opt").forEach((btn,idx)=>{
     btn.disabled = true;
     if(q.options[idx]===q.correct) btn.classList.add("quiz-correct");
@@ -7130,7 +7143,10 @@ function answerQuiz(i){
   const feedbackHead = correct
     ? (isBis?"✅ Husto!":isEn?"✅ Correct!":"✅ Richtig!")
     : (isBis?`❌ Sayop. Ang tama: "${q.correct}"`:isEn?`❌ Not quite. Correct answer: "${q.correct}"`:`❌ Leider nicht. Richtig wäre: "${q.correct}"`);
-  const nextLabel = isBis?"Sunod →":isEn?"Next →":"Weiter →";
+  const isLastInCard = quizState.idx === quizState.questions.length - 1;
+  const nextLabel = isLastInCard
+    ? (isBis?"Resulta sa Kard →":isEn?"Card result →":"Kartenergebnis →")
+    : (isBis?"Sunod →":isEn?"Next →":"Weiter →");
   document.getElementById("quizFeedback").innerHTML = `
     <div class="quiz-feedback ${correct?'quiz-fb-good':'quiz-fb-bad'}">${feedbackHead} ${bisAudio}</div>
     ${decodeHtml}
@@ -7143,7 +7159,7 @@ function nextQuizQuestion(){
   quizState.answered = false;
   renderQuizQuestion();
 }
-function renderQuizSummary(){
+function renderCardComplete(){
   const mode = currentMode();
   const isBis = mode==="learn-de";
   const isEn = mode==="learn-bis-en";
@@ -7156,16 +7172,34 @@ function renderQuizSummary(){
   saveState();
   const newly = checkAchievements();
   const el = document.getElementById("quizPlay");
+  const cardLabel = (isBis?"Kard ":isEn?"Card ":"Karte ") + quizState.cardNum;
   const heading = perfect
-    ? (isBis?"🌟 Perpekto!":isEn?"🌟 Perfect!":"🌟 Perfekte Runde!")
-    : (isBis?"Nahuman ang Quiz!":isEn?"Quiz complete!":"Quiz abgeschlossen!");
+    ? (isBis?"🌟 Perpekto nga Kard!":isEn?"🌟 Perfect card!":"🌟 Perfekte Karte!")
+    : (isBis?`${cardLabel} nahuman!`:isEn?`${cardLabel} done!`:`${cardLabel} geschafft!`);
+  const sessionLabel = isBis?"Tibuok Session":isEn?"Whole session":"Ganze Session";
   el.innerHTML = `<div class="quiz-summary">
     <h3>${heading}</h3>
     <div class="quiz-score">${score} / ${total}</div>
-    <button class="action primary" onclick="startQuiz()">${isBis?"Bag-ong Quiz 🧩":isEn?"New Quiz 🧩":"Neues Quiz 🧩"}</button>
+    <p class="small">${sessionLabel}: ${quizState.sessionCorrect} / ${quizState.sessionTotal}</p>
+    <button class="action primary" onclick="drawNextCard()">${isBis?"Sunod nga Kard →":isEn?"Next Card →":"Nächste Karte →"}</button>
   </div>`;
   showBadgeToasts(newly);
   if(document.querySelector('nav.tabs button[data-view="fortschritt"].active')) renderProgress();
+}
+function drawNextCard(){
+  if(!quizState) { startQuiz(); return; }
+  const excludeSet = new Set(quizState.recentPrompts || []);
+  const nextQuestions = buildQuizCard(excludeSet);
+  if(nextQuestions.length === 0){ renderQuizView(); return; }
+  quizState.cardNum++;
+  quizState.questions = nextQuestions;
+  quizState.idx = 0;
+  quizState.correctCount = 0;
+  quizState.answered = false;
+  // Fenster der zuletzt gesehenen Prompts nachführen, damit die übernächste Karte wieder frei wählt.
+  const recent = (quizState.recentPrompts || []).concat(nextQuestions.map(q=>q.prompt));
+  quizState.recentPrompts = recent.slice(-QUIZ_QUESTIONS_PER_CARD * QUIZ_RECENT_WINDOW);
+  renderQuizQuestion();
 }
 
 /* ============ APP-MODUS (Bisaya lernen / German lernen) ============ */
