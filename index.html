@@ -667,7 +667,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.27.1</div>
+  <div class="version-tag">v1.27.2</div>
 </section>
 
 <!-- METHODE -->
@@ -3841,6 +3841,18 @@ const LESSON_SUBTITLE_BIS = {
   23:"Eskwela", 24:"Piyesta ug Selebrasyon", 25:"Selpon ug Internet",
   26:"Post-opisina ug Banko", 27:"Emerhensya", 28:"Buluhaton sa Balay",
   29:"Pampublikong Sakyanan", 30:"Relasyon ug Gugma",
+};
+const LESSON_SUBTITLE_EN = {
+  1:"Greetings & Introducing Yourself", 2:"Family", 3:"Numbers & Time",
+  4:"Days of the Week & Daily Routine", 5:"At the Market", 6:"Food & Drink",
+  7:"Directions", 8:"Weather", 9:"At Home", 10:"Feelings",
+  11:"Hobbies & Friends", 12:"Travel & Farewells",
+  13:"Animals", 14:"Beautiful Places", 15:"Vehicles",
+  16:"Jobs & Professions", 17:"Café & Restaurant", 18:"At the Doctor", 19:"Sports",
+  20:"Clothing & Shopping", 21:"Colors & Descriptions", 22:"Body Parts & Health",
+  23:"School & Learning", 24:"Holidays & Festivals", 25:"Phone & Internet",
+  26:"Post Office & Bank", 27:"Emergencies & Safety", 28:"Housework & Everyday Life at Home",
+  29:"Public Transportation", 30:"Relationships & Love",
 };
 
 const GAP_EXERCISES = [
@@ -7498,7 +7510,7 @@ function renderLessonList(){
   el.innerHTML = introHtml +
    "<div class='lesson-grid'>" + LESSONS.map(l=>{
      const done = state.lessonsDone[l.id];
-     const subtitle = mode==="learn-de" ? (LESSON_SUBTITLE_BIS[l.id] || l.subtitle) : l.subtitle;
+     const subtitle = mode==="learn-de" ? (LESSON_SUBTITLE_BIS[l.id] || l.subtitle) : isEn ? (LESSON_SUBTITLE_EN[l.id] || l.subtitle) : l.subtitle;
      return `<div class="lesson-tile" onclick="openLesson(${l.id})">
        <div class="num">${label} ${l.id}</div>
        <h4>${l.title}</h4>
@@ -7534,10 +7546,11 @@ function openLesson(id){
   }
   const backLabel = isEn ? "← all lessons" : "← alle Lektionen";
   const lessonWord = isEn ? "Lesson" : "Lektion";
+  const subtitle = isEn ? (LESSON_SUBTITLE_EN[l.id] || l.subtitle) : l.subtitle;
   let html = `<div class="card">
     <span class="backlink" onclick="renderLessonList()">${backLabel}</span>
     <h2>${lessonWord} ${l.id}: ${l.title}</h2>
-    <p class="small">${l.subtitle}</p>`;
+    <p class="small">${subtitle}</p>`;
   l.lines.forEach(line=>{
     const decodeArr = isEn ? (line.decodeEn || line.decode) : line.decode;
     const naturalText = isEn ? (line.naturalEn || line.natural) : line.natural;
