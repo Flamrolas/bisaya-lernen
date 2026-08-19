@@ -488,7 +488,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 
 <div class="modal-overlay hidden" id="regOverlay">
   <div class="modal-box">
-    <span class="modal-close" onclick="closeRegOverlay()" title="Schließen">✕</span>
+    <span class="modal-close" id="regModalClose" onclick="closeRegOverlay()" title="Schließen">✕</span>
     <div id="regFormStep">
       <h2>Fast geschafft 🌴</h2>
       <p class="small" id="regIntroText">Um mit dem Lernen zu starten, brauchst du ein kostenloses Profil. Trag kurz deinen Namen und deine E-Mail-Adresse ein — deine E-Mail muss anschließend bestätigt werden. Alles bleibt lokal auf diesem Gerät gespeichert — es gibt keinen Server und kein echtes Konto.</p>
@@ -522,45 +522,50 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 
     <!-- FIREBASE: echtes Konto (aktiv sobald FIREBASE_CONFIG eingetragen ist) -->
     <div id="fbSignupStep" style="display:none;">
-      <h2>Konto erstellen 🌴</h2>
-      <p class="small">Um mit dem Lernen zu starten, brauchst du ein kostenloses Konto. Deine Daten werden über Firebase (Google) sicher verwaltet, und du bekommst eine echte Bestätigungs-E-Mail.</p>
-      <button class="action neutral" style="width:100%;" id="fbGoogleBtn" onclick="firebaseGoogleSignIn()">🔵 Mit Google fortfahren</button>
-      <p class="small" id="fbGoogleSafariHint" style="display:none; color:var(--sub); margin-top:6px;">ℹ️ Die Google-Anmeldung funktioniert in Safari und auf iPhone/iPad aus technischen Gründen aktuell nicht zuverlässig. Bitte nutze stattdessen E-Mail + Passwort weiter unten.</p>
-      <div class="divider-or"><span>oder mit E-Mail</span></div>
-      <label for="fbName">Name</label>
+      <h2 id="fbSignupH2">Konto erstellen 🌴</h2>
+      <p class="small" id="fbSignupIntro">Um mit dem Lernen zu starten, brauchst du ein kostenloses Konto. Deine Daten werden über Firebase (Google) sicher verwaltet, und du bekommst eine echte Bestätigungs-E-Mail.</p>
+      <!-- Google-Anmeldung vorübergehend deaktiviert (massive Probleme auf Safari/Android bis eine
+           zuverlässige Lösung gefunden ist) — Code bleibt erhalten, nur ausgeblendet. Zum Reaktivieren
+           dieses Kommentar-Wrapping wieder entfernen. -->
+      <div id="fbGoogleSection" style="display:none;">
+        <button class="action neutral" style="width:100%;" id="fbGoogleBtn" onclick="firebaseGoogleSignIn()">🔵 Mit Google fortfahren</button>
+        <p class="small" id="fbGoogleSafariHint" style="display:none; color:var(--sub); margin-top:6px;">ℹ️ Die Google-Anmeldung funktioniert in Safari und auf iPhone/iPad aus technischen Gründen aktuell nicht zuverlässig. Bitte nutze stattdessen E-Mail + Passwort weiter unten.</p>
+        <div class="divider-or"><span id="fbSignupDivider">oder mit E-Mail</span></div>
+      </div>
+      <label for="fbName" id="fbNameLabel">Name</label>
       <input type="text" id="fbName" placeholder="z. B. Flamrolas">
-      <label for="fbEmail">E-Mail</label>
+      <label for="fbEmail" id="fbEmailLabel">E-Mail</label>
       <input type="email" id="fbEmail" placeholder="du@beispiel.de">
-      <label for="fbPassword">Passwort (mind. 6 Zeichen)</label>
+      <label for="fbPassword" id="fbPasswordLabel">Passwort (mind. 6 Zeichen)</label>
       <input type="password" id="fbPassword" placeholder="••••••••">
       <div class="err" id="fbSignupErr"></div>
       <div class="btnrow" style="justify-content:flex-end; margin-top:12px;">
-        <button class="action primary" onclick="firebaseSignUp()">Konto erstellen</button>
+        <button class="action primary" id="fbSignupSubmitBtn" onclick="firebaseSignUp()">Konto erstellen</button>
       </div>
-      <span class="steplink" onclick="goToFbLogin()">Schon ein Konto? Anmelden</span> ·
-      <span class="steplink" onclick="closeRegOverlay()">Erst mal nur umsehen (als Gast)</span>
+      <span class="steplink" id="fbHaveAccountLink" onclick="goToFbLogin()">Schon ein Konto? Anmelden</span> ·
+      <span class="steplink" id="fbGuestSkipLink" onclick="closeRegOverlay()">Erst mal nur umsehen (als Gast)</span>
     </div>
     <div id="fbLoginStep" style="display:none;">
-      <h2>Anmelden</h2>
-      <label for="fbLoginEmail">E-Mail</label>
+      <h2 id="fbLoginH2">Anmelden</h2>
+      <label for="fbLoginEmail" id="fbLoginEmailLabel">E-Mail</label>
       <input type="email" id="fbLoginEmail" placeholder="du@beispiel.de">
-      <label for="fbLoginPassword">Passwort</label>
+      <label for="fbLoginPassword" id="fbLoginPasswordLabel">Passwort</label>
       <input type="password" id="fbLoginPassword" placeholder="••••••••">
       <div class="err" id="fbLoginErr"></div>
       <div class="btnrow" style="justify-content:flex-end; margin-top:12px;">
-        <button class="action primary" onclick="firebaseSignIn()">Anmelden</button>
+        <button class="action primary" id="fbLoginSubmitBtn" onclick="firebaseSignIn()">Anmelden</button>
       </div>
-      <span class="steplink" onclick="firebaseForgotPassword()">Passwort vergessen?</span> ·
-      <span class="steplink" onclick="goToFbSignup()">Neues Konto erstellen</span>
+      <span class="steplink" id="fbForgotLink" onclick="firebaseForgotPassword()">Passwort vergessen?</span> ·
+      <span class="steplink" id="fbNewAccountLink" onclick="goToFbSignup()">Neues Konto erstellen</span>
     </div>
     <div id="fbVerifyStep" style="display:none;">
-      <h2>E-Mail bestätigen</h2>
-      <p class="small">Wir haben eine Bestätigungs-E-Mail an <b id="fbVerifyEmailTarget"></b> geschickt (bitte auch den Spam-Ordner prüfen). Klicke auf den Link in der E-Mail und dann hier auf "Ich habe bestätigt".</p>
+      <h2 id="fbVerifyH2">E-Mail bestätigen</h2>
+      <p class="small"><span id="fbVerifyPrefix">Wir haben eine Bestätigungs-E-Mail an </span><b id="fbVerifyEmailTarget"></b><span id="fbVerifySuffix"> geschickt (bitte auch den Spam-Ordner prüfen). Klicke auf den Link in der E-Mail und dann hier auf "Ich habe bestätigt".</span></p>
       <div class="err" id="fbVerifyErr"></div>
       <div class="btnrow" style="justify-content:flex-end; margin-top:12px;">
-        <button class="action primary" onclick="firebaseCheckVerified()">Ich habe bestätigt</button>
+        <button class="action primary" id="fbVerifyConfirmedBtn" onclick="firebaseCheckVerified()">Ich habe bestätigt</button>
       </div>
-      <span class="steplink" onclick="firebaseResendVerification()">E-Mail erneut senden</span>
+      <span class="steplink" id="fbResendLink" onclick="firebaseResendVerification()">E-Mail erneut senden</span>
     </div>
   </div>
 </div>
@@ -667,7 +672,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.27.2</div>
+  <div class="version-tag">v1.27.5</div>
 </section>
 
 <!-- METHODE -->
@@ -6317,6 +6322,15 @@ function isSafariBrowser(){
   const ua = navigator.userAgent;
   return /^((?!chrome|crios|android).)*safari/i.test(ua);
 }
+function isIOSBrowser(){
+  // Auf iOS erzwingt Apple für alle Browser (Chrome/Firefox/Safari usw.) die WebKit-Engine,
+  // daher gilt die gleiche Speicherzugriffs-Beschränkung wie bei Safari selbst -- unabhängig
+  // vom Browser-Namen im User-Agent.
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+function isAndroidBrowser(){
+  return /Android/i.test(navigator.userAgent);
+}
 
 /* ============ REGISTRIERUNG / PROFIL ============ */
 const PROFILE_KEY = "bisaya_profile_v1";
@@ -6350,7 +6364,211 @@ function afterAuthSuccess(){
   }
 }
 
+/* ============ AUTH-ÜBERSETZUNGEN ============
+   Das Registrierungs-/Login-Fenster war früher komplett fest auf Deutsch — das ist ein
+   Problem für z.B. philippinische Nutzer:innen im "Nagtuon ko og German"-Modus, die (noch)
+   kein Deutsch können. Alle Texte des Auth-Flows kommen daher aus diesem Wörterbuch. */
+const AUTH_I18N = {
+  "learn-bis": {
+    modalClose: "Schließen",
+    signupH2: "Konto erstellen 🌴",
+    signupIntro: "Um mit dem Lernen zu starten, brauchst du ein kostenloses Konto. Deine Daten werden über Firebase (Google) sicher verwaltet, und du bekommst eine echte Bestätigungs-E-Mail.",
+    googleBtn: "🔵 Mit Google fortfahren",
+    safariHint: "ℹ️ Die Google-Anmeldung funktioniert in Safari und auf iPhone/iPad aus technischen Gründen aktuell nicht zuverlässig. Bitte nutze stattdessen E-Mail + Passwort weiter unten.",
+    dividerOr: "oder mit E-Mail",
+    labelName: "Name",
+    placeholderName: "z. B. Flamrolas",
+    labelEmail: "E-Mail",
+    placeholderEmail: "du@beispiel.de",
+    labelPassword: "Passwort (mind. 6 Zeichen)",
+    btnCreateAccount: "Konto erstellen",
+    linkHaveAccount: "Schon ein Konto? Anmelden",
+    linkGuest: "Erst mal nur umsehen (als Gast)",
+    loginH2: "Anmelden",
+    labelPasswordLogin: "Passwort",
+    btnLogin: "Anmelden",
+    linkForgot: "Passwort vergessen?",
+    linkNewAccount: "Neues Konto erstellen",
+    verifyH2: "E-Mail bestätigen",
+    verifyPrefix: "Wir haben eine Bestätigungs-E-Mail an ",
+    verifySuffix: ' geschickt (bitte auch den Spam-Ordner prüfen). Klicke auf den Link in der E-Mail und dann hier auf "Ich habe bestätigt".',
+    btnConfirmed: "Ich habe bestätigt",
+    linkResend: "E-Mail erneut senden",
+    errName: "Bitte gib deinen Namen ein.",
+    errEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+    errPasswordWeak: "Das Passwort muss mindestens 6 Zeichen haben.",
+    errPasswordRequired: "Bitte gib dein Passwort ein.",
+    errRelogin: "Bitte melde dich erneut an.",
+    errNotConfirmedYet: "Noch nicht bestätigt — bitte prüfe deine E-Mails (auch den Spam-Ordner).",
+    msgEmailResent: "E-Mail erneut gesendet.",
+    errEmailFirst: "Bitte trag oben zuerst deine E-Mail-Adresse ein.",
+    msgResetSent: "E-Mail zum Zurücksetzen des Passworts wurde verschickt.",
+    errGoogleFailed: "Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen oder manuell registrieren.",
+    errSafariBlocked: 'Die Google-Anmeldung wurde von Safaris Datenschutzeinstellungen blockiert ("Website-übergreifende Verfolgung verhindern"). Bitte nutze stattdessen E-Mail + Passwort, oder schalte diese Safari-Einstellung testweise aus (Einstellungen → Safari → Datenschutz) und versuche es erneut.',
+    fbErrors: {
+      "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert. Bitte stattdessen anmelden.",
+      "auth/invalid-email": "Ungültige E-Mail-Adresse.",
+      "auth/weak-password": "Das Passwort ist zu schwach (mind. 6 Zeichen).",
+      "auth/wrong-password": "Falsches Passwort.",
+      "auth/user-not-found": "Kein Konto mit dieser E-Mail-Adresse gefunden.",
+      "auth/too-many-requests": "Zu viele Versuche. Bitte später erneut versuchen.",
+      "auth/popup-closed-by-user": "Anmeldefenster wurde geschlossen.",
+      "auth/network-request-failed": "Netzwerkfehler. Bitte Internetverbindung prüfen.",
+    },
+    errUnknown: "Fehler: ",
+    btnLogout: "Abmelden",
+    btnEditProfile: "Profil bearbeiten",
+    greetingHello: "👋 Hallo, ",
+    confirmedTitle: "bestätigt",
+    emailUnconfirmed: "E-Mail noch nicht bestätigt",
+  },
+  "learn-de": {
+    modalClose: "Sirado",
+    signupH2: "Paghimo og Account 🌴",
+    signupIntro: "Aron makasugod sa pagkat-on, kinahanglan ka og libre nga account. Ang imong data ginaatiman nga luwas pinaagi sa Firebase (Google), ug makadawat ka og tinuod nga email sa kumpirmasyon.",
+    googleBtn: "🔵 Padayon gamit ang Google",
+    safariHint: "ℹ️ Ang pag-login gamit ang Google dili pa kasaligan karon sa Safari ug sa iPhone/iPad tungod sa teknikal nga hinungdan. Gamita hinuon ang Email + Password sa ubos.",
+    dividerOr: "o gamit ang Email",
+    labelName: "Ngalan",
+    placeholderName: "pananglitan: Flamrolas",
+    labelEmail: "Email",
+    placeholderEmail: "imo@pananglitan.com",
+    labelPassword: "Password (labing menos 6 ka letra)",
+    btnCreateAccount: "Himoa ang Account",
+    linkHaveAccount: "Naa nay account? Mag-login",
+    linkGuest: "Tan-awon lang una (isip Bisita)",
+    loginH2: "Mag-login",
+    labelPasswordLogin: "Password",
+    btnLogin: "Mag-login",
+    linkForgot: "Nalimtan ang password?",
+    linkNewAccount: "Paghimo og bag-ong Account",
+    verifyH2: "Kumpirmaha ang Email",
+    verifyPrefix: "Nagpadala mi og email sa kumpirmasyon ngadto sa ",
+    verifySuffix: ' (susiha usab ang imong Spam folder). I-klik ang link sa email, unya i-klik dinhi ang "Nakumpirma na ko".',
+    btnConfirmed: "Nakumpirma na ko",
+    linkResend: "I-resend ang Email",
+    errName: "Palihug isulat ang imong ngalan.",
+    errEmail: "Palihug isulat ang husto nga email address.",
+    errPasswordWeak: "Ang password kinahanglan labing menos 6 ka letra.",
+    errPasswordRequired: "Palihug isulat ang imong password.",
+    errRelogin: "Palihug mag-login pag-usab.",
+    errNotConfirmedYet: "Wala pa nakumpirma — palihug susiha ang imong email (lakip ang Spam folder).",
+    msgEmailResent: "Gipadala na usab ang email.",
+    errEmailFirst: "Isulat una sa ibabaw ang imong email address.",
+    msgResetSent: "Gipadala na ang email para i-reset ang password.",
+    errGoogleFailed: "Napakyas ang pag-login gamit ang Google. Palihug sulayi pag-usab o mag-rehistro nga manual.",
+    errSafariBlocked: 'Gi-block sa privacy settings sa Safari ang pag-login gamit ang Google ("Prevent Cross-Site Tracking"). Gamita hinuon ang Email + Password, o i-off usa kini nga Safari setting (Settings → Safari → Privacy) ug sulayi pag-usab.',
+    fbErrors: {
+      "auth/email-already-in-use": "Naa nay account niini nga email address. Palihug mag-login na lang hinuon.",
+      "auth/invalid-email": "Dili balido nga email address.",
+      "auth/weak-password": "Huyang ra kaayo ang password (kinahanglan 6 ka letra o labaw pa).",
+      "auth/wrong-password": "Sayop ang password.",
+      "auth/user-not-found": "Walay account nga nakit-an niini nga email address.",
+      "auth/too-many-requests": "Sobra na kadaghan ang tries. Palihug sulayi pag-usab sa ulahi.",
+      "auth/popup-closed-by-user": "Gisirado ang login window.",
+      "auth/network-request-failed": "Network error. Susiha ang imong internet connection.",
+    },
+    errUnknown: "Sayop: ",
+    btnLogout: "Mag-logout",
+    btnEditProfile: "I-edit ang Profile",
+    greetingHello: "👋 Kumusta, ",
+    confirmedTitle: "nakumpirma na",
+    emailUnconfirmed: "Wala pa nakumpirma ang email",
+  },
+  "learn-bis-en": {
+    modalClose: "Close",
+    signupH2: "Create Account 🌴",
+    signupIntro: "To start learning, you need a free account. Your data is securely managed via Firebase (Google), and you'll receive a real confirmation email.",
+    googleBtn: "🔵 Continue with Google",
+    safariHint: "ℹ️ Google sign-in currently isn't reliable in Safari or on iPhone/iPad for technical reasons. Please use Email + Password below instead.",
+    dividerOr: "or with email",
+    labelName: "Name",
+    placeholderName: "e.g. Flamrolas",
+    labelEmail: "Email",
+    placeholderEmail: "you@example.com",
+    labelPassword: "Password (min. 6 characters)",
+    btnCreateAccount: "Create Account",
+    linkHaveAccount: "Already have an account? Log in",
+    linkGuest: "Just browse for now (as guest)",
+    loginH2: "Log In",
+    labelPasswordLogin: "Password",
+    btnLogin: "Log In",
+    linkForgot: "Forgot password?",
+    linkNewAccount: "Create new account",
+    verifyH2: "Confirm Email",
+    verifyPrefix: "We sent a confirmation email to ",
+    verifySuffix: ' (please also check your spam folder). Click the link in the email, then click "I confirmed" here.',
+    btnConfirmed: "I confirmed",
+    linkResend: "Resend email",
+    errName: "Please enter your name.",
+    errEmail: "Please enter a valid email address.",
+    errPasswordWeak: "Password must be at least 6 characters.",
+    errPasswordRequired: "Please enter your password.",
+    errRelogin: "Please log in again.",
+    errNotConfirmedYet: "Not confirmed yet — please check your email (including spam folder).",
+    msgEmailResent: "Email resent.",
+    errEmailFirst: "Please enter your email address above first.",
+    msgResetSent: "Password reset email sent.",
+    errGoogleFailed: "Google sign-in failed. Please try again or register manually.",
+    errSafariBlocked: 'Google sign-in was blocked by Safari\'s privacy setting ("Prevent Cross-Site Tracking"). Please use Email + Password instead, or turn off this Safari setting (Settings → Safari → Privacy) and try again.',
+    fbErrors: {
+      "auth/email-already-in-use": "This email address is already registered. Please log in instead.",
+      "auth/invalid-email": "Invalid email address.",
+      "auth/weak-password": "The password is too weak (min. 6 characters).",
+      "auth/wrong-password": "Wrong password.",
+      "auth/user-not-found": "No account found with this email address.",
+      "auth/too-many-requests": "Too many attempts. Please try again later.",
+      "auth/popup-closed-by-user": "Sign-in window was closed.",
+      "auth/network-request-failed": "Network error. Please check your internet connection.",
+    },
+    errUnknown: "Error: ",
+    btnLogout: "Log out",
+    btnEditProfile: "Edit Profile",
+    greetingHello: "👋 Hello, ",
+    confirmedTitle: "confirmed",
+    emailUnconfirmed: "Email not confirmed yet",
+  },
+};
+function authI18n(){ return AUTH_I18N[currentMode()] || AUTH_I18N["learn-bis"]; }
+function applyAuthI18n(){
+  const t = authI18n();
+  const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  const setPlaceholder = (id, val) => { const el = document.getElementById(id); if(el) el.placeholder = val; };
+  document.getElementById("regModalClose")?.setAttribute("title", t.modalClose);
+  setText("fbSignupH2", t.signupH2);
+  setText("fbSignupIntro", t.signupIntro);
+  setText("fbGoogleBtn", t.googleBtn);
+  setText("fbGoogleSafariHint", t.safariHint);
+  setText("fbSignupDivider", t.dividerOr);
+  setText("fbNameLabel", t.labelName);
+  setPlaceholder("fbName", t.placeholderName);
+  setText("fbEmailLabel", t.labelEmail);
+  setPlaceholder("fbEmail", t.placeholderEmail);
+  setText("fbPasswordLabel", t.labelPassword);
+  setText("fbSignupSubmitBtn", t.btnCreateAccount);
+  setText("fbHaveAccountLink", t.linkHaveAccount);
+  setText("fbGuestSkipLink", t.linkGuest);
+  setText("fbLoginH2", t.loginH2);
+  setText("fbLoginEmailLabel", t.labelEmail);
+  setPlaceholder("fbLoginEmail", t.placeholderEmail);
+  setText("fbLoginPasswordLabel", t.labelPasswordLogin);
+  setText("fbLoginSubmitBtn", t.btnLogin);
+  setText("fbForgotLink", t.linkForgot);
+  setText("fbNewAccountLink", t.linkNewAccount);
+  setText("fbVerifyH2", t.verifyH2);
+  setText("fbVerifyPrefix", t.verifyPrefix);
+  setText("fbVerifySuffix", t.verifySuffix);
+  setText("fbVerifyConfirmedBtn", t.btnConfirmed);
+  setText("fbResendLink", t.linkResend);
+}
+function firebaseErrorMessage(e){
+  const t = authI18n();
+  const code = e && e.code || "";
+  return t.fbErrors[code] || (t.errUnknown + (e && e.message ? e.message : "?"));
+}
+
 function showRegOverlay(prefill){
+  applyAuthI18n();
   document.getElementById("regOverlay").classList.remove("hidden");
   if(firebaseConfigured()){
     // Echtes Konto aktiv -> simulierten Ablauf komplett ausblenden, Firebase-Schritte zeigen
@@ -6498,7 +6716,7 @@ function goToFbSignup(){
   document.getElementById("fbSignupErr").textContent = "";
   // In Safari/iOS zeigen wir den Hinweis direkt, statt erst auf einen zum Scheitern verurteilten Klick zu warten.
   const hint = document.getElementById("fbGoogleSafariHint");
-  if(hint) hint.style.display = isSafariBrowser() ? "block" : "none";
+  if(hint) hint.style.display = (isSafariBrowser() || isIOSBrowser()) ? "block" : "none";
 }
 function goToFbLogin(){
   hideAllRegSteps();
@@ -6513,14 +6731,15 @@ function goToFbVerify(email){
 }
 
 async function firebaseSignUp(){
+  const t = authI18n();
   const err = document.getElementById("fbSignupErr");
   const name = document.getElementById("fbName").value.trim().slice(0,60);
   const email = document.getElementById("fbEmail").value.trim().slice(0,120);
   const pw = document.getElementById("fbPassword").value;
   err.textContent = "";
-  if(!name){ err.textContent = "Bitte gib deinen Namen ein."; return; }
-  if(!isValidEmail(email)){ err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; return; }
-  if(pw.length < 6){ err.textContent = "Das Passwort muss mindestens 6 Zeichen haben."; return; }
+  if(!name){ err.textContent = t.errName; return; }
+  if(!isValidEmail(email)){ err.textContent = t.errEmail; return; }
+  if(pw.length < 6){ err.textContent = t.errPasswordWeak; return; }
   try{
     await window.FB.ready;
     const cred = await window.FB.createUserWithEmailAndPassword(email, pw);
@@ -6533,12 +6752,13 @@ async function firebaseSignUp(){
   }
 }
 async function firebaseSignIn(){
+  const t = authI18n();
   const err = document.getElementById("fbLoginErr");
   const email = document.getElementById("fbLoginEmail").value.trim().slice(0,120);
   const pw = document.getElementById("fbLoginPassword").value;
   err.textContent = "";
-  if(!isValidEmail(email)){ err.textContent = "Bitte gib eine gültige E-Mail-Adresse ein."; return; }
-  if(!pw){ err.textContent = "Bitte gib dein Passwort ein."; return; }
+  if(!isValidEmail(email)){ err.textContent = t.errEmail; return; }
+  if(!pw){ err.textContent = t.errPasswordRequired; return; }
   try{
     await window.FB.ready;
     const cred = await window.FB.signInWithEmailAndPassword(email, pw);
@@ -6551,31 +6771,34 @@ async function firebaseSignIn(){
   }
 }
 async function firebaseCheckVerified(){
+  const t = authI18n();
   const err = document.getElementById("fbVerifyErr");
   const u = fbAuth.currentUser;
-  if(!u){ err.textContent = "Bitte melde dich erneut an."; goToFbLogin(); return; }
+  if(!u){ err.textContent = t.errRelogin; goToFbLogin(); return; }
   try{
     await window.FB.reloadUser(u);
     if(u.emailVerified){
       saveProfile({name: u.displayName || u.email.split("@")[0], email: u.email, confirmed:true, via:"firebase"});
       afterAuthSuccess();
     } else {
-      err.textContent = "Noch nicht bestätigt — bitte prüfe deine E-Mails (auch den Spam-Ordner).";
+      err.textContent = t.errNotConfirmedYet;
     }
   } catch(e){ err.textContent = firebaseErrorMessage(e); }
 }
 async function firebaseResendVerification(){
+  const t = authI18n();
   const err = document.getElementById("fbVerifyErr");
   const u = fbAuth.currentUser;
-  if(!u){ err.textContent = "Bitte melde dich erneut an."; return; }
-  try{ await window.FB.sendEmailVerification(u); err.textContent = "E-Mail erneut gesendet."; }
+  if(!u){ err.textContent = t.errRelogin; return; }
+  try{ await window.FB.sendEmailVerification(u); err.textContent = t.msgEmailResent; }
   catch(e){ err.textContent = firebaseErrorMessage(e); }
 }
 async function firebaseForgotPassword(){
+  const t = authI18n();
   const err = document.getElementById("fbLoginErr");
   const email = document.getElementById("fbLoginEmail").value.trim();
-  if(!isValidEmail(email)){ err.textContent = "Bitte trag oben zuerst deine E-Mail-Adresse ein."; return; }
-  try{ await window.FB.sendPasswordResetEmail(email); err.textContent = "E-Mail zum Zurücksetzen des Passworts wurde verschickt."; }
+  if(!isValidEmail(email)){ err.textContent = t.errEmailFirst; return; }
+  try{ await window.FB.sendPasswordResetEmail(email); err.textContent = t.msgResetSent; }
   catch(e){ err.textContent = firebaseErrorMessage(e); }
 }
 async function firebaseGoogleSignIn(){
@@ -6586,7 +6809,7 @@ async function firebaseGoogleSignIn(){
   // Nutzer-Einstellung abschaltbar zu sein (ausführlich getestet: eigene Domain, moderne SDK,
   // Tracking-Schutz aus, Pop-ups erlaubt — nichts davon hat geholfen). Deshalb hier gar nicht erst
   // eine Weiterleitung versuchen, die ohnehin ins Leere läuft, sondern direkt zur E-Mail-Anmeldung leiten.
-  if(isSafariBrowser()){
+  if(isSafariBrowser() || isIOSBrowser()){
     const hint = document.getElementById("fbGoogleSafariHint");
     if(hint) hint.style.display = "block";
     if(err) err.textContent = "";
@@ -6596,6 +6819,22 @@ async function firebaseGoogleSignIn(){
   }
   await window.FB.ready;
   const provider = new window.FB.GoogleAuthProvider();
+  if(isAndroidBrowser()){
+    // Popup-Fenster sind auf Mobilgeräten (v.a. Android Chrome) unzuverlässig — sie bleiben
+    // oft leer haengen oder werden vom Browser blockiert/abgebrochen. Die von Google offiziell
+    // empfohlene Alternative fuer Mobilgeraete ist eine echte Weiterleitung (die ganze Seite
+    // navigiert zu Google und wieder zurueck). Die Auswertung dafuer existiert bereits in
+    // firebaseHandleRedirectResult(), wurde bisher aber nirgends ausgeloest.
+    try{
+      localStorage.setItem("bisaya_fb_redirect_attempted", "1");
+      if(pendingView) localStorage.setItem("bisaya_fb_pending_view", pendingView);
+      await window.FB.signInWithRedirect(provider);
+    } catch(e){
+      localStorage.removeItem("bisaya_fb_redirect_attempted");
+      if(err) err.textContent = firebaseErrorMessage(e);
+    }
+    return;
+  }
   try{
     const result = await window.FB.signInWithPopup(provider);
     const u = result.user;
@@ -6629,7 +6868,7 @@ async function firebaseHandleRedirectResult(){
       const savedView = localStorage.getItem("bisaya_fb_pending_view");
       if(savedView){ pendingView = savedView; showRegOverlay(); }
       const err = document.getElementById("fbSignupErr");
-      if(err) err.textContent = "Die Google-Anmeldung wurde von Safaris Datenschutzeinstellungen blockiert (\"Website-übergreifende Verfolgung verhindern\"). Bitte nutze stattdessen E-Mail + Passwort, oder schalte diese Safari-Einstellung testweise aus (Einstellungen → Safari → Datenschutz) und versuche es erneut.";
+      if(err) err.textContent = authI18n().errSafariBlocked;
     }
   } catch(e){
     localStorage.removeItem("bisaya_fb_redirect_attempted");
@@ -6644,20 +6883,6 @@ function firebaseLogout(){
   localStorage.removeItem(PROFILE_KEY);
   renderProfileBadge();
   goView("start");
-}
-function firebaseErrorMessage(e){
-  const code = e && e.code || "";
-  const map = {
-    "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert. Bitte stattdessen anmelden.",
-    "auth/invalid-email": "Ungültige E-Mail-Adresse.",
-    "auth/weak-password": "Das Passwort ist zu schwach (mind. 6 Zeichen).",
-    "auth/wrong-password": "Falsches Passwort.",
-    "auth/user-not-found": "Kein Konto mit dieser E-Mail-Adresse gefunden.",
-    "auth/too-many-requests": "Zu viele Versuche. Bitte später erneut versuchen.",
-    "auth/popup-closed-by-user": "Anmeldefenster wurde geschlossen.",
-    "auth/network-request-failed": "Netzwerkfehler. Bitte Internetverbindung prüfen.",
-  };
-  return map[code] || ("Fehler: " + (e && e.message ? e.message : "unbekannt"));
 }
 function profileButtonAction(){
   if(firebaseConfigured()) firebaseLogout();
@@ -6710,16 +6935,17 @@ async function handleGoogleCredential(response){
 }
 
 function renderProfileBadge(){
+  const t = authI18n();
   const p = loadProfile();
   const badge = document.getElementById("profileBadge");
   const btn = document.getElementById("profileActionBtn");
-  if(btn) btn.textContent = firebaseConfigured() ? "Abmelden" : "Profil bearbeiten";
+  if(btn) btn.textContent = firebaseConfigured() ? t.btnLogout : t.btnEditProfile;
   if(p){
     badge.style.display = "flex";
     if(p.confirmed){
-      document.getElementById("profileGreeting").innerHTML = "👋 Hallo, " + escapeHtml(p.name) + " (" + escapeHtml(p.email) + ") <span title='bestätigt'>✅</span>";
+      document.getElementById("profileGreeting").innerHTML = t.greetingHello + escapeHtml(p.name) + " (" + escapeHtml(p.email) + ") <span title='" + t.confirmedTitle + "'>✅</span>";
     } else {
-      document.getElementById("profileGreeting").innerHTML = "👋 Hallo, " + escapeHtml(p.name) + " — <span class='unconfirmed'>E-Mail noch nicht bestätigt</span>";
+      document.getElementById("profileGreeting").innerHTML = t.greetingHello + escapeHtml(p.name) + " — <span class='unconfirmed'>" + t.emailUnconfirmed + "</span>";
     }
   } else {
     badge.style.display = "none";
@@ -7237,6 +7463,7 @@ function setMode(mode){
   document.body.classList.toggle("mode-de", mode==="learn-de");
   document.body.classList.toggle("mode-en", mode==="learn-bis-en");
   document.querySelectorAll(".mode-btn").forEach(b=>b.classList.toggle("active", b.dataset.mode===mode));
+  renderProfileBadge();
   const activeBtn = document.querySelector("nav.tabs button.active");
   const activeView = activeBtn ? activeBtn.dataset.view : null;
   if(activeView === "wortschatz"){
