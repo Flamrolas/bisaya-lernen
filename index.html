@@ -672,7 +672,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.27.5</div>
+  <div class="version-tag">v1.28.0</div>
 </section>
 
 <!-- METHODE -->
@@ -8004,6 +8004,11 @@ const CHUNK_PRONOUNS_EN = [["ako","I"],["ikaw","you"],["siya","he/she"],["kami",
 const CHUNK_VERBS_EN = [["mokaon","will eat"],["moinom","will drink"],["mobasa","will read"],["motrabaho","will work"],["mudula","will play"],["muadto","will go"]];
 const CHUNK_OBJECTS_EN = [["og kan-on","rice"],["og tubig","water"],["og libro","a book"],["sa balay","at home"],["uban sa higala","with a friend"],["sa merkado","to the market"]];
 
+function extractBisFromSample(sample){
+  // Die sample-Strings sehen aus wie 'Beispiel: „Text..."' bzw. 'Example: "Text..."' —
+  // hier den reinen Bisaya-Satz für die Sprachausgabe herausschälen.
+  return sample.replace(/^(Beispiel|Example):\s*/,"").replace(/^[„"]/,"").replace(/["“]$/,"").trim();
+}
 function renderAnwenden(){
   const isEn = currentMode()==="learn-bis-en";
   const pronouns = isEn ? CHUNK_PRONOUNS_EN : CHUNK_PRONOUNS;
@@ -8028,7 +8033,7 @@ function renderAnwenden(){
         <div class="btnrow" style="justify-content:flex-start; margin-top:6px;">
           <button class="action neutral" onclick="revealGap(${i})">${gapAnswerLabel}</button>
         </div>
-        <div class="answer">✓ <b>${g.answer}</b> — „${g.sentence.replace('___', g.answer)}\" = ${g.translation}</div>
+        <div class="answer">✓ <b>${g.answer}</b> — ${speakBtn(g.sentence.replace('___', g.answer), '')} „${g.sentence.replace('___', g.answer)}\" = ${g.translation}</div>
       </div>`).join("");
 
   const freeEl = document.getElementById("freeExercises");
@@ -8041,7 +8046,7 @@ function renderAnwenden(){
         <div class="btnrow" style="justify-content:flex-start;">
           <button class="action neutral" onclick="revealFree(${i})">${freeAnswerLabel}</button>
         </div>
-        <div class="answer" id="freeAns${i}">${f.sample}</div>
+        <div class="answer" id="freeAns${i}">${speakBtn(extractBisFromSample(f.sample),'')} ${f.sample}</div>
       </div>`).join("");
   frees.forEach((f,i)=>{
     const saved = localStorage.getItem("bisaya_free_"+i);
@@ -8056,7 +8061,8 @@ function updateChunk(){
   const p = pronouns[document.getElementById("chunkPronoun").value];
   const v = verbs[document.getElementById("chunkVerb").value];
   const o = objects[document.getElementById("chunkObject").value];
-  document.getElementById("chunkResult").textContent = `${v[0]} ${p[0]} ${o[0]}. — „${v[1]}, ${p[1]}, ${o[1]}\"`;
+  const chunkSentence = `${v[0]} ${p[0]} ${o[0]}.`;
+  document.getElementById("chunkResult").innerHTML = `${chunkSentence} ${speakBtn(chunkSentence,'')} — „${v[1]}, ${p[1]}, ${o[1]}\"`;
 }
 function revealGap(i){ document.getElementById("gap"+i).classList.toggle("revealed"); }
 function revealFree(i){ document.getElementById("freeAns"+i).parentElement.classList.toggle("revealed"); }
