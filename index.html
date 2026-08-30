@@ -672,7 +672,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.30.0</div>
+  <div class="version-tag">v1.31.0</div>
 </section>
 
 <!-- METHODE -->
@@ -11081,17 +11081,20 @@ function dailyGoalProgress(){
   return { earned: earnedToday, goal: DAILY_GOAL_XP, pct: Math.min(100, Math.round(earnedToday / DAILY_GOAL_XP * 100)) };
 }
 
+// Neue Punkteformel (2026-08): Zuwachs pro Level steigt um 25 (Level1=+50, Level2=+75, Level3=+100, ...),
+// kumulativ ergibt das Level1=50, Level2=125, Level3=225, Level4=350, Level5=500, usw.
+// "Anfänger" bei 0 Punkten ist der Startzustand vor Level 1 (wird als "Lv. 0" angezeigt).
 const XP_LEVELS = [
   {xp:0,    de:"Anfänger",          bis:"Nagsugod pa",              en:"Beginner"},
-  {xp:15,   de:"Lernender",         bis:"Nagkat-on",                en:"Learner"},
-  {xp:40,   de:"Fleißiger Schüler", bis:"Kugihan nga Estudyante",   en:"Diligent Student"},
-  {xp:80,   de:"Wortsammler",       bis:"Tigtigom og Pulong",       en:"Word Collector"},
-  {xp:150,  de:"Fortgeschritten",   bis:"Nagpauswag na",            en:"Advanced"},
-  {xp:250,  de:"Sprachjongleur",    bis:"Batid na sa Pinulongan",   en:"Language Juggler"},
-  {xp:400,  de:"Bisaya-Kenner",     bis:"Sinati sa Bisaya",         en:"Bisaya Connoisseur"},
-  {xp:600,  de:"Experte",           bis:"Eksperto",                 en:"Expert"},
-  {xp:900,  de:"Meister",           bis:"Agalon",                   en:"Master"},
-  {xp:1300, de:"Bisaya-Champion",   bis:"Kampyon sa Bisaya",        en:"Bisaya Champion"}
+  {xp:50,   de:"Lernender",         bis:"Nagkat-on",                en:"Learner"},
+  {xp:125,  de:"Fleißiger Schüler", bis:"Kugihan nga Estudyante",   en:"Diligent Student"},
+  {xp:225,  de:"Wortsammler",       bis:"Tigtigom og Pulong",       en:"Word Collector"},
+  {xp:350,  de:"Fortgeschritten",   bis:"Nagpauswag na",            en:"Advanced"},
+  {xp:500,  de:"Sprachjongleur",    bis:"Batid na sa Pinulongan",   en:"Language Juggler"},
+  {xp:675,  de:"Bisaya-Kenner",     bis:"Sinati sa Bisaya",         en:"Bisaya Connoisseur"},
+  {xp:875,  de:"Experte",           bis:"Eksperto",                 en:"Expert"},
+  {xp:1100, de:"Meister",           bis:"Agalon",                   en:"Master"},
+  {xp:1350, de:"Bisaya-Champion",   bis:"Kampyon sa Bisaya",        en:"Bisaya Champion"}
 ];
 function levelInfo(){
   const xp = computeScore();
@@ -11100,7 +11103,7 @@ function levelInfo(){
   const cur = XP_LEVELS[idx];
   const next = XP_LEVELS[idx+1] || null;
   const pct = next ? Math.round((xp - cur.xp) / (next.xp - cur.xp) * 100) : 100;
-  return { level: idx+1, xp, name: cur, next, pct: Math.max(0, Math.min(100, pct)) };
+  return { level: idx, xp, name: cur, next, pct: Math.max(0, Math.min(100, pct)) };
 }
 
 const ACHIEVEMENTS = [
@@ -11153,6 +11156,15 @@ function checkAchievements(){
   if(newlyUnlocked.length) saveState();
   return newlyUnlocked;
 }
+// Kleiner Hinweis-Toast fuer Anti-Cheat-Meldungen (z.B. "Karte erst umdrehen"), nutzt dieselbe
+// Optik wie die Badge-Toasts, aber fuer beliebigen Text statt Achievements.
+function showHintToast(text, icon){
+  const wrap = document.createElement("div");
+  wrap.className = "badge-toast-wrap";
+  wrap.innerHTML = `<div class="badge-toast"><span class="badge-toast-icon">${icon||"⏳"}</span><div>${text}</div></div>`;
+  document.body.appendChild(wrap);
+  setTimeout(()=>{ wrap.classList.add("badge-toast-fade"); setTimeout(()=>wrap.remove(), 600); }, 2400);
+}
 function showBadgeToasts(badges){
   if(!badges || !badges.length) return;
   const mode = currentMode();
@@ -11175,10 +11187,18 @@ function showBadgeToasts(badges){
 // bleibt also auch im Quiz-Moment erhalten, statt reines Abfragen zu sein.
 // Trivial-Pursuit-Prinzip: jede "Karte" hat 6 Fragen, danach geht's nahtlos mit der nächsten
 // Karte weiter — ein fortlaufendes Deck statt einer einzelnen Runde, die schnell vorbei ist.
-const QUIZ_MIN_LEVEL = 3;
+// Level-Schwelle fuer Quiz-Freischaltung neu justiert, nachdem die XP_LEVELS-Schwellen
+// (siehe BELOHNUNGSSYSTEM weiter unten) auf die neue, hoehere Punkteformel umgestellt wurden.
+const QUIZ_MIN_LEVEL = 1;
 const QUIZ_QUESTIONS_PER_CARD = 6;
 const QUIZ_RECENT_WINDOW = 3; // so viele zurückliegende Karten werden bei der Auswahl möglichst gemieden
 let quizState = null;
+
+// Zufaellige Erfolgsphrasen bei richtiger Quiz-Antwort, statt immer derselben Formulierung.
+function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const CORRECT_PHRASES_BIS = ["Husto!", "Maayo kaayo!", "Perpekto!", "Pagpalipay!", "Pagpadayon!"];
+const CORRECT_PHRASES_DE  = ["Richtig!", "Super gemacht!", "Klasse!", "Perfekt!", "Genau so!"];
+const CORRECT_PHRASES_EN  = ["Correct!", "Well done!", "Great!", "Perfect!", "Nailed it!"];
 
 // Die Antwortoptionen sind immer in der Sprache, die gerade GELERNT wird (das eigentliche
 // Testziel) — die Frage steht in der jeweils anderen (Referenz-)Sprache.
@@ -11342,7 +11362,7 @@ function answerQuiz(i){
   // damit der Hör-Kanal auch hier präsent bleibt.
   const targetAudio = mode==="learn-de" ? speakDeBtn(q.correct) : speakBtn(q.correct, q.item.pron || "");
   const feedbackHead = correct
-    ? (isBis?"✅ Husto!":isEn?"✅ Correct!":"✅ Richtig!")
+    ? "✅ " + (isBis ? pickRandom(CORRECT_PHRASES_BIS) : isEn ? pickRandom(CORRECT_PHRASES_EN) : pickRandom(CORRECT_PHRASES_DE))
     : (isBis?`❌ Sayop. Ang tama: "${q.correct}"`:isEn?`❌ Not quite. Correct answer: "${q.correct}"`:`❌ Leider nicht. Richtig wäre: "${q.correct}"`);
   const isLastInCard = quizState.idx === quizState.questions.length - 1;
   const nextLabel = isLastInCard
@@ -11715,11 +11735,17 @@ function renderLessonList(){
      </div>`;
    }).join("") + "</div>";
 }
+// Anti-Cheat: "als abgeschlossen markieren" (Punkte!) zaehlt nur, wenn die Lektion mindestens
+// MIN_LESSON_MS offen war — verhindert, alle Lektionen in Sekunden fuer Punkte durchzuklicken.
+const MIN_LESSON_MS = 20000;
+let openLessonId = null;
+let openLessonSince = 0;
 function openLesson(id){
   const l = LESSONS.find(x=>x.id===id);
   const el = document.getElementById("lektionenList");
   const mode = currentMode();
   const isEn = mode==="learn-bis-en";
+  if(openLessonId !== id){ openLessonId = id; openLessonSince = Date.now(); }
   if(mode==="learn-de"){
     const subtitle = LESSON_SUBTITLE_BIS[l.id] || l.subtitle;
     let html = `<div class="card">
@@ -11771,7 +11797,22 @@ function openLesson(id){
 }
 function toggleLessonDone(id){
   const nowDone = !state.lessonsDone[id];
-  if(nowDone){ touchDaily(); touchStreak(); } // nur bei "als erledigt markieren" zählen, nicht beim Rückgängigmachen
+  if(nowDone){
+    const openedLongEnough = openLessonId===id && openLessonSince && (Date.now()-openLessonSince) >= MIN_LESSON_MS;
+    if(!openedLongEnough){
+      const mode = currentMode();
+      const isBis = mode==="learn-de";
+      const isEn = mode==="learn-bis-en";
+      const msg = isBis
+        ? "Basaha una ang leksyon sa dili pa mo i-marka nga human."
+        : isEn
+        ? "Take a moment to go through the lesson before marking it done."
+        : "Schau dir die Lektion erst kurz an, bevor du sie als abgeschlossen markierst.";
+      showHintToast(msg);
+      return;
+    }
+    touchDaily(); touchStreak(); // nur bei "als erledigt markieren" zählen, nicht beim Rückgängigmachen
+  }
   state.lessonsDone[id] = nowDone;
   saveState();
   if(nowDone) showBadgeToasts(checkAchievements());
@@ -11781,6 +11822,7 @@ function toggleLessonDone(id){
 /* ============ WORTSCHATZ / FLASHCARDS ============ */
 let deck = [];
 let deckIdx = 0;
+let cardFlippedAt = 0; // Zeitpunkt (ms) an dem die aktuelle Karte umgedreht wurde, 0 = noch nicht
 function handleVocabSearch(){
   const input = document.getElementById("vocabSearch");
   const deckCard = document.getElementById("vocabDeckCard");
@@ -11905,6 +11947,7 @@ function refreshDeck(){
 function showCard(){
   const card = document.getElementById("flashCard");
   card.classList.remove("flipped");
+  cardFlippedAt = 0;
   const mode = currentMode();
   if(deck.length===0){
     document.getElementById("flashFront").textContent = mode==="learn-de" ? "🎉 Walay kard niini nga filter" : mode==="learn-bis-en" ? "🎉 No cards in this filter" : "🎉 Keine Karten in diesem Filter";
@@ -11947,10 +11990,33 @@ function showCard(){
   const backText = isEn ? (v.en || v.de) : v.de;
   document.getElementById("flashBack").innerHTML = `<div style="font-size:1.2rem; font-weight:700; color:var(--accent2)">${backText}</div><div class="small">${v.cat}</div>`;
 }
-function flipCard(){ document.getElementById("flashCard").classList.toggle("flipped"); }
+// Anti-Cheat: "kann ich" (Punkte!) zaehlt nur, wenn die Karte tatsaechlich umgedreht UND
+// mindestens MIN_FLIP_MS lang angeschaut wurde — verhindert stumpfes Durchklicken fuer Punkte.
+// "noch üben" ist davon nicht betroffen, weil dieser Status keine Punkte vergibt.
+const MIN_FLIP_MS = 1200;
+function flipCard(){
+  const card = document.getElementById("flashCard");
+  card.classList.toggle("flipped");
+  if(card.classList.contains("flipped") && !cardFlippedAt) cardFlippedAt = Date.now();
+}
 function markCard(status){
   if(deck.length===0) return;
   const v = deck[deckIdx % deck.length];
+  if(status === "known"){
+    const card = document.getElementById("flashCard");
+    const flipped = card && card.classList.contains("flipped");
+    const longEnough = flipped && cardFlippedAt && (Date.now() - cardFlippedAt) >= MIN_FLIP_MS;
+    if(!longEnough){
+      const mode = currentMode();
+      const isBis = mode==="learn-de";
+      const isEn = mode==="learn-bis-en";
+      const msg = !flipped
+        ? (isBis?"Lingia una ang kard aron makita ang tubag.":isEn?"Flip the card first to see the answer.":"Dreh die Karte erst um, um die Antwort zu sehen.")
+        : (isBis?"Hulat gamay una i-klik.":isEn?"Take a moment before marking it.":"Nimm dir kurz einen Moment, bevor du das markierst.");
+      showHintToast(msg);
+      return;
+    }
+  }
   touchDaily(); touchStreak();
   state.words[v.bis] = status;
   saveState();
@@ -12192,7 +12258,7 @@ async function loadLeaderboard(){
   }
   list.innerHTML = "<p class='small'>Lade...</p>";
   try{
-    const snap = await window.FB.queryTopDesc(LEADERBOARD_COLLECTION, "score", 20);
+    const snap = await window.FB.queryTopDesc(LEADERBOARD_COLLECTION, "score", 50);
     if(snap.empty){
       list.innerHTML = "<p class='small'>Noch keine Einträge — sei die erste Person auf der Liste!</p>";
       return;
