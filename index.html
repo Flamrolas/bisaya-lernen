@@ -672,7 +672,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.31.0</div>
+  <div class="version-tag">v1.32.0</div>
 </section>
 
 <!-- METHODE -->
@@ -5889,19 +5889,207 @@ const GAP_EXERCISES_EN = [
 
 const FREE_EXERCISES = [
  {prompt:"Stell dich auf Bisaya vor: Name, wie es dir geht, und was du gerade fühlst (z. B. malipayon, kapoy). Sprich es laut aus, bevor du es aufschreibst.", sample:"Beispiel: „Maayo ra ko. Ako si ___. Malipayon ko karon.\""},
+ {prompt:"Grüße jemanden am Morgen und frag, wie es ihm geht.", sample:"Beispiel: „Maayong buntag! Kumusta ka?\""},
+ {prompt:"Verabschiede dich am Ende eines Gesprächs von jemandem.", sample:"Beispiel: „Hangtud sa sunod. Babay!\""},
  {prompt:"Beschreibe deine Familie in 3 Sätzen: wie viele Geschwister du hast, wer dein/e Lieblings-Verwandte/r ist, und warum.", sample:"Beispiel: „Duha ka igsoon ang naa nako. Nahigugma ko sa akong inahan kay maayo siya kaayo.\""},
- {prompt:"Du bist auf dem Markt: Frag nach dem Preis von etwas und handle um einen besseren Preis.", sample:"Beispiel: „Tagpila ang mangga? Pwede mubaratohon?\""},
- {prompt:"Beschreibe dein heutiges Wetter und was du deswegen tun solltest.", sample:"Beispiel: „Init kaayo karon. Dad-a imong payong ugma kay muulan tingali.\""},
+ {prompt:"Stell jemandem deine Eltern vor.", sample:"Beispiel: „Mao kini ang akong amahan. Ug mao kini ang akong inahan.\""},
+ {prompt:"Sag, dass du deine Familie liebst und warum.", sample:"Beispiel: „Nahigugma ko sa akong pamilya kay maayo sila kanako.\""},
+ {prompt:"Zähl auf Bisaya laut von eins bis zehn.", sample:"Beispiel: „Isa, duha, tulo, upat, lima, unom, pito, walo, siyam, napulo.\""},
+ {prompt:"Frag jemanden, wie spät es ist, und antworte mit einer Uhrzeit.", sample:"Beispiel: „Unsa nang orasa? Alas otso sa buntag.\""},
+ {prompt:"Sag, wie alt du bist.", sample:"Beispiel: „Pila ka tuig na ka? Baynte anyos ko.\""},
+ {prompt:"Sag, welcher Wochentag heute ist.", sample:"Beispiel: „Unsang adlawa karon? Karon Lunes.\""},
+ {prompt:"Beschreibe deinen Tagesablauf vom Aufstehen bis zum Schlafengehen.", sample:"Beispiel: „Momata ko sa alas sais sa buntag. Mokaon ko og pamahaw, unya moadto sa trabaho. Sa gabii, motulog ko og sayo.\""},
  {prompt:"Erzähle, was du diese Woche jeden Tag machst (mindestens 2 Aktivitäten, mit Wochentagen).", sample:"Beispiel: „Lunes, motrabaho ko. Sabado, mudula ko og basketball uban sa akong mga higala.\""},
+ {prompt:"Du bist auf dem Markt: Frag nach dem Preis von etwas und handle um einen besseren Preis.", sample:"Beispiel: „Tagpila ang mangga? Pwede mubaratohon?\""},
+ {prompt:"Kauf drei Kilo von etwas und bedanke dich beim Verkäufer.", sample:"Beispiel: „Sige, singkwenta pesos para tulo ka kilo. Salamat kaayo! Mubayad ko karon.\""},
+ {prompt:"Sag, dass du auf dem Markt gerne Obst kaufen möchtest.", sample:"Beispiel: „Maayong buntag! Palit ko unta og prutas.\""},
+ {prompt:"Sag, dass du Hunger hast und was du gerne essen würdest.", sample:"Beispiel: „Gigutom na ko kaayo! Ganahan ko og kan-on ug isda.\""},
+ {prompt:"Frag, ob ein Gericht scharf ist, und antworte.", sample:"Beispiel: „Halang ba ni? Dili kaayo halang, lami ra.\""},
+ {prompt:"Sag, dass du satt bist und bedanke dich für das Essen.", sample:"Beispiel: „Busog na ko, salamat kaayo.\""},
+ {prompt:"Frag höflich nach dem Weg zum Bahnhof.", sample:"Beispiel: „Pasayloa ko, asa ang estasyon sa tren?\""},
+ {prompt:"Erkläre jemandem, wie er geradeaus gehen und dann rechts abbiegen soll.", sample:"Beispiel: „Diretso lang, unya liko sa tuo.\""},
+ {prompt:"Frag, ob ein Ort weit von hier ist, und antworte.", sample:"Beispiel: „Layo ba gikan diri? Dili layo, duol ra.\""},
+ {prompt:"Beschreibe das heutige Wetter und was du deswegen tun solltest.", sample:"Beispiel: „Init kaayo karon. Dad-a imong payong ugma kay muulan tingali.\""},
+ {prompt:"Sag, dass es morgen vielleicht regnen wird und man einen Schirm mitnehmen soll.", sample:"Beispiel: „Ugma, muulan tingali. Dad-a imong payong.\""},
+ {prompt:"Beschreibe, wie der Wind am Abend ist.", sample:"Beispiel: „Bugnaw ang hangin sa gabii.\""},
+ {prompt:"Frag, wo die Küche ist, und antworte.", sample:"Beispiel: „Asa ang kusina? Tapad sa lawak-kan-onan.\""},
+ {prompt:"Beschreibe dein Zimmer: gibt es ein Fenster, wie viele?", sample:"Beispiel: „Naa bay bintana sa akong kwarto? Oo, duha ka bintana.\""},
+ {prompt:"Sag, was du zu Hause noch erledigen musst.", sample:"Beispiel: „Kinahanglan nako maghugas sa mga plato.\""},
+ {prompt:"Frag jemanden, warum er traurig ist, und antworte für ihn.", sample:"Beispiel: „Nganong masulub-on ka man? Gikapoy ra ko sa trabaho.\""},
+ {prompt:"Sag, dass du gerade glücklich bist und warum.", sample:"Beispiel: „Malipayon ko karon, salamat sa imong pag-atiman.\""},
+ {prompt:"Sag, dass du deine Familie sehr vermisst.", sample:"Beispiel: „Gimingaw ko sa akong pamilya.\""},
+ {prompt:"Sag, was du in deiner Freizeit gerne machst.", sample:"Beispiel: „Unsa imong ganahan buhaton sa imong gawas nga oras? Ganahan kong mubasa og libro ug maminaw og musika.\""},
+ {prompt:"Frag jemanden, ob er Basketball spielt, und antworte.", sample:"Beispiel: „Mudula ka ba og basketball? Oo, kanunay ko mudula uban sa akong mga higala.\""},
+ {prompt:"Sag, dass ihr morgen zusammen Spaß haben werdet.", sample:"Beispiel: „Malingaw ta ugma, di ba?\""},
+ {prompt:"Sag jemandem, wohin du gerade unterwegs bist.", sample:"Beispiel: „Asa ka padulong? Muadto ko sa tugpahanan; mulupad ko pauli.\""},
  {prompt:"Verabschiede dich von einem Freund, der wegfliegt — wünsch ihm etwas und sag, dass ihr euch wiederseht.", sample:"Beispiel: „Amping permi! Hangtud sa sunod nato nga panagkita, higala. Puhon magkita ta pag-usab.\""},
+ {prompt:"Sag, dass du dich gefreut hast, jemanden zu sehen, bevor er wegfährt.", sample:"Beispiel: „Nalipay ko nga nakita tika. Amping permi, ug sulati ko!\""},
+ {prompt:"Sag, dass du einen Hund zu Hause hast und frag jemanden nach seinem Lieblingstier.", sample:"Beispiel: „Naa koy iro sa balay. Unsa imong paboritong hayop?\""},
+ {prompt:"Zähl auf, welche Tiere es auf einem Bauernhof gibt.", sample:"Beispiel: „Sa uma, naa'y baka, kabaw, ug baboy.\""},
+ {prompt:"Sag, wovor du Angst hast, und welches Tier du magst und warum.", sample:"Beispiel: „Nahadlok ko sa halas. Ganahan ko sa mga iring kay buotan sila.\""},
+ {prompt:"Sag, dass du zum Strand möchtest und wie schön das Meer dort ist.", sample:"Beispiel: „Gusto ko moadto sa baybayon. Matahom kaayo ang kadagatan diri.\""},
+ {prompt:"Schlage vor, den Hügel hochzusteigen, um die ganze Stadt zu sehen.", sample:"Beispiel: „Motungas ta sa bungtod aron makita ang tibuok siyudad.\""},
+ {prompt:"Frag jemanden, ob er am Wasserfall schwimmen möchte.", sample:"Beispiel: „Gusto ka molangoy sa busay?\""},
+ {prompt:"Frag, wie man in die Stadt kommt, und antworte.", sample:"Beispiel: „Unsaon nako pag-adto sa syudad? Pwede ka mosakay og traysikel o jeepney.\""},
+ {prompt:"Sag, dass du ein neues Fahrrad hast.", sample:"Beispiel: „Naa koy bag-ong bisikleta.\""},
+ {prompt:"Sag, dass ihr das Auto auftanken müsst.", sample:"Beispiel: „Kinahanglan na natong palitan og gasolina ang awto.\""},
+ {prompt:"Frag jemanden nach seinem Beruf und antworte mit deinem eigenen.", sample:"Beispiel: „Unsa imong trabaho? Doktor ko sa usa ka klinika.\""},
+ {prompt:"Sag, was du eines Tages werden möchtest.", sample:"Beispiel: „Gusto ko mahimong enhinyero balang adlaw.\""},
+ {prompt:"Beschreibe, dass dein Job schwierig ist, du ihn aber trotzdem magst.", sample:"Beispiel: „Kalisod ang trabaho apan gusto nako kini.\""},
+ {prompt:"Bitte im Restaurant um einen Tisch für zwei Personen.", sample:"Beispiel: „Lamesa para sa duha, palihug.\""},
+ {prompt:"Bestell einen Kaffee und ein Stück Kuchen.", sample:"Beispiel: „Usa ka kape ug usa ka piraso nga keyk, palihug.\""},
+ {prompt:"Sag, dass das Essen sehr lecker ist, und bitte um die Rechnung.", sample:"Beispiel: „Lami kaayo ang pagkaon diri! Bill, palihug.\""},
+ {prompt:"Beschreibe beim Arzt, dass du seit gestern Schnupfen und Husten hast.", sample:"Beispiel: „Sip-on ug ubo ko sukad kagahapon.\""},
+ {prompt:"Frag jemanden, ob er Fieber hat, und antworte, dass der Hals wehtut.", sample:"Beispiel: „Naa ka'y hilanat? Gamay ra, apan sakit ang akong tutunlan.\""},
+ {prompt:"Sag, dass man diese Medizin dreimal täglich einnehmen muss.", sample:"Beispiel: „Kinahanglan nimo mag-inom ani nga tambal tulo ka beses matag adlaw.\""},
+ {prompt:"Frag jemanden nach seinem Lieblingssport und antworte.", sample:"Beispiel: „Unsa imong paboritong isport? Ganahan kaayo ko og basketbol.\""},
+ {prompt:"Schlage vor, heute Nachmittag Volleyball zu spielen.", sample:"Beispiel: „Mudula ta og bolibol karong hapon?\""},
+ {prompt:"Sag, dass du es gewohnt bist, jeden Morgen zu laufen.", sample:"Beispiel: „Naanad ko modagan matag buntag.\""},
+ {prompt:"Sag, dass du neue Kleidung suchst, und frag, ob du etwas anprobieren kannst.", sample:"Beispiel: „Mangita ko og bag-ong sinina. Pwede ba nako sul-obon ni?\""},
+ {prompt:"Frag jemanden nach seiner Kleidergröße und antworte für dich selbst.", sample:"Beispiel: „Unsa imong sukod? Medium ra ko.\""},
+ {prompt:"Frag, ob es ein Kleidungsstück in einer anderen Farbe oder kleiner gibt.", sample:"Beispiel: „Naa ba ni sa laing kolor? Mas gamay pa ba naa?\""},
+ {prompt:"Sag, was deine Lieblingsfarbe ist.", sample:"Beispiel: „Unsa ang paborito nimong kolor? Ganahan ko sa asul ug berde.\""},
+ {prompt:"Beschreibe die Farbe eines Kleidungsstücks, das du siehst.", sample:"Beispiel: „Pula kaayo kanang sapatos.\""},
+ {prompt:"Wähl zwischen zwei Farben für etwas, das du kaufen möchtest.", sample:"Beispiel: „Itom o puti, palihug.\""},
+ {prompt:"Frag jemanden, was ihm wehtut, und antworte, dass der Kopf wehtut.", sample:"Beispiel: „Unsa'y sakit nimo? Sakit akong ulo.\""},
+ {prompt:"Sag, dass dein Bauch auch wehtut und du zum Arzt musst.", sample:"Beispiel: „Sakit sad akong tiyan. Kinahanglan ka moadto sa doktor.\""},
+ {prompt:"Sag, dass dein Körper heiß ist und du vielleicht Fieber hast.", sample:"Beispiel: „Init akong lawas, tingali hilanat ko.\""},
+ {prompt:"Frag jemanden, was er in der Schule lernt, und antworte.", sample:"Beispiel: „Unsa imong gitun-an sa eskwelahan? Nagtuon ko og Ingles ug Matematika.\""},
+ {prompt:"Sag, dass eine Lektion sehr schwierig ist und du für die Prüfung lernen musst.", sample:"Beispiel: „Lisod kaayo ni nga leksyon. Kinahanglan ko mag-eskwela para sa exam.\""},
+ {prompt:"Verkünde freudig, dass du deine Prüfung bestanden hast.", sample:"Beispiel: „Nakapasar ko sa akong exam!\""},
+ {prompt:"Frag, was heute gefeiert wird, und antworte.", sample:"Beispiel: „Unsa ang gisaulog karong adlawa? Piyesta sa among baryo karon.\""},
+ {prompt:"Wünsch jemandem alles Gute zum Geburtstag.", sample:"Beispiel: „Malipayong adlawng natawhan!\""},
+ {prompt:"Schlage vor, beim Fest Lechon zu essen.", sample:"Beispiel: „Mangaon ta ug lechon sa piyesta!\""},
+ {prompt:"Frag, ob es hier Handy-Empfang gibt, und sag, dass dein Guthaben knapp ist.", sample:"Beispiel: „Naa bay signal diri? Gamay ra ang akong load.\""},
+ {prompt:"Bitte jemanden um sein WLAN-Passwort.", sample:"Beispiel: „Pwede ko mangayo sa imong Wi-Fi password?\""},
+ {prompt:"Sag, dass der Akku deines Handys leer ist, und bitte darum, es aufzuladen.", sample:"Beispiel: „Nahurot na ang baterya sa akong selpon. Palihug i-charge ang akong selpon.\""},
+ {prompt:"Sag, dass du ein Paket verschicken möchtest, und frag nach dem Briefmarkenpreis.", sample:"Beispiel: „Gusto ko mag-padala og pakete. Tagpila ang selyo padulong sa Alemanya?\""},
+ {prompt:"Frag, wo du Geld abheben kannst, und sag, dass du deinen Ausweis brauchst.", sample:"Beispiel: „Asa ko pwede mag-withdraw og kwarta? Gikinahanglan nako ang akong ID.\""},
+ {prompt:"Frag, wo du ein Formular ausfüllst, und bedanke dich für den Service.", sample:"Beispiel: „Asa nako pun-on ni nga porma? Salamat, maayo ang serbisyo diri.\""},
+ {prompt:"Ruf laut um Hilfe, weil ein Unfall passiert ist, und fordere einen Krankenwagen an.", sample:"Beispiel: „Tabang! Aksidente! Tawagi dayon ang ambulansya!\""},
+ {prompt:"Frag nach dem nächsten Krankenhaus.", sample:"Beispiel: „Asa ang labing duol nga ospital?\""},
+ {prompt:"Sag, dass deine Geldbörse verschwunden ist, und beruhige jemanden.", sample:"Beispiel: „Nawala ang akong pitaka! Ayaw kabalaka, safe ra ta karon.\""},
+ {prompt:"Frag, wer heute das Zimmer putzt, und sag, dass du die Teller spülst.", sample:"Beispiel: „Kinsa ang maglimpyo sa kwarto karon? Akoy maghugas sa mga plato.\""},
+ {prompt:"Bitte jemanden, den Tisch zu reinigen.", sample:"Beispiel: „Palihug limpyohi ang lamesa.\""},
+ {prompt:"Sag, dass du die Wäsche noch nicht gemacht hast, und frag, wer heute kocht.", sample:"Beispiel: „Wala pa nako mabuhat ang labada. Kinsa'y mag-luto karong gabii?\""},
+ {prompt:"Frag, wo die nächste Bushaltestelle ist.", sample:"Beispiel: „Asa ang pinakaduol nga hunta-anan?\""},
+ {prompt:"Frag, ob ein Jeepney zum Markt fährt, und was die Fahrt kostet.", sample:"Beispiel: „Moadto ba ni nga jeep sa merkado? Tagpila ang plete?\""},
+ {prompt:"Sag, dass der Bus schon voll ist, und dass du hier aussteigst.", sample:"Beispiel: „Puno na ang bus, wala nay lingkoranan. Salamat, dinhi ra ko molugsong.\""},
+ {prompt:"Frag jemanden, ob er einen Freund oder eine Freundin hat.", sample:"Beispiel: „Naa ka bay uyab?\""},
+ {prompt:"Sag, dass ihr seit drei Jahren zusammen seid.", sample:"Beispiel: „Nagkita mi sulod sa tulo ka tuig.\""},
+ {prompt:"Sag jemandem, dass du ihn wirklich liebst und für immer.", sample:"Beispiel: „Nahigugma gayod ko nimo. Maghigugmaay ta hangtud sa kahangturan.\""},
+ {prompt:"Stell dich vor und sag gleichzeitig, was dein Beruf ist.", sample:"Beispiel: „Ako si Anna. Doktor ko sa usa ka klinika.\""},
+ {prompt:"Frag auf dem Markt nach dem Preis von etwas und wie viel ein Kilo kostet.", sample:"Beispiel: „Tagpila ang mangga? Baynte pesos ang usa ka kilo.\""},
+ {prompt:"Sag, dass es heute sehr heiß ist.", sample:"Beispiel: „Init kaayo karon.\""},
+ {prompt:"Sag, dass du müde von der Arbeit bist, dich aber freust, deine Freunde zu sehen.", sample:"Beispiel: „Gikapoy ra ko sa trabaho, apan nalipay ko nga nakita tika.\""},
+ {prompt:"Sag, wann dein Flug morgen ist und wohin.", sample:"Beispiel: „Molupad ko padulong Cebu ugma.\""},
+ {prompt:"Bestell im Restaurant dein Lieblingsessen und ein Getränk.", sample:"Beispiel: „Ganahan ko og kan-on ug isda. Usa ka kape, palihug.\""},
+ {prompt:"Frag deine Freunde, ob sie heute Nachmittag Basketball spielen wollen.", sample:"Beispiel: „Mudula ta og basketbol karong hapon uban sa akong mga higala?\""},
+ {prompt:"Sag, dass die Prüfung schwierig war, du aber glücklich bist, weil du bestanden hast.", sample:"Beispiel: „Lisod kaayo ang exam, apan malipayon ko kay nakapasar ko.\""},
+ {prompt:"Bedank dich bei jemandem, der dir geholfen hat.", sample:"Beispiel: „Salamat sa imong tabang!\""},
+ {prompt:"Wünsch jemandem ein gutes neues Jahr.", sample:"Beispiel: „Manghinaot ko og maayong bag-ong tuig nimo.\""},
 ];
 const FREE_EXERCISES_EN = [
  {prompt:"Introduce yourself in Bisaya: your name, how you're doing, and how you feel right now (e.g. malipayon, kapoy). Say it out loud before you write it down.", sample:"Example: \"Maayo ra ko. Ako si ___. Malipayon ko karon.\""},
+ {prompt:"Greet someone in the morning and ask how they're doing.", sample:"Example: \"Maayong buntag! Kumusta ka?\""},
+ {prompt:"Say goodbye to someone at the end of a conversation.", sample:"Example: \"Hangtud sa sunod. Babay!\""},
  {prompt:"Describe your family in 3 sentences: how many siblings you have, who your favorite relative is, and why.", sample:"Example: \"Duha ka igsoon ang naa nako. Nahigugma ko sa akong inahan kay maayo siya kaayo.\""},
- {prompt:"You're at the market: ask the price of something and haggle for a better price.", sample:"Example: \"Tagpila ang mangga? Pwede mubaratohon?\""},
- {prompt:"Describe today's weather and what you should do because of it.", sample:"Example: \"Init kaayo karon. Dad-a imong payong ugma kay muulan tingali.\""},
+ {prompt:"Introduce your parents to someone.", sample:"Example: \"Mao kini ang akong amahan. Ug mao kini ang akong inahan.\""},
+ {prompt:"Say that you love your family and why.", sample:"Example: \"Nahigugma ko sa akong pamilya kay maayo sila kanako.\""},
+ {prompt:"Count out loud in Bisaya from one to ten.", sample:"Example: \"Isa, duha, tulo, upat, lima, unom, pito, walo, siyam, napulo.\""},
+ {prompt:"Ask someone what time it is and answer with a time.", sample:"Example: \"Unsa nang orasa? Alas otso sa buntag.\""},
+ {prompt:"Say how old you are.", sample:"Example: \"Pila ka tuig na ka? Baynte anyos ko.\""},
+ {prompt:"Say what day of the week it is today.", sample:"Example: \"Unsang adlawa karon? Karon Lunes.\""},
+ {prompt:"Describe your daily routine from waking up to going to sleep.", sample:"Example: \"Momata ko sa alas sais sa buntag. Mokaon ko og pamahaw, unya moadto sa trabaho. Sa gabii, motulog ko og sayo.\""},
  {prompt:"Tell what you do each day this week (at least 2 activities, with days of the week).", sample:"Example: \"Lunes, motrabaho ko. Sabado, mudula ko og basketball uban sa akong mga higala.\""},
+ {prompt:"You're at the market: ask the price of something and haggle for a better price.", sample:"Example: \"Tagpila ang mangga? Pwede mubaratohon?\""},
+ {prompt:"Buy three kilos of something and thank the seller.", sample:"Example: \"Sige, singkwenta pesos para tulo ka kilo. Salamat kaayo! Mubayad ko karon.\""},
+ {prompt:"Say that you'd like to buy some fruit at the market.", sample:"Example: \"Maayong buntag! Palit ko unta og prutas.\""},
+ {prompt:"Say that you're hungry and what you'd like to eat.", sample:"Example: \"Gigutom na ko kaayo! Ganahan ko og kan-on ug isda.\""},
+ {prompt:"Ask if a dish is spicy and answer.", sample:"Example: \"Halang ba ni? Dili kaayo halang, lami ra.\""},
+ {prompt:"Say that you're full and thank someone for the meal.", sample:"Example: \"Busog na ko, salamat kaayo.\""},
+ {prompt:"Politely ask for directions to the train station.", sample:"Example: \"Pasayloa ko, asa ang estasyon sa tren?\""},
+ {prompt:"Explain to someone to go straight ahead and then turn right.", sample:"Example: \"Diretso lang, unya liko sa tuo.\""},
+ {prompt:"Ask if a place is far from here and answer.", sample:"Example: \"Layo ba gikan diri? Dili layo, duol ra.\""},
+ {prompt:"Describe today's weather and what you should do because of it.", sample:"Example: \"Init kaayo karon. Dad-a imong payong ugma kay muulan tingali.\""},
+ {prompt:"Say it might rain tomorrow and that one should bring an umbrella.", sample:"Example: \"Ugma, muulan tingali. Dad-a imong payong.\""},
+ {prompt:"Describe what the wind is like in the evening.", sample:"Example: \"Bugnaw ang hangin sa gabii.\""},
+ {prompt:"Ask where the kitchen is and answer.", sample:"Example: \"Asa ang kusina? Tapad sa lawak-kan-onan.\""},
+ {prompt:"Describe your room: is there a window, how many?", sample:"Example: \"Naa bay bintana sa akong kwarto? Oo, duha ka bintana.\""},
+ {prompt:"Say what you still need to do at home.", sample:"Example: \"Kinahanglan nako maghugas sa mga plato.\""},
+ {prompt:"Ask someone why they're sad and answer for them.", sample:"Example: \"Nganong masulub-on ka man? Gikapoy ra ko sa trabaho.\""},
+ {prompt:"Say that you're happy right now and why.", sample:"Example: \"Malipayon ko karon, salamat sa imong pag-atiman.\""},
+ {prompt:"Say that you miss your family a lot.", sample:"Example: \"Gimingaw ko sa akong pamilya.\""},
+ {prompt:"Say what you like to do in your free time.", sample:"Example: \"Unsa imong ganahan buhaton sa imong gawas nga oras? Ganahan kong mubasa og libro ug maminaw og musika.\""},
+ {prompt:"Ask someone if they play basketball and answer.", sample:"Example: \"Mudula ka ba og basketball? Oo, kanunay ko mudula uban sa akong mga higala.\""},
+ {prompt:"Say that you'll have fun together tomorrow.", sample:"Example: \"Malingaw ta ugma, di ba?\""},
+ {prompt:"Tell someone where you're currently headed.", sample:"Example: \"Asa ka padulong? Muadto ko sa tugpahanan; mulupad ko pauli.\""},
  {prompt:"Say goodbye to a friend who's flying away — wish them something and say you'll see each other again.", sample:"Example: \"Amping permi! Hangtud sa sunod nato nga panagkita, higala. Puhon magkita ta pag-usab.\""},
+ {prompt:"Say that you were happy to see someone before they leave.", sample:"Example: \"Nalipay ko nga nakita tika. Amping permi, ug sulati ko!\""},
+ {prompt:"Say that you have a dog at home and ask someone about their favorite animal.", sample:"Example: \"Naa koy iro sa balay. Unsa imong paboritong hayop?\""},
+ {prompt:"List which animals you can find on a farm.", sample:"Example: \"Sa uma, naa'y baka, kabaw, ug baboy.\""},
+ {prompt:"Say what you're afraid of, and which animal you like and why.", sample:"Example: \"Nahadlok ko sa halas. Ganahan ko sa mga iring kay buotan sila.\""},
+ {prompt:"Say you'd like to go to the beach and how beautiful the sea is there.", sample:"Example: \"Gusto ko moadto sa baybayon. Matahom kaayo ang kadagatan diri.\""},
+ {prompt:"Suggest climbing the hill to see the whole city.", sample:"Example: \"Motungas ta sa bungtod aron makita ang tibuok siyudad.\""},
+ {prompt:"Ask someone if they'd like to swim at the waterfall.", sample:"Example: \"Gusto ka molangoy sa busay?\""},
+ {prompt:"Ask how to get to the city and answer.", sample:"Example: \"Unsaon nako pag-adto sa syudad? Pwede ka mosakay og traysikel o jeepney.\""},
+ {prompt:"Say that you have a new bicycle.", sample:"Example: \"Naa koy bag-ong bisikleta.\""},
+ {prompt:"Say that you need to fill up the car with gas.", sample:"Example: \"Kinahanglan na natong palitan og gasolina ang awto.\""},
+ {prompt:"Ask someone about their job and answer with your own.", sample:"Example: \"Unsa imong trabaho? Doktor ko sa usa ka klinika.\""},
+ {prompt:"Say what you'd like to become someday.", sample:"Example: \"Gusto ko mahimong enhinyero balang adlaw.\""},
+ {prompt:"Describe that your job is difficult but you like it anyway.", sample:"Example: \"Kalisod ang trabaho apan gusto nako kini.\""},
+ {prompt:"Ask for a table for two at a restaurant.", sample:"Example: \"Lamesa para sa duha, palihug.\""},
+ {prompt:"Order a coffee and a piece of cake.", sample:"Example: \"Usa ka kape ug usa ka piraso nga keyk, palihug.\""},
+ {prompt:"Say that the food is very delicious and ask for the bill.", sample:"Example: \"Lami kaayo ang pagkaon diri! Bill, palihug.\""},
+ {prompt:"Describe at the doctor's that you've had a runny nose and a cough since yesterday.", sample:"Example: \"Sip-on ug ubo ko sukad kagahapon.\""},
+ {prompt:"Ask someone if they have a fever and answer that their throat hurts.", sample:"Example: \"Naa ka'y hilanat? Gamay ra, apan sakit ang akong tutunlan.\""},
+ {prompt:"Say that this medicine must be taken three times a day.", sample:"Example: \"Kinahanglan nimo mag-inom ani nga tambal tulo ka beses matag adlaw.\""},
+ {prompt:"Ask someone about their favorite sport and answer.", sample:"Example: \"Unsa imong paboritong isport? Ganahan kaayo ko og basketbol.\""},
+ {prompt:"Suggest playing volleyball this afternoon.", sample:"Example: \"Mudula ta og bolibol karong hapon?\""},
+ {prompt:"Say that you're used to running every morning.", sample:"Example: \"Naanad ko modagan matag buntag.\""},
+ {prompt:"Say you're looking for new clothes and ask if you can try something on.", sample:"Example: \"Mangita ko og bag-ong sinina. Pwede ba nako sul-obon ni?\""},
+ {prompt:"Ask someone their clothing size and answer for yourself.", sample:"Example: \"Unsa imong sukod? Medium ra ko.\""},
+ {prompt:"Ask if an item comes in another color or a smaller size.", sample:"Example: \"Naa ba ni sa laing kolor? Mas gamay pa ba naa?\""},
+ {prompt:"Say what your favorite color is.", sample:"Example: \"Unsa ang paborito nimong kolor? Ganahan ko sa asul ug berde.\""},
+ {prompt:"Describe the color of a piece of clothing you see.", sample:"Example: \"Pula kaayo kanang sapatos.\""},
+ {prompt:"Choose between two colors for something you want to buy.", sample:"Example: \"Itom o puti, palihug.\""},
+ {prompt:"Ask someone what hurts and answer that your head hurts.", sample:"Example: \"Unsa'y sakit nimo? Sakit akong ulo.\""},
+ {prompt:"Say that your stomach also hurts and you need to go to the doctor.", sample:"Example: \"Sakit sad akong tiyan. Kinahanglan ka moadto sa doktor.\""},
+ {prompt:"Say that your body feels hot and you might have a fever.", sample:"Example: \"Init akong lawas, tingali hilanat ko.\""},
+ {prompt:"Ask someone what they're learning at school and answer.", sample:"Example: \"Unsa imong gitun-an sa eskwelahan? Nagtuon ko og Ingles ug Matematika.\""},
+ {prompt:"Say that a lesson is very difficult and you need to study for the exam.", sample:"Example: \"Lisod kaayo ni nga leksyon. Kinahanglan ko mag-eskwela para sa exam.\""},
+ {prompt:"Announce happily that you passed your exam.", sample:"Example: \"Nakapasar ko sa akong exam!\""},
+ {prompt:"Ask what's being celebrated today and answer.", sample:"Example: \"Unsa ang gisaulog karong adlawa? Piyesta sa among baryo karon.\""},
+ {prompt:"Wish someone a happy birthday.", sample:"Example: \"Malipayong adlawng natawhan!\""},
+ {prompt:"Suggest eating lechon at the festival.", sample:"Example: \"Mangaon ta ug lechon sa piyesta!\""},
+ {prompt:"Ask if there's phone signal here and say your load/credit is low.", sample:"Example: \"Naa bay signal diri? Gamay ra ang akong load.\""},
+ {prompt:"Ask someone for their Wi-Fi password.", sample:"Example: \"Pwede ko mangayo sa imong Wi-Fi password?\""},
+ {prompt:"Say that your phone's battery is dead and ask someone to charge it.", sample:"Example: \"Nahurot na ang baterya sa akong selpon. Palihug i-charge ang akong selpon.\""},
+ {prompt:"Say you'd like to send a package and ask the price of a stamp.", sample:"Example: \"Gusto ko mag-padala og pakete. Tagpila ang selyo padulong sa Alemanya?\""},
+ {prompt:"Ask where you can withdraw money and say you need your ID.", sample:"Example: \"Asa ko pwede mag-withdraw og kwarta? Gikinahanglan nako ang akong ID.\""},
+ {prompt:"Ask where to fill out a form and thank someone for the service.", sample:"Example: \"Asa nako pun-on ni nga porma? Salamat, maayo ang serbisyo diri.\""},
+ {prompt:"Call loudly for help because there's been an accident, and ask for an ambulance.", sample:"Example: \"Tabang! Aksidente! Tawagi dayon ang ambulansya!\""},
+ {prompt:"Ask for the nearest hospital.", sample:"Example: \"Asa ang labing duol nga ospital?\""},
+ {prompt:"Say that your wallet is missing and reassure someone.", sample:"Example: \"Nawala ang akong pitaka! Ayaw kabalaka, safe ra ta karon.\""},
+ {prompt:"Ask who's cleaning the room today and say you'll wash the dishes.", sample:"Example: \"Kinsa ang maglimpyo sa kwarto karon? Akoy maghugas sa mga plato.\""},
+ {prompt:"Ask someone to clean the table.", sample:"Example: \"Palihug limpyohi ang lamesa.\""},
+ {prompt:"Say you haven't done the laundry yet and ask who's cooking tonight.", sample:"Example: \"Wala pa nako mabuhat ang labada. Kinsa'y mag-luto karong gabii?\""},
+ {prompt:"Ask where the nearest bus stop is.", sample:"Example: \"Asa ang pinakaduol nga hunta-anan?\""},
+ {prompt:"Ask if a jeepney goes to the market and what the fare costs.", sample:"Example: \"Moadto ba ni nga jeep sa merkado? Tagpila ang plete?\""},
+ {prompt:"Say the bus is already full and that you're getting off here.", sample:"Example: \"Puno na ang bus, wala nay lingkoranan. Salamat, dinhi ra ko molugsong.\""},
+ {prompt:"Ask someone if they have a boyfriend or girlfriend.", sample:"Example: \"Naa ka bay uyab?\""},
+ {prompt:"Say that you've been together for three years.", sample:"Example: \"Nagkita mi sulod sa tulo ka tuig.\""},
+ {prompt:"Tell someone that you truly love them, forever.", sample:"Example: \"Nahigugma gayod ko nimo. Maghigugmaay ta hangtud sa kahangturan.\""},
+ {prompt:"Introduce yourself and mention your job at the same time.", sample:"Example: \"Ako si Anna. Doktor ko sa usa ka klinika.\""},
+ {prompt:"At the market, ask the price of something and how much a kilo costs.", sample:"Example: \"Tagpila ang mangga? Baynte pesos ang usa ka kilo.\""},
+ {prompt:"Say that it's very hot today.", sample:"Example: \"Init kaayo karon.\""},
+ {prompt:"Say you're tired from work but happy to see your friends.", sample:"Example: \"Gikapoy ra ko sa trabaho, apan nalipay ko nga nakita tika.\""},
+ {prompt:"Say when and where your flight is tomorrow.", sample:"Example: \"Molupad ko padulong Cebu ugma.\""},
+ {prompt:"Order your favorite food and a drink at a restaurant.", sample:"Example: \"Ganahan ko og kan-on ug isda. Usa ka kape, palihug.\""},
+ {prompt:"Ask your friends if they want to play basketball this afternoon.", sample:"Example: \"Mudula ta og basketbol karong hapon uban sa akong mga higala?\""},
+ {prompt:"Say the exam was hard, but you're happy because you passed.", sample:"Example: \"Lisod kaayo ang exam, apan malipayon ko kay nakapasar ko.\""},
+ {prompt:"Thank someone who helped you.", sample:"Example: \"Salamat sa imong tabang!\""},
+ {prompt:"Wish someone a happy new year.", sample:"Example: \"Manghinaot ko og maayong bag-ong tuig nimo.\""},
 ];
 
 /* ============ AUDIO-AUSSPRACHE (Web Speech API) ============ */
@@ -10188,6 +10376,67 @@ const AUDIO_MAP = {
  "pagparat": "87b4edca44d077d2.mp3",
  "paghangin": "d8fbf999415b8a55.mp3",
  "pagbulad": "d6dbda75eba1ae62.mp3",
+ "Maayo ra ko. Ako si ___. Malipayon ko karon.": "cba0dd7439c95a64.mp3",
+ "Maayong buntag! Kumusta ka?": "878da96664b63ed9.mp3",
+ "Duha ka igsoon ang naa nako. Nahigugma ko sa akong inahan kay maayo siya kaayo.": "8539865a2463076e.mp3",
+ "Mao kini ang akong amahan. Ug mao kini ang akong inahan.": "67392205d5011ad2.mp3",
+ "Nahigugma ko sa akong pamilya kay maayo sila kanako.": "5f70257298d5312f.mp3",
+ "Isa, duha, tulo, upat, lima, unom, pito, walo, siyam, napulo.": "c4a198d8940ce120.mp3",
+ "Unsa nang orasa? Alas otso sa buntag.": "175f3a715180cbc0.mp3",
+ "Pila ka tuig na ka? Baynte anyos ko.": "ce9e49b4940e5f80.mp3",
+ "Unsang adlawa karon? Karon Lunes.": "d56be16940553fe9.mp3",
+ "Momata ko sa alas sais sa buntag. Mokaon ko og pamahaw, unya moadto sa trabaho. Sa gabii, motulog ko og sayo.": "cbe65f0414e987c5.mp3",
+ "Lunes, motrabaho ko. Sabado, mudula ko og basketball uban sa akong mga higala.": "cf9e05a2a9de1c59.mp3",
+ "Tagpila ang mangga? Pwede mubaratohon?": "c569cbbbbc7c718e.mp3",
+ "Sige, singkwenta pesos para tulo ka kilo. Salamat kaayo! Mubayad ko karon.": "3adb309df697f983.mp3",
+ "Gigutom na ko kaayo! Ganahan ko og kan-on ug isda.": "e87b0c3c0d6e6db9.mp3",
+ "Halang ba ni? Dili kaayo halang, lami ra.": "a81295f85c88d74d.mp3",
+ "Layo ba gikan diri? Dili layo, duol ra.": "b6ef74a9d243ef00.mp3",
+ "Init kaayo karon. Dad-a imong payong ugma kay muulan tingali.": "825c7309de5ecb54.mp3",
+ "Ugma, muulan tingali. Dad-a imong payong.": "95e92ad4451c2624.mp3",
+ "Asa ang kusina? Tapad sa lawak-kan-onan.": "ea1f158ed377afd8.mp3",
+ "Naa bay bintana sa akong kwarto? Oo, duha ka bintana.": "ba85d5ac57df1195.mp3",
+ "Nganong masulub-on ka man? Gikapoy ra ko sa trabaho.": "0844b5304725d0e2.mp3",
+ "Unsa imong ganahan buhaton sa imong gawas nga oras? Ganahan kong mubasa og libro ug maminaw og musika.": "f7e0eff3292e0280.mp3",
+ "Mudula ka ba og basketball? Oo, kanunay ko mudula uban sa akong mga higala.": "93e53ba06ef48e68.mp3",
+ "Asa ka padulong? Muadto ko sa tugpahanan; mulupad ko pauli.": "e5d60d82ac51f6f4.mp3",
+ "Amping permi! Hangtud sa sunod nato nga panagkita, higala. Puhon magkita ta pag-usab.": "ffa2d6ae38d53e07.mp3",
+ "Nalipay ko nga nakita tika. Amping permi, ug sulati ko!": "e4e0427dab5df4c7.mp3",
+ "Naa koy iro sa balay. Unsa imong paboritong hayop?": "068ea8871feba0fa.mp3",
+ "Nahadlok ko sa halas. Ganahan ko sa mga iring kay buotan sila.": "1399be8f135eb9e4.mp3",
+ "Gusto ko moadto sa baybayon. Matahom kaayo ang kadagatan diri.": "bd33481e90ee4c88.mp3",
+ "Unsaon nako pag-adto sa syudad? Pwede ka mosakay og traysikel o jeepney.": "9c1c3536472422e8.mp3",
+ "Unsa imong trabaho? Doktor ko sa usa ka klinika.": "b42b16cfce2891aa.mp3",
+ "Lami kaayo ang pagkaon diri! Bill, palihug.": "1a0a2dc1e5f45486.mp3",
+ "Naa ka'y hilanat? Gamay ra, apan sakit ang akong tutunlan.": "ae6cfc5261e3d0ca.mp3",
+ "Unsa imong paboritong isport? Ganahan kaayo ko og basketbol.": "443fa9d8be65c82a.mp3",
+ "Mangita ko og bag-ong sinina. Pwede ba nako sul-obon ni?": "3b0211152000c05e.mp3",
+ "Unsa imong sukod? Medium ra ko.": "9b87deaecd7a3ba8.mp3",
+ "Naa ba ni sa laing kolor? Mas gamay pa ba naa?": "cb1193213cae9edd.mp3",
+ "Unsa ang paborito nimong kolor? Ganahan ko sa asul ug berde.": "fd9bfa374e4e2c37.mp3",
+ "Unsa'y sakit nimo? Sakit akong ulo.": "277725c7a3585463.mp3",
+ "Sakit sad akong tiyan. Kinahanglan ka moadto sa doktor.": "400208951a1213ab.mp3",
+ "Unsa imong gitun-an sa eskwelahan? Nagtuon ko og Ingles ug Matematika.": "28e65b146cc8a70b.mp3",
+ "Lisod kaayo ni nga leksyon. Kinahanglan ko mag-eskwela para sa exam.": "8e9e3ca020a3710b.mp3",
+ "Unsa ang gisaulog karong adlawa? Piyesta sa among baryo karon.": "3bf07d89040c726d.mp3",
+ "Naa bay signal diri? Gamay ra ang akong load.": "607723ceeaa301c4.mp3",
+ "Nahurot na ang baterya sa akong selpon. Palihug i-charge ang akong selpon.": "40dc5a6530cd3756.mp3",
+ "Gusto ko mag-padala og pakete. Tagpila ang selyo padulong sa Alemanya?": "ae1e41b7e96ce8ea.mp3",
+ "Asa ko pwede mag-withdraw og kwarta? Gikinahanglan nako ang akong ID.": "ddae4b03cefac1e4.mp3",
+ "Asa nako pun-on ni nga porma? Salamat, maayo ang serbisyo diri.": "1df002c4d537f0c9.mp3",
+ "Tabang! Aksidente! Tawagi dayon ang ambulansya!": "16aabf2d73cf4aef.mp3",
+ "Nawala ang akong pitaka! Ayaw kabalaka, safe ra ta karon.": "56bf2a5d1c7d3a68.mp3",
+ "Kinsa ang maglimpyo sa kwarto karon? Akoy maghugas sa mga plato.": "2e7819b423751592.mp3",
+ "Wala pa nako mabuhat ang labada. Kinsa'y mag-luto karong gabii?": "7a26d4e06db044da.mp3",
+ "Moadto ba ni nga jeep sa merkado? Tagpila ang plete?": "15f416096a43814c.mp3",
+ "Puno na ang bus, wala nay lingkoranan. Salamat, dinhi ra ko molugsong.": "668f7cbce5b1dda9.mp3",
+ "Nahigugma gayod ko nimo. Maghigugmaay ta hangtud sa kahangturan.": "c03a61f9d1bff311.mp3",
+ "Ako si Anna. Doktor ko sa usa ka klinika.": "8b6095ae230b04c8.mp3",
+ "Tagpila ang mangga? Baynte pesos ang usa ka kilo.": "a138677f38240d50.mp3",
+ "Gikapoy ra ko sa trabaho, apan nalipay ko nga nakita tika.": "c5308b38508f6eaf.mp3",
+ "Ganahan ko og kan-on ug isda. Usa ka kape, palihug.": "68dbb1b03407cc06.mp3",
+ "Mudula ta og basketbol karong hapon uban sa akong mga higala?": "a64b02f6d5eef228.mp3",
+ "Lisod kaayo ang exam, apan malipayon ko kay nakapasar ko.": "65e5fe5ced1586e2.mp3",
 };
 function ensureAudioMapLoaded(){ /* AUDIO_MAP ist bereits eingebettet, nichts zu tun */ }
 function playPregeneratedAudio(text, btnEl, onFail){
@@ -12074,18 +12323,39 @@ function renderAnwenden(){
   const freeEl = document.getElementById("freeExercises");
   const freePlaceholder = isEn ? "Write your answer in Bisaya here..." : "Schreib hier deine Antwort auf Bisaya...";
   const freeAnswerLabel = isEn ? "Show example" : "Beispiel anzeigen";
-  freeEl.innerHTML = frees.map((f,i)=>`
-      <div class="exercise" style="margin-bottom:14px;">
+  const nextWordLabel = isEn ? "Next word" : "Nächstes Wort";
+  const fullyRevealedLabel = isEn ? "✓ fully revealed" : "✓ vollständig aufgedeckt";
+  const unlocked = freeExercisesUnlockedCount();
+  const progressHtml = `<p class="small" style="margin-bottom:10px;"><b>${unlocked} ${isEn?"of":"von"} ${frees.length}</b> ${isEn
+    ? 'tasks unlocked — write your answer, then click "Show example" step by step to reveal it word by word. Once it is fully revealed, the next task unlocks.'
+    : 'Aufgaben freigeschaltet — schreib deine Antwort, dann klick schrittweise auf "Beispiel anzeigen", um das Beispiel Wort für Wort aufzudecken. Erst wenn es komplett aufgedeckt ist, schaltet sich die nächste Aufgabe frei.'}</p>`;
+  const cardsHtml = frees.slice(0, unlocked).map((f,i)=>{
+    const bisText = extractBisFromSample(f.sample);
+    const words = bisText.split(" ");
+    const progress = freeExWordsRevealed(i);
+    const fullyRevealed = progress >= words.length;
+    const shownWords = progress>0 ? words.slice(0,progress).join(" ") + (fullyRevealed?"":" …") : "";
+    const btnOrCheck = fullyRevealed
+      ? `<span class="small" style="color:var(--accent2); font-weight:700;">${fullyRevealedLabel}</span>`
+      : `<button class="action neutral" onclick="revealNextFreeWord(${i})">${progress===0 ? freeAnswerLabel : nextWordLabel}</button>`;
+    return `
+      <div class="exercise${progress>0?" revealed":""}" style="margin-bottom:14px;" id="freeEx${i}">
         <div><b>${i+1}.</b> ${f.prompt}</div>
         <textarea id="free${i}" placeholder="${freePlaceholder}" onchange="saveFree(${i})"></textarea>
         <div class="btnrow" style="justify-content:flex-start;">
-          <button class="action neutral" onclick="revealFree(${i})">${freeAnswerLabel}</button>
+          ${btnOrCheck}
         </div>
-        <div class="answer" id="freeAns${i}">${speakBtn(extractBisFromSample(f.sample),'')} ${f.sample}</div>
-      </div>`).join("");
+        <div class="answer" id="freeAns${i}">${shownWords ? speakBtn(bisText,'') + " " + shownWords : ""}</div>
+      </div>`;
+  }).join("");
+  const doneHtml = unlocked >= frees.length
+    ? `<div class="card" style="margin-top:10px; text-align:center;">🎉 ${isEn ? `All ${frees.length} tasks unlocked — keep it up!` : `Alle ${frees.length} Aufgaben freigeschaltet — weiter so!`}</div>`
+    : "";
+  freeEl.innerHTML = progressHtml + cardsHtml + doneHtml;
   frees.forEach((f,i)=>{
     const saved = localStorage.getItem("bisaya_free_"+i);
-    if(saved) document.getElementById("free"+i).value = saved;
+    const el = document.getElementById("free"+i);
+    if(saved && el) el.value = saved;
   });
 }
 function updateChunk(){
@@ -12100,7 +12370,35 @@ function updateChunk(){
   document.getElementById("chunkResult").innerHTML = `${chunkSentence} ${speakBtn(chunkSentence,'')} — „${v[1]}, ${p[1]}, ${o[1]}\"`;
 }
 function revealGap(i){ document.getElementById("gap"+i).classList.toggle("revealed"); }
-function revealFree(i){ document.getElementById("freeAns"+i).parentElement.classList.toggle("revealed"); }
+// Fortschritt der "Freien Anwendung": schrittweise Freischaltung neuer Aufgaben + Wort-für-Wort-
+// Aufdecken der Beispielantwort (statt Sofort-Anzeige), analog zum Italienisch-Modul.
+function freeExercisesUnlockedCount(){
+  const isEn = currentMode()==="learn-bis-en";
+  const frees = isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
+  state.freeExUnlocked = state.freeExUnlocked || 1;
+  if(state.freeExUnlocked > frees.length) state.freeExUnlocked = frees.length;
+  return state.freeExUnlocked;
+}
+function freeExWordsRevealed(i){
+  state.freeExWordProgress = state.freeExWordProgress || {};
+  return state.freeExWordProgress[i] || 0;
+}
+function revealNextFreeWord(i){
+  const isEn = currentMode()==="learn-bis-en";
+  const frees = isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
+  const bisText = extractBisFromSample(frees[i].sample);
+  const words = bisText.split(" ");
+  state.freeExWordProgress = state.freeExWordProgress || {};
+  const current = state.freeExWordProgress[i] || 0;
+  if(current < words.length) state.freeExWordProgress[i] = current + 1;
+  const newProgress = state.freeExWordProgress[i];
+  const unlocked = freeExercisesUnlockedCount();
+  if(newProgress >= words.length && i === unlocked - 1 && unlocked < frees.length){
+    state.freeExUnlocked = unlocked + 1;
+  }
+  saveState();
+  renderAnwenden();
+}
 function saveFree(i){ localStorage.setItem("bisaya_free_"+i, document.getElementById("free"+i).value); }
 
 /* ============ GRAMMATIK ============ */
