@@ -684,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.33.0</div>
+  <div class="version-tag">v1.34.0</div>
 </section>
 
 <!-- METHODE -->
@@ -12039,24 +12039,56 @@ function sbShuffledIndices(n){
   }
   return arr;
 }
-function sbGetState(lessonId, lineIdx, dir, words){
+const SB_DECOY_COUNT = 3;
+// Sammelt Woerter aus den ANDEREN Zeilen derselben Lektion (Muttersprache) als Kandidaten fuer
+// Ablenker-Woerter — thematisch passend, aber falsch fuer DIESEN Satz. So wird aus reinem
+// Nachsortieren ein echtes Erkennen: welche Woerter gehoeren hier hin, welche nicht.
+function sbCollectDecoyCandidates(l, lineIdx, isEn, excludeWordsLower){
+  const words = new Set();
+  l.lines.forEach((otherLine,i)=>{
+    if(i===lineIdx) return;
+    const t = isEn ? (otherLine.naturalEn || otherLine.natural) : otherLine.natural;
+    t.split(" ").forEach(w=>{ if(w && !excludeWordsLower.includes(w.toLowerCase())) words.add(w); });
+  });
+  return Array.from(words);
+}
+function sbGetState(lessonId, lineIdx, dir, words, l, isEn){
   const key = sbTaskKey(lessonId, lineIdx, dir);
-  if(!sb[key]) sb[key] = { order: sbShuffledIndices(words.length), placed: [], wrong:false };
+  if(!sb[key]){
+    const items = words.map((w,idx)=>({type:"real", idx}));
+    // Ablenker-Woerter gibt es nur beim Decodieren (Bisaya -> Muttersprache), nicht bei der
+    // Produktions-Richtung — dort waeren falsche Bisaya-Woerter fuer Anfaenger zu frustrierend.
+    if(dir === "toNat"){
+      const targetLower = words.map(w=>w.toLowerCase());
+      const candidates = sbCollectDecoyCandidates(l, lineIdx, isEn, targetLower);
+      const shuffledCand = sbShuffledIndices(candidates.length).map(i=>candidates[i]);
+      const decoyCount = Math.min(SB_DECOY_COUNT, shuffledCand.length);
+      for(let i=0;i<decoyCount;i++) items.push({type:"decoy", word: shuffledCand[i]});
+    }
+    sb[key] = { items, order: sbShuffledIndices(items.length), placed: [], wrong:false, wrongDecoyIdx:null };
+  }
   return sb[key];
 }
-function sbPlace(lessonId, lineIdx, dir, idx){
+function sbPlace(lessonId, lineIdx, dir, itemIdx){
   const l = LESSONS.find(x=>x.id===lessonId);
   const mode = currentMode();
   const isEn = mode==="learn-bis-en";
   const line = l.lines[lineIdx];
   const naturalText = isEn ? (line.naturalEn || line.natural) : line.natural;
   const words = (dir==="toBis" ? line.bis : naturalText).split(" ");
-  const st = sbGetState(lessonId, lineIdx, dir, words);
-  st.order = st.order.filter(i=>i!==idx);
-  st.placed.push(idx);
+  const st = sbGetState(lessonId, lineIdx, dir, words, l, isEn);
+  const item = st.items[itemIdx];
+  if(item.type === "decoy"){
+    st.wrongDecoyIdx = itemIdx;
+    openLesson(lessonId);
+    return;
+  }
+  st.order = st.order.filter(i=>i!==itemIdx);
+  st.placed.push(itemIdx);
   st.wrong = false;
+  st.wrongDecoyIdx = null;
   if(st.placed.length === words.length){
-    const correct = st.placed.every((v,i)=>v===i);
+    const correct = st.placed.every((ii,i)=>st.items[ii].idx===i);
     if(correct){
       const done = sbDoneMap(lessonId);
       done[lineIdx+"_"+dir] = true;
@@ -12071,9 +12103,10 @@ function sbUndo(lessonId, lineIdx, dir){
   const key = sbTaskKey(lessonId, lineIdx, dir);
   const st = sb[key];
   if(!st || st.placed.length===0) return;
-  const idx = st.placed.pop();
-  st.order.push(idx);
+  const itemIdx = st.placed.pop();
+  st.order.push(itemIdx);
   st.wrong = false;
+  st.wrongDecoyIdx = null;
   openLesson(lessonId);
 }
 function sbReset(lessonId, lineIdx, dir){
@@ -12087,8 +12120,8 @@ function renderSentenceBuilder(l, isEn){
   const total = sbTasksForLesson(l);
   const title = isEn ? "Build the sentence" : "Satz bauen";
   const introText = isEn
-    ? "Tap the words in the right order to rebuild each sentence — both directions. Once every sentence below is solved, you can mark the lesson as complete."
-    : "Tippe die Wörter in der richtigen Reihenfolge an, um jeden Satz nachzubauen — in beide Richtungen. Erst wenn alle Sätze unten gelöst sind, kannst du die Lektion als abgeschlossen markieren.";
+    ? "Tap the words in the right order to rebuild each sentence — both directions. When decoding into your language, watch out: a few wrong words are mixed into the pool. Once every sentence below is solved, you can mark the lesson as complete."
+    : "Tippe die Wörter in der richtigen Reihenfolge an, um jeden Satz nachzubauen — in beide Richtungen. Beim Decodieren in deine Sprache sind ein paar falsche Wörter im Pool versteckt — pass auf! Erst wenn alle Sätze unten gelöst sind, kannst du die Lektion als abgeschlossen markieren.";
   const progressText = isEn ? `${doneCount} of ${total} solved` : `${doneCount} von ${total} gelöst`;
   let tasksHtml = "";
   l.lines.forEach((line,lineIdx)=>{
@@ -12104,17 +12137,24 @@ function renderSentenceBuilder(l, isEn){
         tasksHtml += `<div class="sb-task sb-done">✅ <b>${dirLabel}:</b> ${targetText}</div>`;
         return;
       }
-      const st = sbGetState(lessonId, lineIdx, dir, words);
-      const poolHtml = st.order.map(idx=>`<button type="button" class="sb-chip" onclick="sbPlace(${lessonId},${lineIdx},'${dir}',${idx})">${words[idx]}</button>`).join("");
-      const placedHtml = st.placed.map(idx=>`<span class="sb-chip sb-chip-placed">${words[idx]}</span>`).join("");
+      const st = sbGetState(lessonId, lineIdx, dir, words, l, isEn);
+      const poolHtml = st.order.map(itemIdx=>{
+        const it = st.items[itemIdx];
+        const label = it.type==="real" ? words[it.idx] : it.word;
+        return `<button type="button" class="sb-chip" onclick="sbPlace(${lessonId},${lineIdx},'${dir}',${itemIdx})">${label}</button>`;
+      }).join("");
+      const placedHtml = st.placed.map(itemIdx=>`<span class="sb-chip sb-chip-placed">${words[st.items[itemIdx].idx]}</span>`).join("");
       const wrongMsg = st.wrong
         ? `<div class="sb-wrong-msg">${isEn ? "Not quite the right order — try again." : "Noch nicht die richtige Reihenfolge — versuch's nochmal."}</div>`
+        : "";
+      const decoyMsg = (st.wrongDecoyIdx!=null)
+        ? `<div class="sb-wrong-msg">${isEn ? `"${st.items[st.wrongDecoyIdx].word}" doesn't belong in this sentence.` : `„${st.items[st.wrongDecoyIdx].word}" gehört nicht in diesen Satz.`}</div>`
         : "";
       tasksHtml += `<div class="sb-task">
         <div class="sb-prompt">${dirLabel}: ${promptText}</div>
         <div class="sb-answer-row sb-row">${placedHtml || `<span class="small">${isEn?"tap words below…":"tippe unten Wörter an…"}</span>`}</div>
         <div class="sb-row">${poolHtml}</div>
-        ${wrongMsg}
+        ${wrongMsg}${decoyMsg}
         <div class="sb-controls">
           <button class="action neutral" onclick="sbUndo(${lessonId},${lineIdx},'${dir}')">${isEn?"Undo":"Rückgängig"}</button>
           <button class="action neutral" onclick="sbReset(${lessonId},${lineIdx},'${dir}')">${isEn?"Reset":"Neu mischen"}</button>
