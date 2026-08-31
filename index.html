@@ -684,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.34.0</div>
+  <div class="version-tag">v1.35.0</div>
 </section>
 
 <!-- METHODE -->
@@ -12043,14 +12043,29 @@ const SB_DECOY_COUNT = 3;
 // Sammelt Woerter aus den ANDEREN Zeilen derselben Lektion (Muttersprache) als Kandidaten fuer
 // Ablenker-Woerter — thematisch passend, aber falsch fuer DIESEN Satz. So wird aus reinem
 // Nachsortieren ein echtes Erkennen: welche Woerter gehoeren hier hin, welche nicht.
+// Normalisiert ein Wort fuer den Vergleich: Kleinschreibung + Satzzeichen am Rand entfernt,
+// damit z.B. "gut," und "gut." als dasselbe Wort erkannt werden (sonst landet ein Wort
+// als Ablenker, das sich nur durch Interpunktion vom richtigen Wort unterscheidet — verwirrend
+// statt herausfordernd).
+function sbNormWord(w){
+  return w.toLowerCase().replace(/^[„"“”'(]+/,'').replace(/[.,!?;:„"“”')]+$/,'');
+}
 function sbCollectDecoyCandidates(l, lineIdx, isEn, excludeWordsLower){
-  const words = new Set();
+  const excludeNorm = new Set(excludeWordsLower.map(sbNormWord));
+  const seenNorm = new Set();
+  const words = [];
   l.lines.forEach((otherLine,i)=>{
     if(i===lineIdx) return;
     const t = isEn ? (otherLine.naturalEn || otherLine.natural) : otherLine.natural;
-    t.split(" ").forEach(w=>{ if(w && !excludeWordsLower.includes(w.toLowerCase())) words.add(w); });
+    t.split(" ").forEach(w=>{
+      if(!w) return;
+      const norm = sbNormWord(w);
+      if(!norm || excludeNorm.has(norm) || seenNorm.has(norm)) return;
+      seenNorm.add(norm);
+      words.push(w);
+    });
   });
-  return Array.from(words);
+  return words;
 }
 function sbGetState(lessonId, lineIdx, dir, words, l, isEn){
   const key = sbTaskKey(lessonId, lineIdx, dir);
@@ -12080,7 +12095,7 @@ function sbPlace(lessonId, lineIdx, dir, itemIdx){
   const item = st.items[itemIdx];
   if(item.type === "decoy"){
     st.wrongDecoyIdx = itemIdx;
-    openLesson(lessonId);
+    openLesson(lessonId, {scroll:false});
     return;
   }
   st.order = st.order.filter(i=>i!==itemIdx);
@@ -12097,7 +12112,7 @@ function sbPlace(lessonId, lineIdx, dir, itemIdx){
       st.wrong = true;
     }
   }
-  openLesson(lessonId);
+  openLesson(lessonId, {scroll:false});
 }
 function sbUndo(lessonId, lineIdx, dir){
   const key = sbTaskKey(lessonId, lineIdx, dir);
@@ -12107,12 +12122,12 @@ function sbUndo(lessonId, lineIdx, dir){
   st.order.push(itemIdx);
   st.wrong = false;
   st.wrongDecoyIdx = null;
-  openLesson(lessonId);
+  openLesson(lessonId, {scroll:false});
 }
 function sbReset(lessonId, lineIdx, dir){
   const key = sbTaskKey(lessonId, lineIdx, dir);
   delete sb[key];
-  openLesson(lessonId);
+  openLesson(lessonId, {scroll:false});
 }
 function renderSentenceBuilder(l, isEn){
   const lessonId = l.id;
@@ -12169,7 +12184,8 @@ function renderSentenceBuilder(l, isEn){
     ${tasksHtml}
   </div>`;
 }
-function openLesson(id){
+function openLesson(id, opts){
+  const scroll = !opts || opts.scroll !== false;
   const l = LESSONS.find(x=>x.id===id);
   const el = document.getElementById("lektionenList");
   const mode = currentMode();
@@ -12192,7 +12208,7 @@ function openLesson(id){
       </div>
     </div>`;
     el.innerHTML = html;
-    window.scrollTo(0,0);
+    if(scroll) window.scrollTo(0,0);
     return;
   }
   const backLabel = isEn ? "← all lessons" : "← alle Lektionen";
@@ -12223,7 +12239,7 @@ function openLesson(id){
     </div>
   </div>`;
   el.innerHTML = html;
-  window.scrollTo(0,0);
+  if(scroll) window.scrollTo(0,0);
 }
 function toggleLessonDone(id){
   const l = LESSONS.find(x=>x.id===id);
