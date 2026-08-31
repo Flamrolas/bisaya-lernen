@@ -344,6 +344,18 @@ table.gram th{background:var(--chip);}
 .exercise{background:#f4efe3; border-radius:10px; padding:14px; margin-top:10px;}
 .exercise .answer{display:none; margin-top:8px; color:var(--accent2); font-weight:700;}
 .exercise.revealed .answer{display:block;}
+.sb-section{margin-top:18px; padding-top:14px; border-top:2px solid var(--line);}
+.sb-task{background:#f4efe3; border-radius:10px; padding:12px 14px; margin-top:10px;}
+.sb-task.sb-done{background:rgba(47,122,95,0.1); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.sb-prompt{font-weight:700; margin-bottom:8px;}
+.sb-row{display:flex; flex-wrap:wrap; gap:6px; min-height:38px; align-items:center;}
+.sb-answer-row{border:1px dashed var(--line); border-radius:8px; padding:6px; margin-bottom:8px;}
+.sb-chip{background:var(--chip); border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:0.88rem; cursor:pointer; font-family:inherit; color:var(--ink);}
+.sb-chip:hover{background:#e9dcc4;}
+.sb-chip.sb-chip-placed{background:var(--panel); border-color:var(--accent3);}
+.sb-controls{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
+.sb-wrong-msg{color:var(--warn); font-weight:700; margin-top:6px; font-size:0.85rem;}
+.sb-progress{font-size:0.8rem; color:var(--sub); margin-bottom:4px;}
 .small{font-size:0.8rem; color:var(--sub);}
 .backlink{cursor:pointer; color:var(--accent3); font-weight:700; font-size:0.9rem;}
 footer.appfoot{text-align:center; color:var(--sub); font-size:0.8rem; padding:20px;}
@@ -672,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.32.0</div>
+  <div class="version-tag">v1.33.0</div>
 </section>
 
 <!-- METHODE -->
@@ -11976,19 +11988,147 @@ function renderLessonList(){
    "<div class='lesson-grid'>" + LESSONS.map(l=>{
      const done = state.lessonsDone[l.id];
      const subtitle = mode==="learn-de" ? (LESSON_SUBTITLE_BIS[l.id] || l.subtitle) : isEn ? (LESSON_SUBTITLE_EN[l.id] || l.subtitle) : l.subtitle;
+     const sbProgress = mode==="learn-de" ? "" :
+       `<div class="small" style="margin-top:4px;">${sbDoneCount(l.id)}/${sbTasksForLesson(l)} ${isEn ? "sentences built" : "Sätze gebaut"}</div>`;
      return `<div class="lesson-tile" onclick="openLesson(${l.id})">
        <div class="num">${label} ${l.id}</div>
        <h4>${l.title}</h4>
        <div class="sub">${subtitle}</div>
+       ${sbProgress}
        ${done ? '<div class="done">✓</div>' : ''}
      </div>`;
    }).join("") + "</div>";
 }
-// Anti-Cheat: "als abgeschlossen markieren" (Punkte!) zaehlt nur, wenn die Lektion mindestens
-// MIN_LESSON_MS offen war — verhindert, alle Lektionen in Sekunden fuer Punkte durchzuklicken.
+// Anti-Cheat (nur noch fuer den Deutsch-Modul-Modus "learn-de"): "als abgeschlossen markieren"
+// (Punkte!) zaehlt nur, wenn die Lektion mindestens MIN_LESSON_MS offen war. Im normalen
+// Bisaya-Lernmodus (Deutsch/Englisch) wurde das durch den echten Lernnachweis "Satz bauen"
+// unten ersetzt (siehe sbAllDone).
 const MIN_LESSON_MS = 20000;
 let openLessonId = null;
 let openLessonSince = 0;
+
+/* ============ SATZ BAUEN (aktives Decodieren pro Lektion) ============ */
+// Fuer jede Lektionszeile gibt es zwei Aufgaben: die Zielsprache (Bisaya) aus der
+// Muttersprache nachbauen, und umgekehrt die Muttersprache aus dem Bisaya-Satz nachbauen.
+// Die Woerter werden per Klick in der richtigen Reihenfolge angeordnet (kein Tippen noetig,
+// dadurch exakt pruefbar und ohne Rechtschreib-Frust). Erst wenn ALLE Aufgaben einer Lektion
+// richtig geloest sind, laesst sich die Lektion als abgeschlossen markieren.
+let sb = {}; // transientes UI-Sitzungs-Objekt: sb[taskKey] = {order:[idx...], placed:[idx...]}
+function sbTaskKey(lessonId, lineIdx, dir){ return lessonId+"_"+lineIdx+"_"+dir; }
+function sbTasksForLesson(l){
+  // 2 Aufgaben pro Zeile (dir: "toBis" = Bisaya nachbauen, "toNat" = Muttersprache nachbauen)
+  return l.lines.length * 2;
+}
+function sbDoneMap(lessonId){
+  state.sentenceBuilder = state.sentenceBuilder || {};
+  state.sentenceBuilder[lessonId] = state.sentenceBuilder[lessonId] || {};
+  return state.sentenceBuilder[lessonId];
+}
+function sbDoneCount(lessonId){
+  const done = sbDoneMap(lessonId);
+  return Object.keys(done).filter(k=>done[k]).length;
+}
+function sbAllDone(lessonId, l){
+  return sbDoneCount(lessonId) >= sbTasksForLesson(l);
+}
+function sbShuffledIndices(n){
+  const arr = Array.from({length:n}, (_,i)=>i);
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function sbGetState(lessonId, lineIdx, dir, words){
+  const key = sbTaskKey(lessonId, lineIdx, dir);
+  if(!sb[key]) sb[key] = { order: sbShuffledIndices(words.length), placed: [], wrong:false };
+  return sb[key];
+}
+function sbPlace(lessonId, lineIdx, dir, idx){
+  const l = LESSONS.find(x=>x.id===lessonId);
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const line = l.lines[lineIdx];
+  const naturalText = isEn ? (line.naturalEn || line.natural) : line.natural;
+  const words = (dir==="toBis" ? line.bis : naturalText).split(" ");
+  const st = sbGetState(lessonId, lineIdx, dir, words);
+  st.order = st.order.filter(i=>i!==idx);
+  st.placed.push(idx);
+  st.wrong = false;
+  if(st.placed.length === words.length){
+    const correct = st.placed.every((v,i)=>v===i);
+    if(correct){
+      const done = sbDoneMap(lessonId);
+      done[lineIdx+"_"+dir] = true;
+      saveState();
+    } else {
+      st.wrong = true;
+    }
+  }
+  openLesson(lessonId);
+}
+function sbUndo(lessonId, lineIdx, dir){
+  const key = sbTaskKey(lessonId, lineIdx, dir);
+  const st = sb[key];
+  if(!st || st.placed.length===0) return;
+  const idx = st.placed.pop();
+  st.order.push(idx);
+  st.wrong = false;
+  openLesson(lessonId);
+}
+function sbReset(lessonId, lineIdx, dir){
+  const key = sbTaskKey(lessonId, lineIdx, dir);
+  delete sb[key];
+  openLesson(lessonId);
+}
+function renderSentenceBuilder(l, isEn){
+  const lessonId = l.id;
+  const doneCount = sbDoneCount(lessonId);
+  const total = sbTasksForLesson(l);
+  const title = isEn ? "Build the sentence" : "Satz bauen";
+  const introText = isEn
+    ? "Tap the words in the right order to rebuild each sentence — both directions. Once every sentence below is solved, you can mark the lesson as complete."
+    : "Tippe die Wörter in der richtigen Reihenfolge an, um jeden Satz nachzubauen — in beide Richtungen. Erst wenn alle Sätze unten gelöst sind, kannst du die Lektion als abgeschlossen markieren.";
+  const progressText = isEn ? `${doneCount} of ${total} solved` : `${doneCount} von ${total} gelöst`;
+  let tasksHtml = "";
+  l.lines.forEach((line,lineIdx)=>{
+    const naturalText = isEn ? (line.naturalEn || line.natural) : line.natural;
+    [["toBis", naturalText, line.bis], ["toNat", line.bis, naturalText]].forEach(([dir, promptText, targetText])=>{
+      const words = targetText.split(" ");
+      const done = sbDoneMap(lessonId);
+      const key = lineIdx+"_"+dir;
+      const dirLabel = dir==="toBis"
+        ? (isEn ? "→ Bisaya" : "→ Bisaya")
+        : (isEn ? "→ English" : "→ Deutsch");
+      if(done[key]){
+        tasksHtml += `<div class="sb-task sb-done">✅ <b>${dirLabel}:</b> ${targetText}</div>`;
+        return;
+      }
+      const st = sbGetState(lessonId, lineIdx, dir, words);
+      const poolHtml = st.order.map(idx=>`<button type="button" class="sb-chip" onclick="sbPlace(${lessonId},${lineIdx},'${dir}',${idx})">${words[idx]}</button>`).join("");
+      const placedHtml = st.placed.map(idx=>`<span class="sb-chip sb-chip-placed">${words[idx]}</span>`).join("");
+      const wrongMsg = st.wrong
+        ? `<div class="sb-wrong-msg">${isEn ? "Not quite the right order — try again." : "Noch nicht die richtige Reihenfolge — versuch's nochmal."}</div>`
+        : "";
+      tasksHtml += `<div class="sb-task">
+        <div class="sb-prompt">${dirLabel}: ${promptText}</div>
+        <div class="sb-answer-row sb-row">${placedHtml || `<span class="small">${isEn?"tap words below…":"tippe unten Wörter an…"}</span>`}</div>
+        <div class="sb-row">${poolHtml}</div>
+        ${wrongMsg}
+        <div class="sb-controls">
+          <button class="action neutral" onclick="sbUndo(${lessonId},${lineIdx},'${dir}')">${isEn?"Undo":"Rückgängig"}</button>
+          <button class="action neutral" onclick="sbReset(${lessonId},${lineIdx},'${dir}')">${isEn?"Reset":"Neu mischen"}</button>
+        </div>
+      </div>`;
+    });
+  });
+  return `<div class="sb-section">
+    <h3>${title}</h3>
+    <p class="small">${introText}</p>
+    <p class="sb-progress"><b>${progressText}</b></p>
+    ${tasksHtml}
+  </div>`;
+}
 function openLesson(id){
   const l = LESSONS.find(x=>x.id===id);
   const el = document.getElementById("lektionenList");
@@ -12036,8 +12176,9 @@ function openLesson(id){
   const doneLabel = isEn
     ? (state.lessonsDone[l.id] ? '✓ marked as complete' : 'Mark as complete')
     : (state.lessonsDone[l.id] ? '✓ als abgeschlossen markiert' : 'Als abgeschlossen markieren');
-  html += `<div class="note">💡 ${isEn ? (l.noteEn || l.note) : l.note}</div>
-    <div class="btnrow">
+  html += `<div class="note">💡 ${isEn ? (l.noteEn || l.note) : l.note}</div>`;
+  html += renderSentenceBuilder(l, isEn);
+  html += `<div class="btnrow">
       <button class="action ${state.lessonsDone[l.id]?'good':'primary'}" onclick="toggleLessonDone(${l.id})">${doneLabel}</button>
     </div>
   </div>`;
@@ -12045,20 +12186,26 @@ function openLesson(id){
   window.scrollTo(0,0);
 }
 function toggleLessonDone(id){
+  const l = LESSONS.find(x=>x.id===id);
+  const mode = currentMode();
   const nowDone = !state.lessonsDone[id];
   if(nowDone){
-    const openedLongEnough = openLessonId===id && openLessonSince && (Date.now()-openLessonSince) >= MIN_LESSON_MS;
-    if(!openedLongEnough){
-      const mode = currentMode();
-      const isBis = mode==="learn-de";
-      const isEn = mode==="learn-bis-en";
-      const msg = isBis
-        ? "Basaha una ang leksyon sa dili pa mo i-marka nga human."
-        : isEn
-        ? "Take a moment to go through the lesson before marking it done."
-        : "Schau dir die Lektion erst kurz an, bevor du sie als abgeschlossen markierst.";
-      showHintToast(msg);
-      return;
+    if(mode==="learn-de"){
+      // Deutsch-Modul (Cebuano lernt Deutsch): noch kein "Satz bauen" hier, alte Mindestzeit gilt weiter.
+      const openedLongEnough = openLessonId===id && openLessonSince && (Date.now()-openLessonSince) >= MIN_LESSON_MS;
+      if(!openedLongEnough){
+        showHintToast("Basaha una ang leksyon sa dili pa mo i-marka nga human.");
+        return;
+      }
+    } else {
+      if(!sbAllDone(id, l)){
+        const isEn = mode==="learn-bis-en";
+        const msg = isEn
+          ? "Finish building all the sentences below before marking this lesson as complete."
+          : "Baue zuerst alle Sätze weiter unten nach, bevor du die Lektion als abgeschlossen markierst.";
+        showHintToast(msg);
+        return;
+      }
     }
     touchDaily(); touchStreak(); // nur bei "als erledigt markieren" zählen, nicht beim Rückgängigmachen
   }
