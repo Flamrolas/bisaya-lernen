@@ -684,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.36.0</div>
+  <div class="version-tag">v1.37.0</div>
 </section>
 
 <!-- METHODE -->
@@ -10754,6 +10754,26 @@ function speakDeBtn(text){
   const safe = text.replace(/'/g,"\\'");
   return `<button class="speak-btn" title="Paminawa (German nga tingog sa browser)" onclick="event.stopPropagation(); speakDe('${safe}', this)">🔊</button>`;
 }
+// Generische Muttersprache-Ausgabe fuer Deutsch ODER Englisch (z.B. einzelne Woerter im
+// Satzbau) -- waehlt je nach Modus die passende Browser-Stimme.
+function speakNat(text, isEn, btnEl){
+  if(!window.speechSynthesis){
+    alert(isEn ? "This browser doesn't support audio playback." : "Wala pa'y suporta sa sini nga browser para sa audio.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const voice = pickVoice(isEn ? ["en"] : ["de"]);
+  const utt = new SpeechSynthesisUtterance(text);
+  if(voice) utt.voice = voice;
+  utt.rate = 0.88;
+  utt.pitch = 1.0;
+  if(btnEl){
+    utt.onstart = ()=>btnEl.classList.add("playing");
+    utt.onend = ()=>btnEl.classList.remove("playing");
+    utt.onerror = ()=>btnEl.classList.remove("playing");
+  }
+  window.speechSynthesis.speak(utt);
+}
 function isSafariBrowser(){
   const ua = navigator.userAgent;
   return /^((?!chrome|crios|android).)*safari/i.test(ua);
@@ -12372,7 +12392,11 @@ function renderSentenceBuilder(l, isEn){
       const poolHtml = st.order.map(itemIdx=>{
         const it = st.items[itemIdx];
         const label = it.type==="real" ? words[it.idx] : it.word;
-        return `<button type="button" class="sb-chip" onclick="sbPlace(${lessonId},${lineIdx},'${dir}',${itemIdx})">${label}</button>`;
+        // Woerter ohne Satzzeichen am Rand aussprechen -- so trifft die Bisaya-Aussprache
+        // oefter einen echten Azure-Vokabel-Eintrag statt auf die Browser-Stimme auszuweichen.
+        const spoken = label.replace(/^[„"“”'(]+/,'').replace(/[.,!?;:„"“”')]+$/,'').replace(/'/g,"\\'");
+        const speakCall = dir==="toBis" ? `speak('${spoken}','',this)` : `speakNat('${spoken}',${isEn},this)`;
+        return `<button type="button" class="sb-chip" onclick="event.stopPropagation(); ${speakCall}; sbPlace(${lessonId},${lineIdx},'${dir}',${itemIdx})">${label}</button>`;
       }).join("");
       const placedHtml = st.placed.map(itemIdx=>`<span class="sb-chip sb-chip-placed">${words[st.items[itemIdx].idx]}</span>`).join("");
       const wrongMsg = st.wrong
