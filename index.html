@@ -516,7 +516,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
       <div class="btnrow" style="justify-content:flex-end; margin-top:12px;">
         <button class="action primary" onclick="submitRegistration()">Bestätigungscode anfordern</button>
       </div>
-      <span class="steplink" id="guestSkipLink" onclick="closeRegOverlay()">Erst mal nur umsehen (als Gast)</span>
+      <span class="steplink" id="guestSkipLink" onclick="continueAsGuest()">Erst mal nur umsehen (als Gast)</span>
     </div>
     <div id="regConfirmStep" style="display:none;">
       <h2>E-Mail bestätigen</h2>
@@ -555,7 +555,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
         <button class="action primary" id="fbSignupSubmitBtn" onclick="firebaseSignUp()">Konto erstellen</button>
       </div>
       <span class="steplink" id="fbHaveAccountLink" onclick="goToFbLogin()">Schon ein Konto? Anmelden</span> ·
-      <span class="steplink" id="fbGuestSkipLink" onclick="closeRegOverlay()">Erst mal nur umsehen (als Gast)</span>
+      <span class="steplink" id="fbGuestSkipLink" onclick="continueAsGuest()">Erst mal nur umsehen (als Gast)</span>
     </div>
     <div id="fbLoginStep" style="display:none;">
       <h2 id="fbLoginH2">Anmelden</h2>
@@ -684,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.39.0</div>
+  <div class="version-tag">v1.40.0</div>
 </section>
 
 <!-- METHODE -->
@@ -10928,6 +10928,14 @@ function closeRegOverlay(){
   hideRegOverlay();
   pendingView = null;
 }
+function isGuestMode(){ return sessionStorage.getItem("guestMode") === "1"; }
+function continueAsGuest(){
+  sessionStorage.setItem("guestMode", "1");
+  hideRegOverlay();
+  const target = pendingView;
+  pendingView = null;
+  if(target) goView(target);
+}
 function showImpressum(){ document.getElementById("impressumOverlay").classList.remove("hidden"); }
 function hideImpressum(){ document.getElementById("impressumOverlay").classList.add("hidden"); }
 function showDatenschutz(){ document.getElementById("datenschutzOverlay").classList.remove("hidden"); }
@@ -12113,7 +12121,7 @@ function allVocab(){
 function goView(name){
   if(GATED_VIEWS.includes(name)){
     const p = loadProfile();
-    if(!p || !p.confirmed){
+    if((!p || !p.confirmed) && !isGuestMode()){
       pendingView = name;
       showRegOverlay(p);
       return;
