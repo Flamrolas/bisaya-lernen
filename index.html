@@ -684,7 +684,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.41.0</div>
+  <div class="version-tag">v1.42.0</div>
 </section>
 
 <!-- METHODE -->
@@ -821,17 +821,49 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 <section class="view" id="view-wendungen">
   <div class="card mode-bis-only">
     <h2>Wendungen — Alltagsphrasen, Redewendungen &amp; Slang</h2>
-    <p class="small">Über 200 zusätzliche Ausdrücke aus echtem Alltags-Bisaya: praktische Sätze für unterwegs, bildhafte Redewendungen und Sprichwörter (panultihon) mit ihrer wörtlichen Bedeutung, und Jugendsprache/Slang, wie er heute in Cebu tatsächlich gesprochen wird. Alle Einträge stehen auch als Karteikarten im Wortschatz-Trainer zur Verfügung (Kategorien "Alltagsphrasen", "Redewendungen", "Slang &amp; Jugendsprache").</p>
+    <p class="small">Über 200 zusätzliche Ausdrücke aus echtem Alltags-Bisaya: praktische Sätze für unterwegs, bildhafte Redewendungen und Sprichwörter (panultihon) mit ihrer wörtlichen Bedeutung, und Jugendsprache/Slang, wie er heute in Cebu tatsächlich gesprochen wird.</p>
   </div>
   <div class="card mode-en-only">
     <h2>Phrases — Everyday Sentences, Idioms &amp; Slang</h2>
-    <p class="small">Over 200 extra expressions from real everyday Bisaya: practical sentences for getting around, vivid idioms and proverbs (panultihon) with their literal meaning, and youth slang as it's actually spoken in Cebu today. All entries are also available as flashcards in the Vocabulary Trainer (categories "Everyday Phrases", "Idioms", "Slang &amp; Youth Language").</p>
+    <p class="small">Over 200 extra expressions from real everyday Bisaya: practical sentences for getting around, vivid idioms and proverbs (panultihon) with their literal meaning, and youth slang as it's actually spoken in Cebu today.</p>
   </div>
   <div class="card mode-de-only">
     <h2>Mga Pulong-pulong — Adlaw-adlaw nga Prase &amp; Slang</h2>
-    <p class="small">Kapin sa 200 ka dugang nga ekspresyon: praktikal nga mga tudling-pulong nga German, mga idioms uban sa ilang literal nga kahulogan, ug German slang nga tinuod nga gigamit karon. Ang tanan nga entry naa usab isip flashcard sa Bokabularyo Trainer.</p>
+    <p class="small">Kapin sa 200 ka dugang nga ekspresyon: praktikal nga mga tudling-pulong nga German, mga idioms uban sa ilang literal nga kahulogan, ug German slang nga tinuod nga gigamit karon.</p>
   </div>
-  <div id="wendungenList"></div>
+
+  <div class="card">
+    <div class="btnrow" style="justify-content:flex-start;" id="wendModeBar">
+      <button class="action primary" data-wmode="karten" onclick="wendSetMode('karten')">🗂 <span class="mode-bis-only">Karten-Challenge</span><span class="mode-de-only">Kard-Hagit</span><span class="mode-en-only">Card Challenge</span></button>
+      <button class="action neutral" data-wmode="quiz" onclick="wendSetMode('quiz')">🧩 <span class="mode-bis-only">Quiz</span><span class="mode-de-only">Quiz</span><span class="mode-en-only">Quiz</span></button>
+      <button class="action neutral" data-wmode="liste" onclick="wendSetMode('liste')">📋 <span class="mode-bis-only">Liste</span><span class="mode-de-only">Listahan</span><span class="mode-en-only">List</span></button>
+    </div>
+    <div class="filterbar" id="wendFilterBar">
+      <label class="small"><span class="mode-bis-only">Kategorie:</span><span class="mode-de-only">Kategoriya:</span><span class="mode-en-only">Category:</span>
+        <select id="wendCatFilter" onchange="wendOnFilterChange()"></select>
+      </label>
+      <span class="small" id="wendProgressLabel"></span>
+    </div>
+  </div>
+
+  <div id="wendKartenView" class="card" style="display:none;">
+    <div class="flash" id="wendFlashCard" onclick="wendFlipCard()">
+      <div class="front" id="wendFlashFront">–</div>
+      <div class="pron2" id="wendFlashPron"></div>
+      <div class="back" id="wendFlashBack"></div>
+      <div class="hint"><span class="mode-bis-only">antippen zum Umdrehen</span><span class="mode-de-only">i-tap aron molingi</span><span class="mode-en-only">tap to flip</span></div>
+    </div>
+    <div class="btnrow">
+      <button class="action neutral" onclick="wendPrevCard()"><span class="mode-bis-only">⬅ zurück</span><span class="mode-de-only">⬅ balik</span><span class="mode-en-only">⬅ back</span></button>
+      <button class="action neutral" onclick="wendMarkCard('learning')"><span class="mode-bis-only">🔁 noch üben</span><span class="mode-de-only">🔁 bansayon pa</span><span class="mode-en-only">🔁 still practicing</span></button>
+      <button class="action good" onclick="wendMarkCard('known')"><span class="mode-bis-only">✅ kann ich</span><span class="mode-de-only">✅ kaya na nako</span><span class="mode-en-only">✅ I know this</span></button>
+      <button class="action primary" onclick="wendNextCard()"><span class="mode-bis-only">weiter ➜</span><span class="mode-de-only">sunod ➜</span><span class="mode-en-only">next ➜</span></button>
+    </div>
+  </div>
+
+  <div id="wendQuizView" class="card" style="display:none;"></div>
+
+  <div id="wendungenList" style="display:none;"></div>
 </section>
 
 <!-- GESCHICHTEN -->
@@ -4988,7 +5020,7 @@ const PHRASES_VOCAB = [
  {bis:"Pasensya na.",de:"Entschuldige bitte (für kleine Missgeschicke).",en:"Sorry about that (for small mishaps).",pron:"pah-SEHN-syah nah",cat:"Alltagsphrasen",note:"Milder als 'pasayloa ko', aus dem Spanischen 'paciencia'."},
  {bis:"Lagi.",de:"Klar! Na klar! (bestätigend)",en:"Right! Sure! (affirming)",pron:"LAH-gee",cat:"Alltagsphrasen",note:"Wird oft ans Satzende gehängt, um Zustimmung/geteilte Erfahrung zu signalisieren."},
  {bis:"Init lagi karon.",de:"Heiß heute, was?",en:"It's hot today, isn't it?",pron:"EE-nit LAH-gee KAH-ron",cat:"Alltagsphrasen",note:"Beispiel für 'lagi' am Satzende."},
- {bis:"Pwede ba mahal?",de:"Geht da noch was am Preis? (beim Feilschen)",en:"Is there still room on the price? (while haggling)",pron:"PWEH-deh bah MAH-hahl",cat:"Markt & Reise",note:"Übliche, höfliche Feilsch-Formel auf dem Markt."},
+ {bis:"Pwede ba mahal?",de:"Geht da noch was am Preis? (beim Feilschen)",en:"Is there still room on the price? (while haggling)",pron:"PWEH-deh bah MAH-hahl",cat:"Alltagsphrasen",note:"Übliche, höfliche Feilsch-Formel auf dem Markt."},
  {bis:"Unsa may chika?",de:"Was gibt's Neues? Was ist der neueste Tratsch?",en:"What's new? What's the latest gossip?",pron:"OON-sah mahy CHEE-kah",cat:"Alltagsphrasen",note:"'Chika' = Klatsch/Neuigkeiten, ursprünglich aus dem Tagalog."},
  {bis:"Bai, tara kaon ta!",de:"Kumpel, komm, lass uns essen gehen!",en:"Buddy, come on, let's go eat!",pron:"bahy TAH-rah KAH-on tah",cat:"Slang & Jugendsprache",note:"Typischer Freundes-Ausdruck mit 'tara' (los!)."},
  {bis:"Lami jud!",de:"Wirklich lecker!",en:"Really delicious!",pron:"LAH-mee dyood",cat:"Slang & Jugendsprache",note:"'Jud/Gyud' verstärkt jede Aussage als 'wirklich, echt'."},
@@ -12974,7 +13006,7 @@ function setMode(mode){
     handleVocabSearch();
     populateCatFilter(); refreshDeck();
   }
-  if(activeView === "wendungen") renderWendungen();
+  if(activeView === "wendungen") wendInit();
   if(activeView === "geschichten") renderStoryList();
   if(activeView === "lieder") renderLiedList();
   if(activeView === "lektionen") renderLessonList();
@@ -13028,7 +13060,7 @@ function goView(name){
   if(name==="fortschritt") renderProgress();
   if(name==="lektionen") renderLessonList();
   if(name==="anwenden") renderAnwenden();
-  if(name==="wendungen") renderWendungen();
+  if(name==="wendungen") wendInit();
   if(name==="geschichten") renderStoryList();
   if(name==="lieder") renderLiedList();
   if(name==="quiz") renderQuizView();
@@ -13088,6 +13120,306 @@ function renderWendungen(){
   });
   el.innerHTML = html;
 }
+
+/* ============ WENDUNGEN: Karten-Challenge + Quiz (statt reiner Leseliste) ============ */
+// Nutzt dieselbe Karteikarten-/Quiz-Mechanik wie Wortschatz-Trainer und Haupt-Quiz, aber mit
+// eigenem Deck/eigenem Fragenpool, der auf PHRASES_VOCAB (Alltagsphrasen/Redewendungen/Slang)
+// eingeschränkt ist. Der Lernfortschritt landet trotzdem im selben state.words wie im
+// Wortschatz-Trainer -- eine Wendung als "kann ich" markiert zählt also überall gleich mit.
+let wendMode = "karten";
+let wendDeck = [];
+let wendDeckIdx = 0;
+let wendCardFlippedAt = 0;
+let wendQuizState = null;
+
+function wendPhrasePool(){
+  allVocab(); // stellt sicher, dass .vip auf PHRASES_VOCAB gesetzt ist
+  const vipOk = isVipActive();
+  return PHRASES_VOCAB.filter(p => vipOk || !p.vip);
+}
+function wendPopulateCatFilter(){
+  const sel = document.getElementById("wendCatFilter");
+  if(!sel) return;
+  const cats = ["Alltagsphrasen","Redewendungen","Slang & Jugendsprache"];
+  const mode = currentMode();
+  const allLabel = mode==="learn-de" ? "Tanang Kategoriya" : mode==="learn-bis-en" ? "All Categories" : "Alle Kategorien";
+  const prev = sel.value;
+  sel.innerHTML = `<option value="alle">${allLabel}</option>` + cats.map(c=>{
+    const items = PHRASES_VOCAB.filter(p=>p.cat===c);
+    if(items.length===0) return "";
+    return `<option value="${c}">${categoryLabel(c, mode)} (${items.length})</option>`;
+  }).join("");
+  if(prev && Array.from(sel.options).some(o=>o.value===prev)) sel.value = prev;
+}
+function wendCurrentCat(){
+  const sel = document.getElementById("wendCatFilter");
+  return sel ? sel.value : "alle";
+}
+function wendFilteredPool(){
+  const cat = wendCurrentCat();
+  return wendPhrasePool().filter(p => cat==="alle" || p.cat===cat);
+}
+function wendUpdateProgressLabel(){
+  const el = document.getElementById("wendProgressLabel");
+  if(!el) return;
+  const pool = wendFilteredPool();
+  const known = pool.filter(p=>state.words[p.bis]==="known").length;
+  const mode = currentMode();
+  const label = mode==="learn-de" ? `${known} sa ${pool.length} nahibaw-an na`
+    : mode==="learn-bis-en" ? `${known} of ${pool.length} known`
+    : `${known} von ${pool.length} bekannt`;
+  el.textContent = pool.length ? label : "";
+}
+function wendSetMode(mode){
+  wendMode = mode;
+  document.querySelectorAll("#wendModeBar button").forEach(b=>{
+    b.classList.toggle("primary", b.dataset.wmode===mode);
+    b.classList.toggle("neutral", b.dataset.wmode!==mode);
+  });
+  document.getElementById("wendKartenView").style.display = mode==="karten" ? "" : "none";
+  document.getElementById("wendQuizView").style.display = mode==="quiz" ? "" : "none";
+  document.getElementById("wendungenList").style.display = mode==="liste" ? "" : "none";
+  document.getElementById("wendFilterBar").style.display = mode==="liste" ? "none" : "flex";
+  if(mode==="karten") wendRefreshDeck();
+  if(mode==="quiz") wendRenderQuizIntro();
+  if(mode==="liste") renderWendungen();
+}
+function wendOnFilterChange(){
+  wendUpdateProgressLabel();
+  if(wendMode==="karten") wendRefreshDeck();
+  if(wendMode==="quiz") wendRenderQuizIntro();
+}
+function wendInit(){
+  wendPopulateCatFilter();
+  wendUpdateProgressLabel();
+  wendSetMode(wendMode || "karten");
+}
+
+/* --- Karten-Challenge --- */
+function wendRefreshDeck(){
+  wendDeck = wendFilteredPool().slice();
+  for(let i=wendDeck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [wendDeck[i],wendDeck[j]]=[wendDeck[j],wendDeck[i]]; }
+  wendDeckIdx = 0;
+  wendUpdateProgressLabel();
+  wendShowCard();
+}
+function wendShowCard(){
+  const card = document.getElementById("wendFlashCard");
+  if(!card) return;
+  card.classList.remove("flipped");
+  wendCardFlippedAt = 0;
+  const mode = currentMode();
+  if(wendDeck.length===0){
+    document.getElementById("wendFlashFront").textContent = mode==="learn-de" ? "🎉 Walay kard niini nga filter" : mode==="learn-bis-en" ? "🎉 No cards in this filter" : "🎉 Keine Karten in diesem Filter";
+    document.getElementById("wendFlashPron").innerHTML = "";
+    document.getElementById("wendFlashBack").innerHTML = "";
+    return;
+  }
+  const v = wendDeck[wendDeckIdx % wendDeck.length];
+  if(mode==="learn-de"){
+    document.getElementById("wendFlashFront").textContent = v.de;
+    document.getElementById("wendFlashPron").innerHTML = speakDeBtn(v.de);
+    document.getElementById("wendFlashBack").innerHTML = `<div style="font-size:1.2rem; font-weight:700; color:var(--accent2)">${v.bis}</div>${v.note ? `<div class="note">💡 ${v.note}</div>` : ''}`;
+    return;
+  }
+  const isEn = mode==="learn-bis-en";
+  document.getElementById("wendFlashFront").textContent = v.bis;
+  const listenFallback = isEn ? " Listen to pronunciation" : " Aussprache anhören";
+  document.getElementById("wendFlashPron").innerHTML = speakBtn(v.bis, v.pron) + (v.pron ? " "+v.pron : listenFallback);
+  const backText = isEn ? (v.en || v.de) : v.de;
+  document.getElementById("wendFlashBack").innerHTML = `<div style="font-size:1.2rem; font-weight:700; color:var(--accent2)">${backText}</div>${v.note ? `<div class="note">💡 ${v.note}</div>` : ''}`;
+}
+function wendFlipCard(){
+  const card = document.getElementById("wendFlashCard");
+  card.classList.toggle("flipped");
+  if(card.classList.contains("flipped") && !wendCardFlippedAt) wendCardFlippedAt = Date.now();
+}
+function wendMarkCard(status){
+  if(wendDeck.length===0) return;
+  const v = wendDeck[wendDeckIdx % wendDeck.length];
+  if(status==="known"){
+    const card = document.getElementById("wendFlashCard");
+    const flipped = card && card.classList.contains("flipped");
+    const longEnough = flipped && wendCardFlippedAt && (Date.now() - wendCardFlippedAt) >= MIN_FLIP_MS;
+    if(!longEnough){
+      const mode = currentMode();
+      const isBis = mode==="learn-de";
+      const isEn = mode==="learn-bis-en";
+      const msg = !flipped
+        ? (isBis?"Lingia una ang kard aron makita ang tubag.":isEn?"Flip the card first to see the answer.":"Dreh die Karte erst um, um die Antwort zu sehen.")
+        : (isBis?"Hulat gamay una i-klik.":isEn?"Take a moment before marking it.":"Nimm dir kurz einen Moment, bevor du das markierst.");
+      showHintToast(msg);
+      return;
+    }
+  }
+  touchDaily(); touchStreak();
+  state.words[v.bis] = status;
+  saveState();
+  showBadgeToasts(checkAchievements());
+  wendNextCard();
+}
+function wendNextCard(){ wendDeckIdx++; wendShowCard(); wendUpdateProgressLabel(); }
+function wendPrevCard(){
+  if(wendDeck.length===0) return;
+  wendDeckIdx = (wendDeckIdx - 1 + wendDeck.length) % wendDeck.length;
+  wendShowCard();
+}
+
+/* --- Quiz-Modus: errate die tatsächliche Bedeutung der Wendung (Multiple Choice) --- */
+function wendQuizPromptAndAnswer(item, mode){
+  if(mode==="learn-de") return { prompt: item.bis, answer: item.de, promptLang:"bis" };
+  const isEn = mode==="learn-bis-en";
+  return { prompt: isEn ? (item.en||item.de) : item.de, answer: item.bis, promptLang: isEn ? "en" : "de" };
+}
+function wendBuildQuizCard(){
+  const mode = currentMode();
+  const pool = shuffleArr(wendFilteredPool());
+  const chosen = pool.slice(0, QUIZ_QUESTIONS_PER_CARD);
+  const fullPool = wendPhrasePool();
+  return chosen.map(item=>{
+    const pa = wendQuizPromptAndAnswer(item, mode);
+    const seen = new Set([pa.answer]);
+    const distractors = [];
+    const sameCat = shuffleArr(fullPool.filter(d=>d.cat===item.cat && d!==item));
+    for(const d of sameCat){
+      const dAnswer = wendQuizPromptAndAnswer(d, mode).answer;
+      if(!dAnswer || seen.has(dAnswer)) continue;
+      seen.add(dAnswer);
+      distractors.push(dAnswer);
+      if(distractors.length >= 3) break;
+    }
+    if(distractors.length < 3){
+      // Kategorie zu klein fuer 3 Distraktoren -> mit anderen Wendungen auffuellen.
+      const anyPool = shuffleArr(fullPool.filter(d=>d!==item));
+      for(const d of anyPool){
+        const dAnswer = wendQuizPromptAndAnswer(d, mode).answer;
+        if(!dAnswer || seen.has(dAnswer)) continue;
+        seen.add(dAnswer);
+        distractors.push(dAnswer);
+        if(distractors.length >= 3) break;
+      }
+    }
+    const options = shuffleArr([pa.answer, ...distractors]);
+    return { item, prompt: pa.prompt, correct: pa.answer, promptLang: pa.promptLang, options };
+  }).filter(q=>q.options.length >= 2);
+}
+function wendRenderQuizIntro(){
+  const el = document.getElementById("wendQuizView");
+  if(!el) return;
+  wendQuizState = null;
+  const pool = wendFilteredPool();
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  if(pool.length < 4){
+    el.innerHTML = `<p class="small">${isBis?"Pili ug lain nga kategoriya nga daghag entry aron mosugod ang quiz.":isEn?"Pick a category with more entries to start the quiz.":"Wähle eine Kategorie mit mehr Einträgen, um das Quiz zu starten."}</p>`;
+    return;
+  }
+  el.innerHTML = `<div class="quiz-intro">
+    <p>${isBis?"Usa ka dili matapos nga Deck: 6 ka pangutana matag kard. Sulayi ang tinuod nga kahulogan sa matag Wendung.":isEn?"An ongoing deck: 6 questions per card. Guess the real meaning of each phrase.":"Ein fortlaufendes Karten-Deck: 6 Fragen pro Karte. Errate die wahre Bedeutung jeder Wendung."}</p>
+    <button class="action primary" onclick="wendStartQuiz()">${isBis?"1. Kard ipakita 🧩":isEn?"Draw Card 1 🧩":"Karte 1 ziehen 🧩"}</button>
+  </div>`;
+}
+function wendStartQuiz(){
+  const cardQuestions = wendBuildQuizCard();
+  if(cardQuestions.length===0){ wendRenderQuizIntro(); return; }
+  wendQuizState = { cardNum:1, questions:cardQuestions, idx:0, correctCount:0, answered:false, sessionCorrect:0, sessionTotal:0 };
+  wendRenderQuizQuestion();
+}
+function wendRenderQuizQuestion(){
+  if(!wendQuizState) return;
+  if(wendQuizState.idx >= wendQuizState.questions.length){ wendRenderCardComplete(); return; }
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const q = wendQuizState.questions[wendQuizState.idx];
+  const el = document.getElementById("wendQuizView");
+  const cardLabel = (isBis?"Kard ":isEn?"Card ":"Karte ") + wendQuizState.cardNum;
+  const progressLabel = (isBis?"Pangutana ":isEn?"Question ":"Frage ") + (wendQuizState.idx+1) + " / " + wendQuizState.questions.length;
+  const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : q.promptLang==="bis" ? speakBtn(q.prompt, q.item.pron||"") : "";
+  el.innerHTML = `
+    <div class="small quiz-progress">${cardLabel} · ${progressLabel}</div>
+    <div class="quiz-prompt">${q.prompt} ${promptAudio}</div>
+    <div class="quiz-options" id="wendQuizOptions">
+      ${q.options.map((opt,i)=>`<button class="quiz-opt" data-idx="${i}" onclick="wendAnswerQuiz(${i})">${opt}</button>`).join("")}
+    </div>
+    <div id="wendQuizFeedback"></div>
+  `;
+}
+function wendAnswerQuiz(i){
+  if(!wendQuizState || wendQuizState.answered) return;
+  wendQuizState.answered = true;
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const q = wendQuizState.questions[wendQuizState.idx];
+  const chosen = q.options[i];
+  const correct = chosen === q.correct;
+  if(correct){ wendQuizState.correctCount++; wendQuizState.sessionCorrect++; }
+  wendQuizState.sessionTotal++;
+  document.querySelectorAll("#wendQuizOptions .quiz-opt").forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(q.options[idx]===q.correct) btn.classList.add("quiz-correct");
+    else if(idx===i) btn.classList.add("quiz-wrong");
+  });
+  const noteHtml = q.item.note ? `<div class="note">💡 ${q.item.note}</div>` : "";
+  const targetAudio = mode==="learn-de" ? speakDeBtn(q.correct) : speakBtn(q.correct, q.item.pron||"");
+  const feedbackHead = correct
+    ? "✅ " + (isBis ? pickRandom(CORRECT_PHRASES_BIS) : isEn ? pickRandom(CORRECT_PHRASES_EN) : pickRandom(CORRECT_PHRASES_DE))
+    : (isBis?`❌ Sayop. Ang tama: "${q.correct}"`:isEn?`❌ Not quite. Correct answer: "${q.correct}"`:`❌ Leider nicht. Richtig wäre: "${q.correct}"`);
+  const isLastInCard = wendQuizState.idx === wendQuizState.questions.length - 1;
+  const nextLabel = isLastInCard
+    ? (isBis?"Resulta sa Kard →":isEn?"Card result →":"Kartenergebnis →")
+    : (isBis?"Sunod →":isEn?"Next →":"Weiter →");
+  document.getElementById("wendQuizFeedback").innerHTML = `
+    <div class="quiz-feedback ${correct?'quiz-fb-good':'quiz-fb-bad'}">${feedbackHead} ${targetAudio}</div>
+    ${noteHtml}
+    <button class="action primary" style="margin-top:10px;" onclick="wendNextQuizQuestion()">${nextLabel}</button>
+  `;
+}
+function wendNextQuizQuestion(){
+  if(!wendQuizState) return;
+  wendQuizState.idx++;
+  wendQuizState.answered = false;
+  wendRenderQuizQuestion();
+}
+function wendRenderCardComplete(){
+  const mode = currentMode();
+  const isBis = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const total = wendQuizState.questions.length;
+  const score = wendQuizState.correctCount;
+  const perfect = score === total;
+  touchDaily(); touchStreak();
+  state.quizRoundsCompleted = (state.quizRoundsCompleted || 0) + 1;
+  if(perfect) state.quizPerfectCount = (state.quizPerfectCount || 0) + 1;
+  saveState();
+  const newly = checkAchievements();
+  const el = document.getElementById("wendQuizView");
+  const cardLabel = (isBis?"Kard ":isEn?"Card ":"Karte ") + wendQuizState.cardNum;
+  const heading = perfect
+    ? (isBis?"🌟 Perpekto nga Kard!":isEn?"🌟 Perfect card!":"🌟 Perfekte Karte!")
+    : (isBis?`${cardLabel} nahuman!`:isEn?`${cardLabel} done!`:`${cardLabel} geschafft!`);
+  const sessionLabel = isBis?"Tibuok Session":isEn?"Whole session":"Ganze Session";
+  el.innerHTML = `<div class="quiz-summary">
+    <h3>${heading}</h3>
+    <div class="quiz-score">${score} / ${total}</div>
+    <p class="small">${sessionLabel}: ${wendQuizState.sessionCorrect} / ${wendQuizState.sessionTotal}</p>
+    <button class="action primary" onclick="wendNextQuizCard()">${isBis?"Sunod nga Kard →":isEn?"Next Card →":"Nächste Karte →"}</button>
+  </div>`;
+  showBadgeToasts(newly);
+}
+function wendNextQuizCard(){
+  const cardQuestions = wendBuildQuizCard();
+  if(cardQuestions.length===0){ wendRenderQuizIntro(); return; }
+  wendQuizState.cardNum++;
+  wendQuizState.questions = cardQuestions;
+  wendQuizState.idx = 0;
+  wendQuizState.correctCount = 0;
+  wendQuizState.answered = false;
+  wendRenderQuizQuestion();
+}
+
 document.getElementById("tabs").addEventListener("click", e=>{
   const btn = e.target.closest("button");
   if(btn) goView(btn.dataset.view);
