@@ -294,7 +294,34 @@ table.gram{width:100%; border-collapse:collapse; font-size:0.88rem;}
 table.gram th, table.gram td{border:1px solid var(--line); padding:6px 8px; text-align:left;}
 table.gram th{background:var(--chip);}
 .progressbar{height:8px; background:var(--line); border-radius:6px; overflow:hidden; margin-top:6px;}
-.progressbar > div{height:100%; background:var(--accent2);}
+.progressbar > div{height:100%; background:var(--accent2); transition:width .25s;}
+/* --- Wendungen: Karten-Challenge / Quiz --- */
+.wend-modebar{
+  display:inline-flex; background:var(--chip); border-radius:999px; padding:4px; gap:2px; flex-wrap:wrap;
+}
+.wend-modebar button{
+  border:none; background:transparent; color:#6a5a48; font-weight:700; font-size:0.88rem; font-family:inherit;
+  padding:9px 16px; border-radius:999px; cursor:pointer; transition:.15s; display:inline-flex; align-items:center; gap:6px;
+}
+.wend-modebar button:hover:not(.wend-active){background:rgba(255,255,255,0.6);}
+.wend-modebar button.wend-active{background:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(193,80,46,0.35);}
+.wend-controlrow{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;
+  margin-top:16px; padding-top:16px; border-top:1px dashed var(--line);
+}
+.wend-cat-select{min-width:220px;}
+.wend-progress-mini{display:flex; align-items:center; gap:10px; flex:1 1 200px; max-width:280px;}
+.wend-progress-mini .progressbar{flex:1; margin-top:0;}
+.wend-progress-mini .wend-progress-txt{font-size:0.8rem; color:var(--sub); white-space:nowrap; font-weight:600;}
+.wend-flash-cat{
+  display:inline-block; background:var(--chip); color:var(--accent2); font-size:0.7rem; font-weight:800;
+  padding:5px 13px; border-radius:20px; margin-bottom:16px; letter-spacing:0.3px;
+}
+.flash.wend-flash{border-top:5px solid var(--accent2); border-radius:16px 16px 16px 16px; padding-top:24px;}
+.wend-quiz-cat{
+  display:inline-block; background:var(--chip); color:var(--accent2); font-size:0.7rem; font-weight:800;
+  padding:4px 11px; border-radius:20px; letter-spacing:0.3px; margin-bottom:8px;
+}
 .reward-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
 .reward-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; flex:1 1 220px; min-width:200px;}
 .reward-card h4{margin:0 0 8px; font-size:0.82rem; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:0.03em;}
@@ -684,7 +711,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.42.0</div>
+  <div class="version-tag">v1.43.0</div>
 </section>
 
 <!-- METHODE -->
@@ -833,21 +860,25 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
   </div>
 
   <div class="card">
-    <div class="btnrow" style="justify-content:flex-start;" id="wendModeBar">
-      <button class="action primary" data-wmode="karten" onclick="wendSetMode('karten')">🗂 <span class="mode-bis-only">Karten-Challenge</span><span class="mode-de-only">Kard-Hagit</span><span class="mode-en-only">Card Challenge</span></button>
-      <button class="action neutral" data-wmode="quiz" onclick="wendSetMode('quiz')">🧩 <span class="mode-bis-only">Quiz</span><span class="mode-de-only">Quiz</span><span class="mode-en-only">Quiz</span></button>
-      <button class="action neutral" data-wmode="liste" onclick="wendSetMode('liste')">📋 <span class="mode-bis-only">Liste</span><span class="mode-de-only">Listahan</span><span class="mode-en-only">List</span></button>
+    <div class="wend-modebar" id="wendModeBar">
+      <button data-wmode="karten" onclick="wendSetMode('karten')">🗂 <span class="mode-bis-only">Karten-Challenge</span><span class="mode-de-only">Kard-Hagit</span><span class="mode-en-only">Card Challenge</span></button>
+      <button data-wmode="quiz" onclick="wendSetMode('quiz')">🧩 <span class="mode-bis-only">Quiz</span><span class="mode-de-only">Quiz</span><span class="mode-en-only">Quiz</span></button>
+      <button data-wmode="liste" onclick="wendSetMode('liste')">📋 <span class="mode-bis-only">Liste</span><span class="mode-de-only">Listahan</span><span class="mode-en-only">List</span></button>
     </div>
-    <div class="filterbar" id="wendFilterBar">
-      <label class="small"><span class="mode-bis-only">Kategorie:</span><span class="mode-de-only">Kategoriya:</span><span class="mode-en-only">Category:</span>
+    <div class="wend-controlrow" id="wendFilterBar">
+      <label class="small wend-cat-select"><span class="mode-bis-only">Kategorie:</span><span class="mode-de-only">Kategoriya:</span><span class="mode-en-only">Category:</span>
         <select id="wendCatFilter" onchange="wendOnFilterChange()"></select>
       </label>
-      <span class="small" id="wendProgressLabel"></span>
+      <div class="wend-progress-mini" id="wendProgressMini">
+        <div class="progressbar"><div id="wendProgressBar" style="width:0%"></div></div>
+        <span class="wend-progress-txt" id="wendProgressLabel"></span>
+      </div>
     </div>
   </div>
 
   <div id="wendKartenView" class="card" style="display:none;">
-    <div class="flash" id="wendFlashCard" onclick="wendFlipCard()">
+    <div class="flash wend-flash" id="wendFlashCard" onclick="wendFlipCard()">
+      <span class="wend-flash-cat" id="wendFlashCatBadge"></span>
       <div class="front" id="wendFlashFront">–</div>
       <div class="pron2" id="wendFlashPron"></div>
       <div class="back" id="wendFlashBack"></div>
@@ -13137,6 +13168,12 @@ function wendPhrasePool(){
   const vipOk = isVipActive();
   return PHRASES_VOCAB.filter(p => vipOk || !p.vip);
 }
+const WEND_CAT_ICONS = {
+  "Alltagsphrasen": "💬",
+  "Redewendungen": "🎭",
+  "Slang & Jugendsprache": "😎"
+};
+function wendCatIcon(cat){ return WEND_CAT_ICONS[cat] || "✨"; }
 function wendPopulateCatFilter(){
   const sel = document.getElementById("wendCatFilter");
   if(!sel) return;
@@ -13144,10 +13181,10 @@ function wendPopulateCatFilter(){
   const mode = currentMode();
   const allLabel = mode==="learn-de" ? "Tanang Kategoriya" : mode==="learn-bis-en" ? "All Categories" : "Alle Kategorien";
   const prev = sel.value;
-  sel.innerHTML = `<option value="alle">${allLabel}</option>` + cats.map(c=>{
+  sel.innerHTML = `<option value="alle">✨ ${allLabel}</option>` + cats.map(c=>{
     const items = PHRASES_VOCAB.filter(p=>p.cat===c);
     if(items.length===0) return "";
-    return `<option value="${c}">${categoryLabel(c, mode)} (${items.length})</option>`;
+    return `<option value="${c}">${wendCatIcon(c)} ${categoryLabel(c, mode)} (${items.length})</option>`;
   }).join("");
   if(prev && Array.from(sel.options).some(o=>o.value===prev)) sel.value = prev;
 }
@@ -13161,20 +13198,21 @@ function wendFilteredPool(){
 }
 function wendUpdateProgressLabel(){
   const el = document.getElementById("wendProgressLabel");
+  const bar = document.getElementById("wendProgressBar");
   if(!el) return;
   const pool = wendFilteredPool();
   const known = pool.filter(p=>state.words[p.bis]==="known").length;
   const mode = currentMode();
-  const label = mode==="learn-de" ? `${known} sa ${pool.length} nahibaw-an na`
-    : mode==="learn-bis-en" ? `${known} of ${pool.length} known`
-    : `${known} von ${pool.length} bekannt`;
+  const label = mode==="learn-de" ? `${known}/${pool.length} nahibaw-an na`
+    : mode==="learn-bis-en" ? `${known}/${pool.length} known`
+    : `${known}/${pool.length} bekannt`;
   el.textContent = pool.length ? label : "";
+  if(bar) bar.style.width = pool.length ? Math.round(known/pool.length*100) + "%" : "0%";
 }
 function wendSetMode(mode){
   wendMode = mode;
   document.querySelectorAll("#wendModeBar button").forEach(b=>{
-    b.classList.toggle("primary", b.dataset.wmode===mode);
-    b.classList.toggle("neutral", b.dataset.wmode!==mode);
+    b.classList.toggle("wend-active", b.dataset.wmode===mode);
   });
   document.getElementById("wendKartenView").style.display = mode==="karten" ? "" : "none";
   document.getElementById("wendQuizView").style.display = mode==="quiz" ? "" : "none";
@@ -13216,6 +13254,8 @@ function wendShowCard(){
     return;
   }
   const v = wendDeck[wendDeckIdx % wendDeck.length];
+  const catBadge = document.getElementById("wendFlashCatBadge");
+  if(catBadge) catBadge.textContent = `${wendCatIcon(v.cat)} ${categoryLabel(v.cat, mode)}`;
   if(mode==="learn-de"){
     document.getElementById("wendFlashFront").textContent = v.de;
     document.getElementById("wendFlashPron").innerHTML = speakDeBtn(v.de);
@@ -13339,6 +13379,7 @@ function wendRenderQuizQuestion(){
   const promptAudio = q.promptLang==="de" ? speakDeBtn(q.prompt) : q.promptLang==="bis" ? speakBtn(q.prompt, q.item.pron||"") : "";
   el.innerHTML = `
     <div class="small quiz-progress">${cardLabel} · ${progressLabel}</div>
+    <div class="wend-quiz-cat">${wendCatIcon(q.item.cat)} ${categoryLabel(q.item.cat, mode)}</div>
     <div class="quiz-prompt">${q.prompt} ${promptAudio}</div>
     <div class="quiz-options" id="wendQuizOptions">
       ${q.options.map((opt,i)=>`<button class="quiz-opt" data-idx="${i}" onclick="wendAnswerQuiz(${i})">${opt}</button>`).join("")}
