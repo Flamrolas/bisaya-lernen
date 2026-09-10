@@ -754,7 +754,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.45.0</div>
+  <div class="version-tag">v1.46.0</div>
 </section>
 
 <!-- METHODE -->
@@ -14230,10 +14230,15 @@ function prevCard(){
 
 /* ============ ANWENDEN ============ */
 const CHUNK_PRONOUNS = [["ako","ich"],["ikaw","du"],["siya","er/sie"],["kami","wir (ohne dich)"],["kita","wir (mit dir)"],["sila","sie"]];
-const CHUNK_VERBS = [["mokaon","werde essen"],["moinom","werde trinken"],["mobasa","werde lesen"],["motrabaho","werde arbeiten"],["mudula","werde spielen"],["muadto","werde gehen"]];
+// [bis, deutscher Infinitiv] — das Modalverb "werden" wird separat konjugiert (siehe DE_MODAL_FORMS),
+// da es vom Pronomen abhängt (ich werde / du wirst / er wird / wir werden ...), nicht vom Verb.
+const CHUNK_VERBS = [["mokaon","essen"],["moinom","trinken"],["mobasa","lesen"],["motrabaho","arbeiten"],["mudula","spielen"],["muadto","gehen"]];
 const CHUNK_OBJECTS = [["og kan-on","Reis"],["og tubig","Wasser"],["og libro","ein Buch"],["sa balay","zu Hause"],["uban sa higala","mit einem Freund"],["sa merkado","zum Markt"]];
+// Konjugation von "werden" passend zur Reihenfolge von CHUNK_PRONOUNS (ako/ikaw/siya/kami/kita/sila).
+const DE_MODAL_FORMS = ["werde","wirst","wird","werden","werden","werden"];
 const CHUNK_PRONOUNS_EN = [["ako","I"],["ikaw","you"],["siya","he/she"],["kami","we (without you)"],["kita","we (with you)"],["sila","they"]];
-const CHUNK_VERBS_EN = [["mokaon","will eat"],["moinom","will drink"],["mobasa","will read"],["motrabaho","will work"],["mudula","will play"],["muadto","will go"]];
+// [bis, englischer Infinitiv] — "will" bleibt im Englischen für jedes Pronomen gleich.
+const CHUNK_VERBS_EN = [["mokaon","eat"],["moinom","drink"],["mobasa","read"],["motrabaho","work"],["mudula","play"],["muadto","go"]];
 const CHUNK_OBJECTS_EN = [["og kan-on","rice"],["og tubig","water"],["og libro","a book"],["sa balay","at home"],["uban sa higala","with a friend"],["sa merkado","to the market"]];
 
 function extractBisFromSample(sample){
@@ -14302,11 +14307,20 @@ function updateChunk(){
   const pronouns = isEn ? CHUNK_PRONOUNS_EN : CHUNK_PRONOUNS;
   const verbs = isEn ? CHUNK_VERBS_EN : CHUNK_VERBS;
   const objects = isEn ? CHUNK_OBJECTS_EN : CHUNK_OBJECTS;
-  const p = pronouns[document.getElementById("chunkPronoun").value];
+  const pIdx = Number(document.getElementById("chunkPronoun").value);
+  const p = pronouns[pIdx];
   const v = verbs[document.getElementById("chunkVerb").value];
   const o = objects[document.getElementById("chunkObject").value];
   const chunkSentence = `${v[0]} ${p[0]} ${o[0]}.`;
-  document.getElementById("chunkResult").innerHTML = `${chunkSentence} ${speakBtn(chunkSentence,'')} — „${v[1]}, ${p[1]}, ${o[1]}\"`;
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  // Echter, grammatisch korrekter Satz statt aneinandergereihter Einzel-Glossen:
+  // Deutsch: Pronomen + konjugiertes "werden" + Ergänzung + Infinitiv (Satzklammer, z.B. "Ich werde Reis essen.")
+  // Englisch: Pronomen + "will" (unveränderlich) + Infinitiv + Ergänzung (z.B. "I will eat rice.")
+  const modal = isEn ? "will" : DE_MODAL_FORMS[pIdx];
+  const translation = isEn
+    ? `${cap(p[1])} ${modal} ${v[1]} ${o[1]}.`
+    : `${cap(p[1])} ${modal} ${o[1]} ${v[1]}.`;
+  document.getElementById("chunkResult").innerHTML = `${chunkSentence} ${speakBtn(chunkSentence,'')} — „${translation}\"`;
 }
 /* Wortbank-Quiz für Lückensätze: Optionen einmal pro Sprachmodus mischen und cachen,
    damit sie beim Re-Render (z.B. nach richtiger Antwort) stabil bleiben. */
