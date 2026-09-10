@@ -322,6 +322,49 @@ table.gram th{background:var(--chip);}
   display:inline-block; background:var(--chip); color:var(--accent2); font-size:0.7rem; font-weight:800;
   padding:4px 11px; border-radius:20px; letter-spacing:0.3px; margin-bottom:8px;
 }
+/* --- Lückensätze: Wortbank-Quiz --- */
+.gap-progress-mini{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+.gap-progress-mini .progressbar{flex:1; margin-top:0;}
+.gap-progress-mini .gap-progress-txt{font-size:0.8rem; color:var(--sub); white-space:nowrap; font-weight:700;}
+.gap-card{
+  border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:14px;
+  background:var(--panel); transition:.2s; position:relative;
+}
+.gap-card.solved{border-color:var(--good); background:linear-gradient(135deg, rgba(90,170,120,0.08), var(--panel) 60%);}
+.gap-lesson-badge{
+  display:inline-block; background:var(--chip); color:var(--accent2); font-size:0.7rem; font-weight:800;
+  padding:4px 12px; border-radius:20px; letter-spacing:0.3px; margin-bottom:12px;
+}
+.gap-check{position:absolute; top:16px; right:18px; font-size:1.3rem; color:var(--good); display:none;}
+.gap-card.solved .gap-check{display:inline;}
+.gap-sentence{font-size:1.15rem; font-weight:700; line-height:1.55; margin-bottom:14px;}
+.gap-sentence .blank{
+  display:inline-block; min-width:76px; border-bottom:3px solid var(--accent); text-align:center;
+  color:var(--accent); font-weight:800; padding:0 4px;
+}
+.gap-card.solved .gap-sentence .blank{color:var(--good); border-color:var(--good);}
+.gap-choices{display:flex; flex-wrap:wrap; gap:10px;}
+.gap-choice{
+  border:2px solid var(--line); background:#fff; border-radius:10px; padding:10px 18px;
+  font-weight:700; font-size:0.98rem; cursor:pointer; transition:.15s; font-family:inherit;
+}
+.gap-choice:hover:not(:disabled){border-color:var(--accent); transform:translateY(-2px);}
+.gap-choice:disabled{cursor:default;}
+.gap-choice.correct{background:var(--good); border-color:var(--good); color:#fff;}
+.gap-choice.wrong{background:#e8607a; border-color:#e8607a; color:#fff; animation:gapShake .35s;}
+.gap-choice.dim{opacity:0.45;}
+@keyframes gapShake{0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);}}
+.gap-feedback{
+  margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--chip);
+  font-size:0.95rem; display:none; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.gap-feedback.show{display:flex; animation:gapFadeIn .25s;}
+@keyframes gapFadeIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+.gap-done-banner{
+  text-align:center; padding:22px; border-radius:16px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2)); color:#fff;
+  font-weight:700; font-size:1.05rem; margin-top:6px;
+}
 .reward-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;}
 .reward-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; flex:1 1 220px; min-width:200px;}
 .reward-card h4{margin:0 0 8px; font-size:0.82rem; color:var(--sub); font-weight:700; text-transform:uppercase; letter-spacing:0.03em;}
@@ -711,7 +754,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.44.0</div>
+  <div class="version-tag">v1.45.0</div>
 </section>
 
 <!-- METHODE -->
@@ -12767,7 +12810,8 @@ const ACHIEVEMENTS = [
   {id:"streak30", icon:"🔥", cond:s=>s.streak>=30,      de:"30 Tage in Folge gelernt",       bis:"30 ka Adlaw Sunod-sunod",           en:"30-day streak"},
   {id:"dailygoal",icon:"🎯", cond:s=>s.dailyGoalHitCount>=1, de:"Erstes Tagesziel erreicht", bis:"Una nga Tumong sa Adlaw Nakab-ot",  en:"First daily goal hit"},
   {id:"quiz1",     icon:"🧩", cond:s=>s.quizRoundsCompleted>=1, de:"Erstes Quiz gespielt",    bis:"Una nga Quiz Nahuman",              en:"First quiz played"},
-  {id:"quizperfect",icon:"🌟", cond:s=>s.quizPerfectCount>=1, de:"Perfekte Quiz-Runde (6/6)", bis:"Perpekto nga Quiz (6/6)",           en:"Perfect quiz round (6/6)"}
+  {id:"quizperfect",icon:"🌟", cond:s=>s.quizPerfectCount>=1, de:"Perfekte Quiz-Runde (6/6)", bis:"Perpekto nga Quiz (6/6)",           en:"Perfect quiz round (6/6)"},
+  {id:"gapall",    icon:"🧩", cond:s=>s.gapSolved>=GAP_EXERCISES.length, de:"Alle Lückensätze gelöst", bis:"Tanang Lückensätze Nahuman", en:"All fill-in-the-blanks solved"}
 ];
 function achievementStats(){
   const words = allVocab();
@@ -12777,7 +12821,8 @@ function achievementStats(){
     streak: state.streak || 0,
     dailyGoalHitCount: state.dailyGoalHitCount || 0,
     quizRoundsCompleted: state.quizRoundsCompleted || 0,
-    quizPerfectCount: state.quizPerfectCount || 0
+    quizPerfectCount: state.quizPerfectCount || 0,
+    gapSolved: Object.values(state.gapSolved||{}).filter(Boolean).length
   };
 }
 // Prüft nach jeder Aktion, ob neue Achievements freigeschaltet wurden, merkt sie sich dauerhaft
@@ -14212,16 +14257,7 @@ function renderAnwenden(){
   p.onchange = v.onchange = o.onchange = updateChunk;
   updateChunk();
 
-  const gapEl = document.getElementById("gapExercises");
-  const gapAnswerLabel = isEn ? "Show answer" : "Antwort zeigen";
-  gapEl.innerHTML = gaps.map((g,i)=>`
-      <div class="exercise" id="gap${i}">
-        <div>${g.sentence.replace("___","<b>____</b>")} <span class="small">(${g.hint})</span></div>
-        <div class="btnrow" style="justify-content:flex-start; margin-top:6px;">
-          <button class="action neutral" onclick="revealGap(${i})">${gapAnswerLabel}</button>
-        </div>
-        <div class="answer">✓ <b>${g.answer}</b> — ${speakBtn(g.sentence.replace('___', g.answer), '')} „${g.sentence.replace('___', g.answer)}\" = ${g.translation}</div>
-      </div>`).join("");
+  renderGapQuiz(gaps, isEn);
 
   const freeEl = document.getElementById("freeExercises");
   const freePlaceholder = isEn ? "Write your answer in Bisaya here..." : "Schreib hier deine Antwort auf Bisaya...";
@@ -14272,7 +14308,83 @@ function updateChunk(){
   const chunkSentence = `${v[0]} ${p[0]} ${o[0]}.`;
   document.getElementById("chunkResult").innerHTML = `${chunkSentence} ${speakBtn(chunkSentence,'')} — „${v[1]}, ${p[1]}, ${o[1]}\"`;
 }
-function revealGap(i){ document.getElementById("gap"+i).classList.toggle("revealed"); }
+/* Wortbank-Quiz für Lückensätze: Optionen einmal pro Sprachmodus mischen und cachen,
+   damit sie beim Re-Render (z.B. nach richtiger Antwort) stabil bleiben. */
+let _gapChoiceCache = null;
+function gapChoicesFor(gaps, i, isEn){
+  const key = (isEn?"en":"de") + "_" + i;
+  if(!_gapChoiceCache) _gapChoiceCache = {};
+  if(_gapChoiceCache[key]) return _gapChoiceCache[key];
+  const correct = gaps[i].answer;
+  const pool = shuffleArr(gaps.filter((g,gi)=>gi!==i).map(g=>g.answer).filter(a=>a!==correct));
+  const distractors = pool.slice(0,3);
+  const options = shuffleArr([correct, ...distractors]);
+  _gapChoiceCache[key] = options;
+  return options;
+}
+function renderGapQuiz(gaps, isEn){
+  const box = document.getElementById("gapExercises");
+  if(!box) return;
+  if(!state.gapSolved) state.gapSolved = {};
+  const total = gaps.length;
+  const solvedCount = gaps.filter((g,i)=>state.gapSolved[i]).length;
+  const pct = total ? Math.round(solvedCount/total*100) : 0;
+  const pctLabel = isEn ? `${solvedCount} of ${total} solved` : `${solvedCount} von ${total} gelöst`;
+  const cardsHtml = gaps.map((g,i)=>{
+    const solved = !!state.gapSolved[i];
+    const options = gapChoicesFor(gaps, i, isEn);
+    const fullSentence = g.sentence.replace("___", g.answer);
+    const choicesHtml = options.map((opt,oi)=>{
+      const isCorrect = opt === g.answer;
+      const cls = solved ? (isCorrect ? "gap-choice correct" : "gap-choice dim") : "gap-choice";
+      return `<button class="${cls}" ${solved?"disabled":""} onclick="gapChoose(${i}, ${oi}, this)">${opt}</button>`;
+    }).join("");
+    const feedbackHtml = solved
+      ? `<div class="gap-feedback show">✓ <b>${fullSentence}</b> ${speakBtn(fullSentence,'')} — ${g.translation}</div>`
+      : `<div class="gap-feedback" id="gapFeedback${i}"></div>`;
+    return `
+      <div class="gap-card${solved?" solved":""}" id="gapCard${i}">
+        <span class="gap-check">✓</span>
+        ${g.hint ? `<div class="gap-lesson-badge">${g.hint}</div>` : ""}
+        <div class="gap-sentence">${g.sentence.replace("___", `<span class="blank">____</span>`)}</div>
+        <div class="gap-choices" id="gapChoices${i}">${choicesHtml}</div>
+        ${feedbackHtml}
+      </div>`;
+  }).join("");
+  const doneHtml = (total>0 && solvedCount>=total)
+    ? `<div class="gap-done-banner">🎉 ${isEn ? `All ${total} fill-in-the-blanks solved — great job!` : `Alle ${total} Lückensätze gelöst — super gemacht!`}</div>`
+    : "";
+  box.innerHTML = `
+    <div class="gap-progress-mini">
+      <div class="progressbar"><div style="width:${pct}%"></div></div>
+      <span class="gap-progress-txt">${pctLabel}</span>
+    </div>
+    ${cardsHtml}
+    ${doneHtml}`;
+}
+function gapChoose(i, optIdx, btnEl){
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const gaps = isEn ? GAP_EXERCISES_EN : GAP_EXERCISES;
+  if(state.gapSolved && state.gapSolved[i]) return;
+  const g = gaps[i];
+  const options = gapChoicesFor(gaps, i, isEn);
+  const chosen = options[optIdx];
+  const choicesBox = document.getElementById("gapChoices"+i);
+  const buttons = choicesBox ? [...choicesBox.querySelectorAll("button")] : [];
+  if(chosen === g.answer){
+    buttons.forEach(b=>{ b.disabled = true; });
+    btnEl.classList.add("correct");
+    if(!state.gapSolved) state.gapSolved = {};
+    state.gapSolved[i] = true;
+    touchDaily(); touchStreak(); saveState();
+    showBadgeToasts(checkAchievements());
+    renderGapQuiz(gaps, isEn);
+  } else {
+    btnEl.classList.add("wrong");
+    setTimeout(()=>{ btnEl.classList.remove("wrong"); }, 500);
+  }
+}
 // Fortschritt der "Freien Anwendung": schrittweise Freischaltung neuer Aufgaben + Wort-für-Wort-
 // Aufdecken der Beispielantwort (statt Sofort-Anzeige), analog zum Italienisch-Modul.
 function freeExercisesUnlockedCount(){
