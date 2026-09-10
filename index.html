@@ -479,6 +479,10 @@ body.mode-en .mode-bis-only{display:none;}
    obigen mode-only-Regeln (gleiche Spezifitaet, spaeter im Stylesheet) zum vollen Balken gestreckt. */
 body.mode-de .origin-pill.mode-de-only{display:inline-flex;}
 body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
+/* Übungen, die eigene Bisaya-Sätze bauen/abfragen (Chunking, Lückensätze, Freie Anwendung) —
+   ergeben nur Sinn, wenn Bisaya die Zielsprache ist (learn-bis/learn-bis-en). Im German-Lernmodus
+   (learn-de) ausblenden, passend zur "moabot pa"-Hinweiskarte darüber. */
+body.mode-de .bisaya-target-only{display:none;}
 .codebox{
   font-size:1.8rem; font-weight:800; letter-spacing:6px; text-align:center; color:var(--accent);
   background:var(--chip); border-radius:10px; padding:12px; margin:12px 0;
@@ -754,7 +758,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.46.0</div>
+  <div class="version-tag">v1.47.0</div>
 </section>
 
 <!-- METHODE -->
@@ -965,7 +969,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <p>The most important part. Build your own sentences, answer scenarios in your own words. There's no "correction" from the app — just honestly compare your answer with the example and keep refining. Say your answer out loud before you write it down.</p>
   </div>
 
-  <div class="card">
+  <div class="card bisaya-target-only">
     <h3 class="mode-bis-only">Baustein-Sätze (Chunking)</h3>
     <h3 class="mode-en-only">Building-Block Sentences (Chunking)</h3>
     <p class="small mode-bis-only">Kombiniere Pronomen + Verb + Objekt/Ort zu eigenen, echten Sätzen. Wähle je eine Option und lies den Satz laut.</p>
@@ -980,13 +984,13 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card bisaya-target-only">
     <h3 class="mode-bis-only">Lückensätze aus den Lektionen</h3>
     <h3 class="mode-en-only">Fill-in-the-Blank Sentences from the Lessons</h3>
     <div id="gapExercises"></div>
   </div>
 
-  <div class="card">
+  <div class="card bisaya-target-only">
     <h3 class="mode-bis-only">Freie Anwendung — schreib &amp; sprich</h3>
     <h3 class="mode-en-only">Free Practice — write &amp; speak</h3>
     <div id="freeExercises"></div>
