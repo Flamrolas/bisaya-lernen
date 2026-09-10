@@ -479,10 +479,6 @@ body.mode-en .mode-bis-only{display:none;}
    obigen mode-only-Regeln (gleiche Spezifitaet, spaeter im Stylesheet) zum vollen Balken gestreckt. */
 body.mode-de .origin-pill.mode-de-only{display:inline-flex;}
 body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
-/* Übungen, die eigene Bisaya-Sätze bauen/abfragen (Chunking, Lückensätze, Freie Anwendung) —
-   ergeben nur Sinn, wenn Bisaya die Zielsprache ist (learn-bis/learn-bis-en). Im German-Lernmodus
-   (learn-de) ausblenden, passend zur "moabot pa"-Hinweiskarte darüber. */
-body.mode-de .bisaya-target-only{display:none;}
 .codebox{
   font-size:1.8rem; font-weight:800; letter-spacing:6px; text-align:center; color:var(--accent);
   background:var(--chip); border-radius:10px; padding:12px; margin:12px 0;
@@ -758,7 +754,7 @@ body.mode-de .bisaya-target-only{display:none;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.47.0</div>
+  <div class="version-tag">v1.48.0</div>
 </section>
 
 <!-- METHODE -->
@@ -957,8 +953,8 @@ body.mode-de .bisaya-target-only{display:none;}
 <!-- ANWENDEN -->
 <section class="view" id="view-anwenden">
   <div class="card mode-de-only">
-    <h2>Gamiton — moabot pa</h2>
-    <p>Kini nga bahin (paggama og kaugalingong German nga mga tudling-pulong) gi-andam pa para sa German-Lernmodus. Sa pagkakaron, gamita ang <b>Mga Leksyon</b> ug <b>Bokabularyo</b> aron magbansay sa German — basaha kusog ang German nga linya, dayon ang Bisaya, ug sulayi paghimo og kaugalingong mubo nga mga sentence gamit ang mga pulong nga imong nakat-onan.</p>
+    <h2>Gamiton — ania na kini nga buhi!</h2>
+    <p>Ang labing importanteng bahin. Paghimo og kaugalingong mga tudling-pulong sa German, tubaga ang mga sitwasyon sa imong kaugalingong pulong. Walay "pagtul-id" gikan sa app — itandi lang og tinud-anay ang imong tubag sa panig-ingnan ug ayoha kini pag-usab. Isulti kusog ang imong tubag sa dili pa nimo isulat.</p>
   </div>
   <div class="card mode-bis-only">
     <h2>Anwenden — jetzt wird's lebendig</h2>
@@ -969,10 +965,12 @@ body.mode-de .bisaya-target-only{display:none;}
     <p>The most important part. Build your own sentences, answer scenarios in your own words. There's no "correction" from the app — just honestly compare your answer with the example and keep refining. Say your answer out loud before you write it down.</p>
   </div>
 
-  <div class="card bisaya-target-only">
+  <div class="card">
     <h3 class="mode-bis-only">Baustein-Sätze (Chunking)</h3>
+    <h3 class="mode-de-only">Mga Bloke sa Tudling-pulong (Chunking)</h3>
     <h3 class="mode-en-only">Building-Block Sentences (Chunking)</h3>
     <p class="small mode-bis-only">Kombiniere Pronomen + Verb + Objekt/Ort zu eigenen, echten Sätzen. Wähle je eine Option und lies den Satz laut.</p>
+    <p class="small mode-de-only">Kombinaha ang Pronombre + Berbo + Butang/Dapit aron makahimo og kaugalingon, tinuod nga mga tudling-pulong sa German. Pilia ang usa ka opsyon matag hulma ug basaha kusog ang tudling-pulong.</p>
     <p class="small mode-en-only">Combine pronoun + verb + object/place into your own real sentences. Pick one option from each and read the sentence out loud.</p>
     <div class="btnrow" style="justify-content:flex-start; margin-bottom:10px;">
       <select id="chunkPronoun"></select>
@@ -980,18 +978,20 @@ body.mode-de .bisaya-target-only{display:none;}
       <select id="chunkObject"></select>
     </div>
     <div class="exercise" style="background:#eef4f0;">
-      <b class="mode-bis-only">Dein Satz:</b><b class="mode-en-only">Your sentence:</b> <span id="chunkResult" style="font-size:1.1rem; font-weight:700;"></span>
+      <b class="mode-bis-only">Dein Satz:</b><b class="mode-de-only">Imong Tudling-pulong:</b><b class="mode-en-only">Your sentence:</b> <span id="chunkResult" style="font-size:1.1rem; font-weight:700;"></span>
     </div>
   </div>
 
-  <div class="card bisaya-target-only">
+  <div class="card">
     <h3 class="mode-bis-only">Lückensätze aus den Lektionen</h3>
+    <h3 class="mode-de-only">Mga Nawala nga Pulong gikan sa mga Leksyon</h3>
     <h3 class="mode-en-only">Fill-in-the-Blank Sentences from the Lessons</h3>
     <div id="gapExercises"></div>
   </div>
 
-  <div class="card bisaya-target-only">
+  <div class="card">
     <h3 class="mode-bis-only">Freie Anwendung — schreib &amp; sprich</h3>
+    <h3 class="mode-de-only">Gawasnon nga Pagbansay — sulat &amp; sulti</h3>
     <h3 class="mode-en-only">Free Practice — write &amp; speak</h3>
     <div id="freeExercises"></div>
   </div>
@@ -6071,6 +6071,22 @@ const GAP_EXERCISES_EN = [
  {sentence:"___! Puhon magkita ta pag-usab.", answer:"Babay", hint:"\"bye\" (Lesson 12)", translation:"Bye! God willing, we'll see each other again."},
 ];
 
+// Fuer den German-Lernmodus (learn-de): deutsche Luecken-Saetze, Hinweise auf Bisaya
+// (der Muttersprache in diesem Modus), "translation" zeigt zur Kontrolle den Bisaya-Originalsatz.
+const GAP_EXERCISES_BIS = [
+ {sentence:"___ heißt du?", answer:"Wie", hint:"Pagpangutana sa ngalan (Lektion 1)", translation:"Unsa imong ngalan?"},
+ {sentence:"Guten Morgen! Wie geht's ___?", answer:"dir", hint:"„ikaw/nimo\" sa tudling-pulong (Lektion 1)", translation:"Maayong buntag! Kumusta ka?"},
+ {sentence:"Ich ___ zwei Geschwister.", answer:"habe", hint:"„naa/adunay\" nga buot ipasabot (Lektion 2)", translation:"Duha ka igsoon ang naa nako."},
+ {sentence:"___ kostet ein Kilo?", answer:"Wie viel", hint:"Pagpangutana sa presyo (Lektion 5)", translation:"Tagpila ang usa ka kilo?"},
+ {sentence:"Ich habe schon ___ Hunger!", answer:"großen", hint:"„kaayo\" nga pasobra (Lektion 6)", translation:"Gigutom na ko kaayo!"},
+ {sentence:"Geh geradeaus, dann ___ rechts ab.", answer:"biege", hint:"„liko\" nga buhaton (Lektion 7)", translation:"Diretso lang, unya liko sa tuo."},
+ {sentence:"Morgen wird es vielleicht ___.", answer:"regnen", hint:"„mag-ulan\" nga pulong (Lektion 8)", translation:"Ugma, muulan tingali."},
+ {sentence:"Ich ___ die Teller spülen.", answer:"muss", hint:"„kinahanglan\" nga pulong (Lektion 9)", translation:"Kinahanglan nako maghugas sa mga plato."},
+ {sentence:"Ich ___ meine Familie.", answer:"vermisse", hint:"„gimingaw\" nga pulong (Lektion 10)", translation:"Gimingaw ko sa akong pamilya."},
+ {sentence:"___ du Basketball?", answer:"Spielst", hint:"Pagpangutana kabahin sa dula (Lektion 11)", translation:"Mudula ka ba og basketball?"},
+ {sentence:"___! Bis wir uns wiedersehen.", answer:"Tschüss", hint:"„babay\" nga pulong (Lektion 12)", translation:"Babay! Puhon magkita ta pag-usab."},
+];
+
 const FREE_EXERCISES = [
  {prompt:"Stell dich auf Bisaya vor: Name, wie es dir geht, und was du gerade fühlst (z. B. malipayon, kapoy). Sprich es laut aus, bevor du es aufschreibst.", sample:"Beispiel: „Maayo ra ko. Ako si ___. Malipayon ko karon.\""},
  {prompt:"Grüße jemanden am Morgen und frag, wie es ihm geht.", sample:"Beispiel: „Maayong buntag! Kumusta ka?\""},
@@ -6274,6 +6290,109 @@ const FREE_EXERCISES_EN = [
  {prompt:"Say the exam was hard, but you're happy because you passed.", sample:"Example: \"Lisod kaayo ang exam, apan malipayon ko kay nakapasar ko.\""},
  {prompt:"Thank someone who helped you.", sample:"Example: \"Salamat sa imong tabang!\""},
  {prompt:"Wish someone a happy new year.", sample:"Example: \"Manghinaot ko og maayong bag-ong tuig nimo.\""},
+];
+
+const FREE_EXERCISES_BIS = [
+ {prompt:"Ipaila imong kaugalingon sa German: ngalan, kumusta ka, ug unsa imong gibati karon (pananglitan malipayon, kapoy). Isulti kusog una sa dili pa isulat.", sample:"Beispiel: „Mir geht's gut. Ich bin ___. Ich bin jetzt glücklich.\""},
+ {prompt:"Timbaya ang usa ka tawo sa buntag sa German ug pangutan-a kumusta siya.", sample:"Beispiel: „Guten Morgen! Wie geht es dir?\""},
+ {prompt:"Panamilit sa German human sa panag-istoryahanay.", sample:"Beispiel: „Bis zum nächsten Mal. Tschüss!\""},
+ {prompt:"Ihulagway ang imong pamilya sa German sa 3 ka tudling-pulong: pila ka igsoon naa ka, kinsa ang paborito nimong paryente, ug ngano.", sample:"Beispiel: „Ich habe zwei Geschwister. Ich liebe meine Mutter, weil sie sehr gut zu mir ist.\""},
+ {prompt:"Ipaila ang imong ginikanan sa German.", sample:"Beispiel: „Das ist mein Vater. Und das ist meine Mutter.\""},
+ {prompt:"Isulti sa German nga gihigugma nimo ang imong pamilya ug ngano.", sample:"Beispiel: „Ich liebe meine Familie, weil sie gut zu mir ist.\""},
+ {prompt:"Ihapon sa kusog sa German gikan sa usa hangtod napulo.", sample:"Beispiel: „Eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn.\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German kon unsay oras na, ug tubaga kini og oras.", sample:"Beispiel: „Wie spät ist es? Acht Uhr morgens.\""},
+ {prompt:"Isulti sa German kung pila na imong edad.", sample:"Beispiel: „Wie alt bist du? Ich bin zwanzig Jahre alt.\""},
+ {prompt:"Isulti sa German kung unsang adlaw karon.", sample:"Beispiel: „Welcher Tag ist heute? Heute ist Montag.\""},
+ {prompt:"Ihulagway sa German ang imong adlaw-adlaw nga rutina gikan sa pagmata hangtod sa pagkatulog.", sample:"Beispiel: „Ich wache um sechs Uhr morgens auf. Ich esse Frühstück, dann gehe ich zur Arbeit. Abends schlafe ich früh.\""},
+ {prompt:"Isulti sa German unsay imong buhaton matag adlaw karong semanaha (labing menos 2 ka kalihokan, uban sa mga adlaw sa semana).", sample:"Beispiel: „Montag arbeite ich. Samstag spiele ich Basketball mit meinen Freunden.\""},
+ {prompt:"Naa ka sa merkado: pangutan-a ang presyo sa usa ka butang sa German ug tikaw og mas barato.", sample:"Beispiel: „Was kostet die Mango? Können Sie mir einen besseren Preis machen?\""},
+ {prompt:"Palita og tulo ka kilo nga butang ug pasalamati ang tigbaligya sa German.", sample:"Beispiel: „Gut, fünfzig Pesos für drei Kilo. Vielen Dank! Ich bezahle jetzt.\""},
+ {prompt:"Isulti sa German nga gusto ka mopalit og prutas sa merkado.", sample:"Beispiel: „Guten Morgen! Ich möchte gerne Obst kaufen.\""},
+ {prompt:"Isulti sa German nga gigutom ka ug unsay gusto nimong kan-on.", sample:"Beispiel: „Ich habe schon großen Hunger! Ich möchte gerne Reis und Fisch essen.\""},
+ {prompt:"Pangutan-a kon halang ba ang pagkaon sa German, ug tubaga.", sample:"Beispiel: „Ist das scharf? Nicht sehr scharf, es ist lecker.\""},
+ {prompt:"Isulti sa German nga busog na ka ug pasalamati ang pagkaon.", sample:"Beispiel: „Ich bin satt, vielen Dank.\""},
+ {prompt:"Pangutan-a sa matinahuron nga paagi sa German asa ang estasyon sa tren.", sample:"Beispiel: „Entschuldigung, wo ist der Bahnhof?\""},
+ {prompt:"Ipasabot sa usa ka tawo sa German kung unsaon paglakaw diretso ug unya moliko sa tuo.", sample:"Beispiel: „Geh geradeaus, dann biege rechts ab.\""},
+ {prompt:"Pangutan-a kon layo ba ang usa ka dapit gikan diri sa German, ug tubaga.", sample:"Beispiel: „Ist das weit von hier? Es ist nicht weit, es ist in der Nähe.\""},
+ {prompt:"Ihulagway sa German ang panahon karong adlawa ug unsay angay nimong buhaton tungod niini.", sample:"Beispiel: „Es ist heute sehr heiß. Nimm morgen deinen Regenschirm mit, weil es vielleicht regnen wird.\""},
+ {prompt:"Isulti sa German nga tingali muulan ugma ug nga kinahanglan magdala og payong.", sample:"Beispiel: „Morgen wird es vielleicht regnen. Nimm deinen Regenschirm mit.\""},
+ {prompt:"Ihulagway sa German kung unsa ang hangin sa gabii.", sample:"Beispiel: „Der Wind ist abends kalt.\""},
+ {prompt:"Pangutan-a asa ang kusina sa German, ug tubaga.", sample:"Beispiel: „Wo ist die Küche? Neben dem Esszimmer.\""},
+ {prompt:"Ihulagway sa German ang imong kwarto: naa bay bintana, pila.", sample:"Beispiel: „Hat mein Zimmer ein Fenster? Ja, zwei Fenster.\""},
+ {prompt:"Isulti sa German kung unsay kinahanglan nimong buhaton pa sa balay.", sample:"Beispiel: „Ich muss die Teller spülen.\""},
+ {prompt:"Pangutan-a nganong masulub-on ang usa ka tawo sa German, ug tubaga alang kaniya.", sample:"Beispiel: „Warum bist du traurig? Ich bin nur müde von der Arbeit.\""},
+ {prompt:"Isulti sa German nga malipayon ka karon ug ngano.", sample:"Beispiel: „Ich bin jetzt glücklich, danke für deine Fürsorge.\""},
+ {prompt:"Isulti sa German nga gimingaw ka gayod sa imong pamilya.", sample:"Beispiel: „Ich vermisse meine Familie.\""},
+ {prompt:"Isulti sa German unsay ganahan nimong buhaton sa imong gawas nga oras.", sample:"Beispiel: „Was machst du gerne in deiner Freizeit? Ich lese gerne Bücher und höre Musik.\""},
+ {prompt:"Pangutan-a ang usa ka tawo kon mudula ba siya og basketball sa German, ug tubaga.", sample:"Beispiel: „Spielst du Basketball? Ja, ich spiele oft mit meinen Freunden.\""},
+ {prompt:"Isulti sa German nga malingaw mo ugma.", sample:"Beispiel: „Wir werden morgen zusammen Spaß haben, oder?\""},
+ {prompt:"Isulti sa usa ka tawo sa German asa ka padulong karon.", sample:"Beispiel: „Wo gehst du hin? Ich gehe zum Flughafen; ich fliege nach Hause.\""},
+ {prompt:"Panamilit sa usa ka higala nga molupad — tinguhaa siya og maayong panaw ug isulti nga magkita mo pag-usab.", sample:"Beispiel: „Pass immer auf dich auf! Bis zu unserem nächsten Treffen, mein Freund. Wir sehen uns wieder.\""},
+ {prompt:"Isulti sa German nga nalipay ka nga nakita nimo ang usa ka tawo, sa dili pa siya molarga.", sample:"Beispiel: „Ich habe mich gefreut, dich zu sehen. Pass auf dich auf und schreib mir!\""},
+ {prompt:"Isulti sa German nga naa kay iro sa balay, ug pangutan-a ang usa ka tawo sa iyang paboritong hayop.", sample:"Beispiel: „Ich habe einen Hund zu Hause. Was ist dein Lieblingstier?\""},
+ {prompt:"Ihapon sa German kung unsa nga mga hayop ang naa sa usa ka umahan.", sample:"Beispiel: „Auf dem Bauernhof gibt es eine Kuh, einen Wasserbüffel und ein Schwein.\""},
+ {prompt:"Isulti sa German kon unsay ikahadlok nimo, ug unsa nga hayop ang gusto nimo ug ngano.", sample:"Beispiel: „Ich habe Angst vor Schlangen. Ich mag Katzen, weil sie lieb sind.\""},
+ {prompt:"Isulti sa German nga gusto ka moadto sa baybayon ug pagkatahum sa dagat didto.", sample:"Beispiel: „Ich möchte an den Strand gehen. Das Meer dort ist sehr schön.\""},
+ {prompt:"Isugyot sa German nga motungas sa bungtod aron makita ang tibuok syudad.", sample:"Beispiel: „Lass uns auf den Hügel steigen, um die ganze Stadt zu sehen.\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German kon gusto ba siya molangoy sa busay.", sample:"Beispiel: „Möchtest du am Wasserfall schwimmen?\""},
+ {prompt:"Pangutan-a sa German kung unsaon pag-adto sa syudad, ug tubaga.", sample:"Beispiel: „Wie komme ich in die Stadt? Du kannst ein Dreirad-Taxi oder einen Jeepney nehmen.\""},
+ {prompt:"Isulti sa German nga naa kay bag-ong bisikleta.", sample:"Beispiel: „Ich habe ein neues Fahrrad.\""},
+ {prompt:"Isulti sa German nga kinahanglan ninyo tanken ang awto.", sample:"Beispiel: „Wir müssen das Auto auftanken.\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German mahitungod sa iyang trabaho, ug tubaga sa imong kaugalingon.", sample:"Beispiel: „Was ist dein Beruf? Ich bin Arzt in einer Klinik.\""},
+ {prompt:"Isulti sa German unsay gusto nimong mahimong balang adlaw.", sample:"Beispiel: „Ich möchte eines Tages Ingenieur werden.\""},
+ {prompt:"Ihulagway sa German nga lisod ang imong trabaho apan ganahan ka gihapon niini.", sample:"Beispiel: „Meine Arbeit ist schwierig, aber ich mag sie trotzdem.\""},
+ {prompt:"Pangayo og lamesa para sa duha ka tawo sa restawran, sa German.", sample:"Beispiel: „Einen Tisch für zwei Personen, bitte.\""},
+ {prompt:"Mangorder og kape ug usa ka piraso nga keyk sa German.", sample:"Beispiel: „Einen Kaffee und ein Stück Kuchen, bitte.\""},
+ {prompt:"Isulti sa German nga lami kaayo ang pagkaon, ug pangayo sa bill.", sample:"Beispiel: „Das Essen hier ist sehr lecker! Die Rechnung, bitte.\""},
+ {prompt:"Ihulagway sa doktor sa German nga naay sip-on ug ubo ka sukad kagahapon.", sample:"Beispiel: „Ich habe seit gestern Schnupfen und Husten.\""},
+ {prompt:"Pangutan-a kon naa bay hilanat ang usa ka tawo sa German, ug tubaga nga sakit ang tutunlan.", sample:"Beispiel: „Hast du Fieber? Nur ein bisschen, aber mein Hals tut weh.\""},
+ {prompt:"Isulti sa German nga kinahanglan mag-inom ana nga tambal tulo ka beses matag adlaw.", sample:"Beispiel: „Du musst diese Medizin dreimal täglich einnehmen.\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German mahitungod sa iyang paboritong isport, ug tubaga.", sample:"Beispiel: „Was ist dein Lieblingssport? Ich mag Basketball sehr gerne.\""},
+ {prompt:"Isugyot sa German nga mudula og bolibol karong hapon.", sample:"Beispiel: „Spielen wir heute Nachmittag Volleyball?\""},
+ {prompt:"Isulti sa German nga naanad ka modagan matag buntag.", sample:"Beispiel: „Ich bin es gewohnt, jeden Morgen zu laufen.\""},
+ {prompt:"Isulti sa German nga nangita ka og bag-ong sinina, ug pangutan-a kon pwede ka mosul-ob.", sample:"Beispiel: „Ich suche neue Kleidung. Kann ich das anprobieren?\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German sa iyang sukod sa sinina, ug tubaga alang sa imong kaugalingon.", sample:"Beispiel: „Welche Größe hast du? Ich habe Größe medium.\""},
+ {prompt:"Pangutan-a sa German kon naa bay laing kolor o mas gamay nga sukod sa usa ka butang.", sample:"Beispiel: „Gibt es das in einer anderen Farbe? Gibt es eine kleinere Größe?\""},
+ {prompt:"Isulti sa German kung unsay paborito nimong kolor.", sample:"Beispiel: „Was ist deine Lieblingsfarbe? Ich mag Blau und Grün.\""},
+ {prompt:"Ihulagway sa German ang kolor sa usa ka sinina nga imong nakita.", sample:"Beispiel: „Diese Schuhe sind sehr rot.\""},
+ {prompt:"Pilia tali sa duha ka kolor para sa usa ka butang nga gusto nimong paliton, sa German.", sample:"Beispiel: „Schwarz oder weiß, bitte.\""},
+ {prompt:"Pangutan-a ang usa ka tawo unsay sakit niya sa German, ug tubaga nga sakit ang ulo.", sample:"Beispiel: „Was tut dir weh? Mein Kopf tut weh.\""},
+ {prompt:"Isulti sa German nga sakit pud imong tiyan ug kinahanglan moadto sa doktor.", sample:"Beispiel: „Mein Bauch tut auch weh. Ich muss zum Arzt gehen.\""},
+ {prompt:"Isulti sa German nga init imong lawas ug tingali naay hilanat.", sample:"Beispiel: „Mein Körper ist heiß, vielleicht habe ich Fieber.\""},
+ {prompt:"Pangutan-a ang usa ka tawo unsay iyang gitun-an sa eskwelahan sa German, ug tubaga.", sample:"Beispiel: „Was lernst du in der Schule? Ich lerne Englisch und Mathematik.\""},
+ {prompt:"Isulti sa German nga lisod kaayo ang usa ka leksyon ug kinahanglan ka mag-eskwela para sa exam.", sample:"Beispiel: „Diese Lektion ist sehr schwierig. Ich muss für die Prüfung lernen.\""},
+ {prompt:"Isulti nga malipayon sa German nga nakapasar ka sa imong exam.", sample:"Beispiel: „Ich habe meine Prüfung bestanden!\""},
+ {prompt:"Pangutan-a unsay gisaulog karong adlawa sa German, ug tubaga.", sample:"Beispiel: „Was wird heute gefeiert? Heute ist das Fest unseres Dorfes.\""},
+ {prompt:"Isulti sa usa ka tawo sa German nga malipayong adlawng natawhan.", sample:"Beispiel: „Alles Gute zum Geburtstag!\""},
+ {prompt:"Isugyot sa German nga mangaon og lechon sa piyesta.", sample:"Beispiel: „Lass uns Lechon beim Fest essen!\""},
+ {prompt:"Pangutan-a kon naa bay signal diri sa German, ug isulti nga gamay ra imong load.", sample:"Beispiel: „Gibt es hier Empfang? Mein Guthaben ist knapp.\""},
+ {prompt:"Pangayo sa usa ka tawo sa German sa iyang Wi-Fi password.", sample:"Beispiel: „Kann ich dein WLAN-Passwort haben?\""},
+ {prompt:"Isulti sa German nga nahurot na ang baterya sa imong selpon, ug pangayo nga i-charge kini.", sample:"Beispiel: „Der Akku meines Handys ist leer. Bitte lade mein Handy auf.\""},
+ {prompt:"Isulti sa German nga gusto mag-padala og pakete, ug pangutan-a ang presyo sa selyo.", sample:"Beispiel: „Ich möchte ein Paket verschicken. Wie viel kostet die Briefmarke nach Deutschland?\""},
+ {prompt:"Pangutan-a asa ka pwede mag-withdraw og kwarta sa German, ug isulti nga kinahanglan nimo ang imong ID.", sample:"Beispiel: „Wo kann ich Geld abheben? Ich brauche meinen Ausweis.\""},
+ {prompt:"Pangutan-a asa pun-on ang usa ka porma sa German, ug pasalamati ang maayong serbisyo.", sample:"Beispiel: „Wo fülle ich dieses Formular aus? Danke, der Service hier ist gut.\""},
+ {prompt:"Singgit og tabang sa German tungod sa aksidente, ug pangayo og ambulansya.", sample:"Beispiel: „Hilfe! Ein Unfall! Rufen Sie sofort einen Krankenwagen!\""},
+ {prompt:"Pangutan-a asa ang pinakaduol nga ospital, sa German.", sample:"Beispiel: „Wo ist das nächste Krankenhaus?\""},
+ {prompt:"Isulti sa German nga nawala ang imong pitaka, ug palig-una ang usa ka tawo.", sample:"Beispiel: „Mein Portemonnaie ist weg! Keine Sorge, wir sind jetzt sicher.\""},
+ {prompt:"Pangutan-a kinsay maglimpyo sa kwarto karon sa German, ug isulti nga ikaw ang maghugas sa mga plato.", sample:"Beispiel: „Wer putzt heute das Zimmer? Ich spüle die Teller.\""},
+ {prompt:"Pangayo sa usa ka tawo sa German nga limpyohan ang lamesa.", sample:"Beispiel: „Bitte putz den Tisch.\""},
+ {prompt:"Isulti sa German nga wala pa nimo mahuman ang labada, ug pangutan-a kinsay magluto karong gabii.", sample:"Beispiel: „Ich habe die Wäsche noch nicht gemacht. Wer kocht heute Abend?\""},
+ {prompt:"Pangutan-a asa ang pinakaduol nga hunta-anan sa German.", sample:"Beispiel: „Wo ist die nächste Bushaltestelle?\""},
+ {prompt:"Pangutan-a kon moadto ba ang usa ka jeep sa merkado sa German, ug pila ang plete.", sample:"Beispiel: „Fährt dieser Jeepney zum Markt? Was kostet die Fahrt?\""},
+ {prompt:"Isulti sa German nga puno na ang bus ug molugsong ka diri.", sample:"Beispiel: „Der Bus ist schon voll, es gibt keine Sitzplätze mehr. Danke, ich steige hier aus.\""},
+ {prompt:"Pangutan-a ang usa ka tawo sa German kon naa ba siyay uyab.", sample:"Beispiel: „Hast du einen Freund oder eine Freundin?\""},
+ {prompt:"Isulti sa German nga nagkita mo sulod sa tulo ka tuig.", sample:"Beispiel: „Wir sind seit drei Jahren zusammen.\""},
+ {prompt:"Isulti sa usa ka tawo sa German nga nahigugma gayod ka niya ug hangtod sa kahangturan.", sample:"Beispiel: „Ich liebe dich wirklich. Wir werden uns für immer lieben.\""},
+ {prompt:"Ipaila imong kaugalingon ug isulti dungan imong trabaho sa German.", sample:"Beispiel: „Ich bin Anna. Ich bin Ärztin in einer Klinik.\""},
+ {prompt:"Pangutan-a sa merkado ang presyo sa usa ka butang ug tagpila ang usa ka kilo, sa German.", sample:"Beispiel: „Was kostet die Mango? Zwanzig Pesos pro Kilo.\""},
+ {prompt:"Isulti sa German nga init kaayo karon.", sample:"Beispiel: „Es ist heute sehr heiß.\""},
+ {prompt:"Isulti sa German nga gikapoy ka sa trabaho apan nalipay ka nga makita ang imong mga higala.", sample:"Beispiel: „Ich bin müde von der Arbeit, aber ich freue mich, meine Freunde zu sehen.\""},
+ {prompt:"Isulti kanus-a ang imong flight ugma ug asa padulong, sa German.", sample:"Beispiel: „Ich fliege morgen nach Cebu.\""},
+ {prompt:"Mangorder sa restawran sa German sa imong paboritong pagkaon ug usa ka ilimnon.", sample:"Beispiel: „Ich möchte gerne Reis mit Fisch und einen Kaffee, bitte.\""},
+ {prompt:"Pangutan-a imong mga higala sa German kon gusto ba nila mudula og basketball karong hapon.", sample:"Beispiel: „Wollt ihr heute Nachmittag Basketball spielen?\""},
+ {prompt:"Isulti sa German nga lisod kaayo ang exam apan malipayon ka kay nakapasar ka.", sample:"Beispiel: „Die Prüfung war sehr schwierig, aber ich bin glücklich, weil ich bestanden habe.\""},
+ {prompt:"Pasalamati ang usa ka tawo sa German nga mitabang nimo.", sample:"Beispiel: „Danke für deine Hilfe!\""},
+ {prompt:"Isulti sa usa ka tawo sa German nga malipayong bag-ong tuig.", sample:"Beispiel: „Ich wünsche dir ein gutes neues Jahr!\""},
 ];
 
 /* ============ AUDIO-AUSSPRACHE (Web Speech API) ============ */
@@ -14244,6 +14363,17 @@ const CHUNK_PRONOUNS_EN = [["ako","I"],["ikaw","you"],["siya","he/she"],["kami",
 // [bis, englischer Infinitiv] — "will" bleibt im Englischen für jedes Pronomen gleich.
 const CHUNK_VERBS_EN = [["mokaon","eat"],["moinom","drink"],["mobasa","read"],["motrabaho","work"],["mudula","play"],["muadto","go"]];
 const CHUNK_OBJECTS_EN = [["og kan-on","rice"],["og tubig","water"],["og libro","a book"],["sa balay","at home"],["uban sa higala","with a friend"],["sa merkado","to the market"]];
+// Fuer den German-Lernmodus (learn-de): echte Praesens-Konjugation, indiziert nach dem Bisaya-Verb
+// (aus CHUNK_VERBS[i][0]) und nach Pronomen-Position (ako/ikaw/siya/kami/kita/sila — kami & kita
+// werden im Deutschen beide zu "wir", sila zu "sie", beides identisch mit der Infinitiv-Endung).
+const DE_VERB_FORMS = {
+  mokaon:    ["esse","isst","isst","essen","essen","essen"],
+  moinom:    ["trinke","trinkst","trinkt","trinken","trinken","trinken"],
+  mobasa:    ["lese","liest","liest","lesen","lesen","lesen"],
+  motrabaho: ["arbeite","arbeitest","arbeitet","arbeiten","arbeiten","arbeiten"],
+  mudula:    ["spiele","spielst","spielt","spielen","spielen","spielen"],
+  muadto:    ["gehe","gehst","geht","gehen","gehen","gehen"]
+};
 
 function extractBisFromSample(sample){
   // Die sample-Strings sehen aus wie 'Beispiel: „Text..."' bzw. 'Example: "Text..."' —
@@ -14251,12 +14381,14 @@ function extractBisFromSample(sample){
   return sample.replace(/^(Beispiel|Example):\s*/,"").replace(/^[„"]/,"").replace(/["“]$/,"").trim();
 }
 function renderAnwenden(){
-  const isEn = currentMode()==="learn-bis-en";
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const isDe = mode==="learn-de";
   const pronouns = isEn ? CHUNK_PRONOUNS_EN : CHUNK_PRONOUNS;
   const verbs = isEn ? CHUNK_VERBS_EN : CHUNK_VERBS;
   const objects = isEn ? CHUNK_OBJECTS_EN : CHUNK_OBJECTS;
-  const gaps = isEn ? GAP_EXERCISES_EN : GAP_EXERCISES;
-  const frees = isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
+  const gaps = isDe ? GAP_EXERCISES_BIS : isEn ? GAP_EXERCISES_EN : GAP_EXERCISES;
+  const frees = isDe ? FREE_EXERCISES_BIS : isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
   const p = document.getElementById("chunkPronoun");
   const v = document.getElementById("chunkVerb");
   const o = document.getElementById("chunkObject");
@@ -14266,26 +14398,29 @@ function renderAnwenden(){
   p.onchange = v.onchange = o.onchange = updateChunk;
   updateChunk();
 
-  renderGapQuiz(gaps, isEn);
+  renderGapQuiz(gaps, mode);
 
   const freeEl = document.getElementById("freeExercises");
-  const freePlaceholder = isEn ? "Write your answer in Bisaya here..." : "Schreib hier deine Antwort auf Bisaya...";
-  const freeAnswerLabel = isEn ? "Show example" : "Beispiel anzeigen";
-  const nextWordLabel = isEn ? "Next word" : "Nächstes Wort";
-  const fullyRevealedLabel = isEn ? "✓ fully revealed" : "✓ vollständig aufgedeckt";
+  const freePlaceholder = isDe ? "Isulat dinhi imong tubag sa German..." : isEn ? "Write your answer in Bisaya here..." : "Schreib hier deine Antwort auf Bisaya...";
+  const freeAnswerLabel = isDe ? "Ipakita ang panig-ingnan" : isEn ? "Show example" : "Beispiel anzeigen";
+  const nextWordLabel = isDe ? "Sunod nga pulong" : isEn ? "Next word" : "Nächstes Wort";
+  const fullyRevealedLabel = isDe ? "✓ hingpit nga nabutyag" : isEn ? "✓ fully revealed" : "✓ vollständig aufgedeckt";
   const unlocked = freeExercisesUnlockedCount();
-  const progressHtml = `<p class="small" style="margin-bottom:10px;"><b>${unlocked} ${isEn?"of":"von"} ${frees.length}</b> ${isEn
+  const progressHtml = `<p class="small" style="margin-bottom:10px;"><b>${unlocked} ${isDe?"sa":isEn?"of":"von"} ${frees.length}</b> ${isDe
+    ? 'ka buluhaton naabli — isulat imong tubag, dayon i-klik "Ipakita ang panig-ingnan" sunod-sunod aron mabutyag kini pulong-pulong. Kon hingpit na kining nabutyag, ang sunod nga buluhaton maabli.'
+    : isEn
     ? 'tasks unlocked — write your answer, then click "Show example" step by step to reveal it word by word. Once it is fully revealed, the next task unlocks.'
     : 'Aufgaben freigeschaltet — schreib deine Antwort, dann klick schrittweise auf "Beispiel anzeigen", um das Beispiel Wort für Wort aufzudecken. Erst wenn es komplett aufgedeckt ist, schaltet sich die nächste Aufgabe frei.'}</p>`;
   const cardsHtml = frees.slice(0, unlocked).map((f,i)=>{
-    const bisText = extractBisFromSample(f.sample);
-    const words = bisText.split(" ");
+    const targetText = extractBisFromSample(f.sample);
+    const words = targetText.split(" ");
     const progress = freeExWordsRevealed(i);
     const fullyRevealed = progress >= words.length;
     const shownWords = progress>0 ? words.slice(0,progress).join(" ") + (fullyRevealed?"":" …") : "";
     const btnOrCheck = fullyRevealed
       ? `<span class="small" style="color:var(--accent2); font-weight:700;">${fullyRevealedLabel}</span>`
       : `<button class="action neutral" onclick="revealNextFreeWord(${i})">${progress===0 ? freeAnswerLabel : nextWordLabel}</button>`;
+    const speakFn = isDe ? speakDeBtn(targetText) : speakBtn(targetText,'');
     return `
       <div class="exercise${progress>0?" revealed":""}" style="margin-bottom:14px;" id="freeEx${i}">
         <div><b>${i+1}.</b> ${f.prompt}</div>
@@ -14293,11 +14428,11 @@ function renderAnwenden(){
         <div class="btnrow" style="justify-content:flex-start;">
           ${btnOrCheck}
         </div>
-        <div class="answer" id="freeAns${i}">${shownWords ? speakBtn(bisText,'') + " " + shownWords : ""}</div>
+        <div class="answer" id="freeAns${i}">${shownWords ? speakFn + " " + shownWords : ""}</div>
       </div>`;
   }).join("");
   const doneHtml = unlocked >= frees.length
-    ? `<div class="card" style="margin-top:10px; text-align:center;">🎉 ${isEn ? `All ${frees.length} tasks unlocked — keep it up!` : `Alle ${frees.length} Aufgaben freigeschaltet — weiter so!`}</div>`
+    ? `<div class="card" style="margin-top:10px; text-align:center;">🎉 ${isDe ? `Ang tanang ${frees.length} ka buluhaton naabli na — padayon!` : isEn ? `All ${frees.length} tasks unlocked — keep it up!` : `Alle ${frees.length} Aufgaben freigeschaltet — weiter so!`}</div>`
     : "";
   freeEl.innerHTML = progressHtml + cardsHtml + doneHtml;
   frees.forEach((f,i)=>{
@@ -14307,16 +14442,28 @@ function renderAnwenden(){
   });
 }
 function updateChunk(){
-  const isEn = currentMode()==="learn-bis-en";
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const isDe = mode==="learn-de";
   const pronouns = isEn ? CHUNK_PRONOUNS_EN : CHUNK_PRONOUNS;
   const verbs = isEn ? CHUNK_VERBS_EN : CHUNK_VERBS;
   const objects = isEn ? CHUNK_OBJECTS_EN : CHUNK_OBJECTS;
   const pIdx = Number(document.getElementById("chunkPronoun").value);
   const p = pronouns[pIdx];
-  const v = verbs[document.getElementById("chunkVerb").value];
+  const vIdx = Number(document.getElementById("chunkVerb").value);
+  const v = verbs[vIdx];
   const o = objects[document.getElementById("chunkObject").value];
   const chunkSentence = `${v[0]} ${p[0]} ${o[0]}.`;
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  if(isDe){
+    // Deutsch ist hier die Zielsprache: Hauptsatz = konjugiertes Deutsch (Präsens), darunter der
+    // bekannte Bisaya-Satz als Referenz (umgekehrte Richtung gegenüber den anderen zwei Modi).
+    const bisVerbKey = CHUNK_VERBS[vIdx][0]; // z.B. "mokaon" -- Schlüssel für DE_VERB_FORMS
+    const deVerbForm = (DE_VERB_FORMS[bisVerbKey] || [])[pIdx] || v[1];
+    const deSentence = `${cap(p[1])} ${deVerbForm} ${o[1]}.`;
+    document.getElementById("chunkResult").innerHTML = `${deSentence} ${speakDeBtn(deSentence)} — „${chunkSentence}\"`;
+    return;
+  }
   // Echter, grammatisch korrekter Satz statt aneinandergereihter Einzel-Glossen:
   // Deutsch: Pronomen + konjugiertes "werden" + Ergänzung + Infinitiv (Satzklammer, z.B. "Ich werde Reis essen.")
   // Englisch: Pronomen + "will" (unveränderlich) + Infinitiv + Ergänzung (z.B. "I will eat rice.")
@@ -14329,8 +14476,8 @@ function updateChunk(){
 /* Wortbank-Quiz für Lückensätze: Optionen einmal pro Sprachmodus mischen und cachen,
    damit sie beim Re-Render (z.B. nach richtiger Antwort) stabil bleiben. */
 let _gapChoiceCache = null;
-function gapChoicesFor(gaps, i, isEn){
-  const key = (isEn?"en":"de") + "_" + i;
+function gapChoicesFor(gaps, i, mode){
+  const key = mode + "_" + i;
   if(!_gapChoiceCache) _gapChoiceCache = {};
   if(_gapChoiceCache[key]) return _gapChoiceCache[key];
   const correct = gaps[i].answer;
@@ -14340,17 +14487,19 @@ function gapChoicesFor(gaps, i, isEn){
   _gapChoiceCache[key] = options;
   return options;
 }
-function renderGapQuiz(gaps, isEn){
+function renderGapQuiz(gaps, mode){
   const box = document.getElementById("gapExercises");
   if(!box) return;
+  const isEn = mode==="learn-bis-en";
+  const isDe = mode==="learn-de";
   if(!state.gapSolved) state.gapSolved = {};
   const total = gaps.length;
   const solvedCount = gaps.filter((g,i)=>state.gapSolved[i]).length;
   const pct = total ? Math.round(solvedCount/total*100) : 0;
-  const pctLabel = isEn ? `${solvedCount} of ${total} solved` : `${solvedCount} von ${total} gelöst`;
+  const pctLabel = isDe ? `${solvedCount} sa ${total} nahuman` : isEn ? `${solvedCount} of ${total} solved` : `${solvedCount} von ${total} gelöst`;
   const cardsHtml = gaps.map((g,i)=>{
     const solved = !!state.gapSolved[i];
-    const options = gapChoicesFor(gaps, i, isEn);
+    const options = gapChoicesFor(gaps, i, mode);
     const fullSentence = g.sentence.replace("___", g.answer);
     const choicesHtml = options.map((opt,oi)=>{
       const isCorrect = opt === g.answer;
@@ -14358,7 +14507,7 @@ function renderGapQuiz(gaps, isEn){
       return `<button class="${cls}" ${solved?"disabled":""} onclick="gapChoose(${i}, ${oi}, this)">${opt}</button>`;
     }).join("");
     const feedbackHtml = solved
-      ? `<div class="gap-feedback show">✓ <b>${fullSentence}</b> ${speakBtn(fullSentence,'')} — ${g.translation}</div>`
+      ? `<div class="gap-feedback show">✓ <b>${fullSentence}</b> ${isDe ? speakDeBtn(fullSentence) : speakBtn(fullSentence,'')} — ${g.translation}</div>`
       : `<div class="gap-feedback" id="gapFeedback${i}"></div>`;
     return `
       <div class="gap-card${solved?" solved":""}" id="gapCard${i}">
@@ -14370,7 +14519,7 @@ function renderGapQuiz(gaps, isEn){
       </div>`;
   }).join("");
   const doneHtml = (total>0 && solvedCount>=total)
-    ? `<div class="gap-done-banner">🎉 ${isEn ? `All ${total} fill-in-the-blanks solved — great job!` : `Alle ${total} Lückensätze gelöst — super gemacht!`}</div>`
+    ? `<div class="gap-done-banner">🎉 ${isDe ? `Nahuman ang tanang ${total} ka Lückensätze — maayo kaayo!` : isEn ? `All ${total} fill-in-the-blanks solved — great job!` : `Alle ${total} Lückensätze gelöst — super gemacht!`}</div>`
     : "";
   box.innerHTML = `
     <div class="gap-progress-mini">
@@ -14383,10 +14532,11 @@ function renderGapQuiz(gaps, isEn){
 function gapChoose(i, optIdx, btnEl){
   const mode = currentMode();
   const isEn = mode==="learn-bis-en";
-  const gaps = isEn ? GAP_EXERCISES_EN : GAP_EXERCISES;
+  const isDe = mode==="learn-de";
+  const gaps = isDe ? GAP_EXERCISES_BIS : isEn ? GAP_EXERCISES_EN : GAP_EXERCISES;
   if(state.gapSolved && state.gapSolved[i]) return;
   const g = gaps[i];
-  const options = gapChoicesFor(gaps, i, isEn);
+  const options = gapChoicesFor(gaps, i, mode);
   const chosen = options[optIdx];
   const choicesBox = document.getElementById("gapChoices"+i);
   const buttons = choicesBox ? [...choicesBox.querySelectorAll("button")] : [];
@@ -14397,7 +14547,7 @@ function gapChoose(i, optIdx, btnEl){
     state.gapSolved[i] = true;
     touchDaily(); touchStreak(); saveState();
     showBadgeToasts(checkAchievements());
-    renderGapQuiz(gaps, isEn);
+    renderGapQuiz(gaps, mode);
   } else {
     btnEl.classList.add("wrong");
     setTimeout(()=>{ btnEl.classList.remove("wrong"); }, 500);
@@ -14406,8 +14556,8 @@ function gapChoose(i, optIdx, btnEl){
 // Fortschritt der "Freien Anwendung": schrittweise Freischaltung neuer Aufgaben + Wort-für-Wort-
 // Aufdecken der Beispielantwort (statt Sofort-Anzeige), analog zum Italienisch-Modul.
 function freeExercisesUnlockedCount(){
-  const isEn = currentMode()==="learn-bis-en";
-  const frees = isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
+  const mode = currentMode();
+  const frees = mode==="learn-de" ? FREE_EXERCISES_BIS : mode==="learn-bis-en" ? FREE_EXERCISES_EN : FREE_EXERCISES;
   state.freeExUnlocked = state.freeExUnlocked || 1;
   if(state.freeExUnlocked > frees.length) state.freeExUnlocked = frees.length;
   return state.freeExUnlocked;
@@ -14417,8 +14567,8 @@ function freeExWordsRevealed(i){
   return state.freeExWordProgress[i] || 0;
 }
 function revealNextFreeWord(i){
-  const isEn = currentMode()==="learn-bis-en";
-  const frees = isEn ? FREE_EXERCISES_EN : FREE_EXERCISES;
+  const mode = currentMode();
+  const frees = mode==="learn-de" ? FREE_EXERCISES_BIS : mode==="learn-bis-en" ? FREE_EXERCISES_EN : FREE_EXERCISES;
   const bisText = extractBisFromSample(frees[i].sample);
   const words = bisText.split(" ");
   state.freeExWordProgress = state.freeExWordProgress || {};
