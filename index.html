@@ -754,7 +754,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.50.0</div>
+  <div class="version-tag">v1.51.0</div>
 </section>
 
 <!-- METHODE -->
@@ -14269,23 +14269,29 @@ function renderStoryList(){
       </div>`
     : isEn
     ? `<div class="card">
-        <h2>📖 Stories — see the method in action</h2>
-        <p>Here you see the principle in action (inspired by Birkenbihl): line by line, first the Bisaya sentence, right below it the matching English translation. Read the Bisaya lines aloud, then check the meaning — that way your brain links sound and meaning without memorizing grammar rules.</p>
+        <h2>📖 Stories — decode line by line</h2>
+        <p>Listen to each Bisaya line, then rebuild its English translation yourself, word by word (watch out — a few wrong words are mixed in). That way your brain actively links sound and meaning instead of just reading a ready-made translation.</p>
       </div>`
     : `<div class="card">
-        <h2>📖 Geschichten — die Lernidee live erleben</h2>
-        <p>Hier siehst du das Prinzip in Aktion (inspiriert von Birkenbihl): Zeile für Zeile erst der deutsche Satz, direkt darunter der passende Bisaya-Satz. Lies zuerst nur die deutschen Zeilen durch, dann die Bisaya-Zeilen laut mit — so verknüpft dein Gehirn Klang und Bedeutung, ohne Grammatikregeln zu pauken.</p>
+        <h2>📖 Geschichten — Zeile für Zeile dekodieren</h2>
+        <p>Höre dir jede Bisaya-Zeile an und baue dann selbst die deutsche Übersetzung aus einzelnen Wörtern zusammen (Achtung — ein paar falsche Wörter sind mit im Pool). So verknüpft dein Gehirn aktiv Klang und Bedeutung, statt nur eine fertige Übersetzung zu lesen.</p>
       </div>`;
   const tileLabel = mode==="learn-de" ? "Sugilanon" : isEn ? "Story" : "Geschichte";
   const subLabel = mode==="learn-de" ? "ka pares nga linya" : isEn ? "line pairs" : "Zeilenpaare";
   el.innerHTML = heading +
     `<div class="lesson-grid">` +
-    STORIES_DATA.map((s,i)=>`
+    STORIES_DATA.map((s,i)=>{
+      const doneCount = mode==="learn-de" ? 0 : ldDoneCount("story"+i);
+      const decodeProgress = mode==="learn-de" ? "" :
+        `<div class="small" style="margin-top:4px;">${doneCount}/${s.lines.length} ${isEn?"lines decoded":"Zeilen dekodiert"}</div>`;
+      return `
       <div class="lesson-tile" onclick="openStory(${i})">
         <div class="num">${tileLabel} ${i+1}</div>
         <h4>${mode==="learn-bis-en" ? (s.titleEn || s.title) : s.title}</h4>
         <div class="sub">${s.lines.length} ${subLabel}</div>
-      </div>`).join("") +
+        ${decodeProgress}
+      </div>`;
+    }).join("") +
     `</div>`;
 }
 function openStory(i){
@@ -14297,12 +14303,15 @@ function openStory(i){
   const introText = mode==="learn-de"
     ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German."
     : isEn
-    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen."
-    : "Deutsch zuerst, dann Bisaya — genau wie beim Dekodieren nach dieser Lernidee. Nutze 🔊 zum Anhören.";
+    ? "Listen to each Bisaya line, then tap the words in the right order to rebuild the English translation yourself. Watch out — a few wrong words are mixed into the pool."
+    : "Höre dir jede Bisaya-Zeile an und tippe dann die Wörter in der richtigen Reihenfolge an, um die deutsche Übersetzung selbst zusammenzubauen. Achtung — ein paar falsche Wörter sind mit im Pool.";
+  const progressHtml = mode==="learn-de" ? "" :
+    `<p class="sb-progress"><b>${ldDoneCount("story"+i)} ${isEn?"of":"von"} ${s.lines.length} ${isEn?"lines decoded":"Zeilen dekodiert"}</b></p>`;
   let html = `<div class="card">
     <span class="backlink" onclick="renderStoryList()">${backLabel}</span>
     <h2>${isEn ? (s.titleEn || s.title) : s.title}</h2>
-    <p class="small">${introText}</p>`;
+    <p class="small">${introText}</p>
+    ${progressHtml}`;
   s.lines.forEach((line, idx)=>{
     if(mode==="learn-de"){
       html += `<div class="story-line">
@@ -14310,13 +14319,7 @@ function openStory(i){
         <div class="bis-line">${line.bis}</div>
       </div>`;
     } else {
-      const translation = isEn ? (line.en || line.de) : line.de;
-      html += `<div class="story-line">
-        <div class="de-line"><span class="num">${idx+1}.</span>${translation}</div>
-        <div class="bis-line">${speakBtn(line.bis, line.pron)} ${line.bis}
-          <span class="bis-pron">${line.pron || ''}</span>
-        </div>
-      </div>`;
+      html += renderLineDecodeTask("story", i, idx, line, isEn);
     }
   });
   html += `</div>`;
@@ -14349,12 +14352,18 @@ function renderLiedList(){
   const subLabel = mode==="learn-de" ? "ka linya" : isEn ? "lines" : "Zeilen";
   el.innerHTML = heading +
     `<div class="lesson-grid">` +
-    LIEDER_DATA.map((s,i)=>`
+    LIEDER_DATA.map((s,i)=>{
+      const doneCount = mode==="learn-de" ? 0 : ldDoneCount("lied"+i);
+      const decodeProgress = mode==="learn-de" ? "" :
+        `<div class="small" style="margin-top:4px;">${doneCount}/${s.lines.length} ${isEn?"lines decoded":"Zeilen dekodiert"}</div>`;
+      return `
       <div class="lesson-tile" onclick="openLied(${i})">
         <div class="num">${tileLabel} ${i+1}</div>
         <h4>${mode==="learn-de" ? s.title : isEn ? (s.titleEn || s.titleDe || s.title) : (s.titleDe || s.title)}</h4>
         <div class="sub">${s.lines.length} ${subLabel}</div>
-      </div>`).join("") +
+        ${decodeProgress}
+      </div>`;
+    }).join("") +
     `</div>`;
 }
 function openLied(i){
@@ -14366,14 +14375,17 @@ function openLied(i){
   const introText = mode==="learn-de"
     ? "German una, dayon Bisaya — sundon nato ang pamaagi sa pag-decode. Gamita ang 🔊 aron paminawon ang German."
     : isEn
-    ? "Bisaya first, then English — following the decoding method. Use 🔊 to listen."
-    : "Deutsch zuerst, dann Bisaya — genau wie beim Dekodieren nach dieser Lernidee. Nutze 🔊 zum Anhören.";
+    ? "Listen to each Bisaya line, then tap the words in the right order to rebuild the English translation yourself. Watch out — a few wrong words are mixed into the pool."
+    : "Höre dir jede Bisaya-Zeile an und tippe dann die Wörter in der richtigen Reihenfolge an, um die deutsche Übersetzung selbst zusammenzubauen. Achtung — ein paar falsche Wörter sind mit im Pool.";
+  const progressHtml = mode==="learn-de" ? "" :
+    `<p class="sb-progress"><b>${ldDoneCount("lied"+i)} ${isEn?"of":"von"} ${s.lines.length} ${isEn?"lines decoded":"Zeilen dekodiert"}</b></p>`;
   let html = `<div class="card">
     <span class="backlink" onclick="renderLiedList()">${backLabel}</span>
     <h2>${mode==="learn-de" ? s.title : isEn ? (s.titleEn || s.titleDe || s.title) : (s.titleDe || s.title)}</h2>
     <p class="small">${introText}</p>
     <p class="small" style="font-style:italic;">${escapeHtml(s.note || "")}</p>
-    ${s.keyInfo ? `<p class="small" style="margin-top:8px;"><b>🎸 ${mode==="learn-de" ? "Gitara" : isEn ? "Guitar" : "Gitarre"}:</b> ${escapeHtml(s.keyInfo)}</p>` : ""}`;
+    ${s.keyInfo ? `<p class="small" style="margin-top:8px;"><b>🎸 ${mode==="learn-de" ? "Gitara" : isEn ? "Guitar" : "Gitarre"}:</b> ${escapeHtml(s.keyInfo)}</p>` : ""}
+    ${progressHtml}`;
   s.lines.forEach((line, idx)=>{
     const chord = (s.chords && s.chords[idx]) ? `<span class="chord-tag">${escapeHtml(s.chords[idx])}</span>` : "";
     if(mode==="learn-de"){
@@ -14383,19 +14395,149 @@ function openLied(i){
         <div class="bis-line">${line.bis}</div>
       </div>`;
     } else {
-      const translation = isEn ? (line.en || line.de) : line.de;
-      html += `<div class="story-line">
-        ${chord}
-        <div class="de-line"><span class="num">${idx+1}.</span>${translation}</div>
-        <div class="bis-line">${speakBtn(line.bis, line.pron)} ${line.bis}
-          <span class="bis-pron">${line.pron || ''}</span>
-        </div>
-      </div>`;
+      html += renderLineDecodeTask("lied", i, idx, line, isEn, chord);
     }
   });
   html += `</div>`;
   el.innerHTML = html;
   window.scrollTo(0,0);
+}
+
+/* ============ ZEILEN-DECODIEREN (Storys & Lieder) ============ */
+// Gleiche Wortbau-Mechanik wie beim Lektions-Satzbau (siehe sbPlace weiter unten, inkl.
+// Ablenker-Woerter), aber nur in eine Richtung: Bisaya -> Muttersprache (Decodieren).
+// Nicht im learn-de-Modus aktiv (genau wie der Lektions-Satzbau dort auch nicht existiert).
+// deckKey identifiziert Story/Lied eindeutig (z.B. "story0", "lied2"), damit der Fortschritt
+// getrennt von den Lektionen gespeichert wird.
+let lineDecodeSb = {}; // transientes UI-Sitzungsobjekt, Key: deckKey_lineIdx
+function ldTaskKey(deckKey, lineIdx){ return deckKey+"_"+lineIdx; }
+function ldDoneMap(deckKey){
+  state.lineDecode = state.lineDecode || {};
+  state.lineDecode[deckKey] = state.lineDecode[deckKey] || {};
+  return state.lineDecode[deckKey];
+}
+function ldDoneCount(deckKey){
+  const done = ldDoneMap(deckKey);
+  return Object.keys(done).filter(k=>done[k]).length;
+}
+function ldDeckInfo(kind, idx){
+  if(kind==="story"){
+    const s = STORIES_DATA[idx];
+    return { deckKey:"story"+idx, lines:s.lines, reopen:()=>openStory(idx) };
+  }
+  const s = LIEDER_DATA[idx];
+  return { deckKey:"lied"+idx, lines:s.lines, reopen:()=>openLied(idx) };
+}
+function ldCollectDecoyCandidates(lines, lineIdx, isEn, excludeWordsLower){
+  const excludeNorm = new Set(excludeWordsLower.map(sbNormWord));
+  const seenNorm = new Set();
+  const words = [];
+  lines.forEach((otherLine,i)=>{
+    if(i===lineIdx) return;
+    const t = isEn ? (otherLine.en || otherLine.de) : otherLine.de;
+    t.split(" ").forEach(w=>{
+      if(!w) return;
+      const norm = sbNormWord(w);
+      if(!norm || excludeNorm.has(norm) || seenNorm.has(norm)) return;
+      seenNorm.add(norm);
+      words.push(w);
+    });
+  });
+  return words;
+}
+function ldGetState(deckKey, lineIdx, words, lines, isEn){
+  const key = ldTaskKey(deckKey, lineIdx);
+  if(!lineDecodeSb[key]){
+    const items = words.map((w,idx)=>({type:"real", idx}));
+    const targetLower = words.map(w=>w.toLowerCase());
+    const candidates = ldCollectDecoyCandidates(lines, lineIdx, isEn, targetLower);
+    const shuffledCand = sbShuffledIndices(candidates.length).map(i=>candidates[i]);
+    const decoyCount = Math.min(SB_DECOY_COUNT, shuffledCand.length);
+    for(let i=0;i<decoyCount;i++) items.push({type:"decoy", word: shuffledCand[i]});
+    lineDecodeSb[key] = { items, order: sbShuffledIndices(items.length), placed: [], wrong:false, wrongDecoyIdx:null };
+  }
+  return lineDecodeSb[key];
+}
+function ldPlace(kind, idx, lineIdx, itemIdx){
+  const mode = currentMode();
+  const isEn = mode==="learn-bis-en";
+  const { deckKey, lines, reopen } = ldDeckInfo(kind, idx);
+  const line = lines[lineIdx];
+  const naturalText = isEn ? (line.en || line.de) : line.de;
+  const words = naturalText.split(" ");
+  const st = ldGetState(deckKey, lineIdx, words, lines, isEn);
+  const item = st.items[itemIdx];
+  if(item.type === "decoy"){
+    st.wrongDecoyIdx = itemIdx;
+    reopen();
+    return;
+  }
+  st.order = st.order.filter(i=>i!==itemIdx);
+  st.placed.push(itemIdx);
+  st.wrong = false;
+  st.wrongDecoyIdx = null;
+  if(st.placed.length === words.length){
+    const correct = st.placed.every((ii,i)=>st.items[ii].idx===i);
+    if(correct){
+      const done = ldDoneMap(deckKey);
+      done[lineIdx] = true;
+      saveState();
+    } else {
+      st.wrong = true;
+    }
+  }
+  reopen();
+}
+function ldUndo(kind, idx, lineIdx){
+  const { deckKey, reopen } = ldDeckInfo(kind, idx);
+  const key = ldTaskKey(deckKey, lineIdx);
+  const st = lineDecodeSb[key];
+  if(!st || st.placed.length===0) return;
+  const itemIdx = st.placed.pop();
+  st.order.push(itemIdx);
+  st.wrong = false;
+  st.wrongDecoyIdx = null;
+  reopen();
+}
+function ldReset(kind, idx, lineIdx){
+  const { deckKey, reopen } = ldDeckInfo(kind, idx);
+  delete lineDecodeSb[ldTaskKey(deckKey, lineIdx)];
+  reopen();
+}
+function renderLineDecodeTask(kind, idx, lineIdx, line, isEn, extraHtml){
+  const { deckKey, lines } = ldDeckInfo(kind, idx);
+  const naturalText = isEn ? (line.en || line.de) : line.de;
+  const words = naturalText.split(" ");
+  const done = ldDoneMap(deckKey);
+  if(done[lineIdx]){
+    return `<div class="story-line">${extraHtml||""}
+      <div class="de-line"><span class="num">${lineIdx+1}.</span>${naturalText}</div>
+      <div class="bis-line">${speakBtn(line.bis, line.pron)} ${line.bis}<span class="bis-pron">${line.pron || ''}</span></div>
+    </div>`;
+  }
+  const st = ldGetState(deckKey, lineIdx, words, lines, isEn);
+  const poolHtml = st.order.map(itemIdx=>{
+    const it = st.items[itemIdx];
+    const label = it.type==="real" ? words[it.idx] : it.word;
+    return `<button type="button" class="sb-chip" onclick="event.stopPropagation(); ldPlace('${kind}',${idx},${lineIdx},${itemIdx})">${label}</button>`;
+  }).join("");
+  const placedHtml = st.placed.map(itemIdx=>`<span class="sb-chip sb-chip-placed">${words[st.items[itemIdx].idx]}</span>`).join("");
+  const wrongMsg = st.wrong
+    ? `<div class="sb-wrong-msg">${isEn ? "Not quite the right order — try again." : "Noch nicht die richtige Reihenfolge — versuch's nochmal."}</div>`
+    : "";
+  const decoyMsg = (st.wrongDecoyIdx!=null)
+    ? `<div class="sb-wrong-msg">${isEn ? `"${st.items[st.wrongDecoyIdx].word}" doesn't belong in this sentence.` : `„${st.items[st.wrongDecoyIdx].word}" gehört nicht in diesen Satz.`}</div>`
+    : "";
+  return `<div class="story-line">${extraHtml||""}
+    <div class="bis-line"><span class="num">${lineIdx+1}.</span>${speakBtn(line.bis, line.pron)} ${line.bis}<span class="bis-pron">${line.pron || ''}</span></div>
+    <div class="sb-answer-row sb-row" style="margin-top:8px;">${placedHtml || `<span class="small">${isEn?"tap words below…":"tippe unten Wörter an…"}</span>`}</div>
+    <div class="sb-row">${poolHtml}</div>
+    ${wrongMsg}${decoyMsg}
+    <div class="sb-controls">
+      <button class="action neutral" onclick="ldUndo('${kind}',${idx},${lineIdx})">${isEn?"Undo":"Rückgängig"}</button>
+      <button class="action neutral" onclick="ldReset('${kind}',${idx},${lineIdx})">${isEn?"Reset":"Neu mischen"}</button>
+    </div>
+  </div>`;
 }
 
 /* ============ LEKTIONEN ============ */
