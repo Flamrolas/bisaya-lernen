@@ -754,7 +754,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.48.0</div>
+  <div class="version-tag">v1.49.0</div>
 </section>
 
 <!-- METHODE -->
@@ -14522,12 +14522,32 @@ function renderGapQuiz(gaps, mode){
     ? `<div class="gap-done-banner">🎉 ${isDe ? `Nahuman ang tanang ${total} ka Lückensätze — maayo kaayo!` : isEn ? `All ${total} fill-in-the-blanks solved — great job!` : `Alle ${total} Lückensätze gelöst — super gemacht!`}</div>`
     : "";
   box.innerHTML = `
-    <div class="gap-progress-mini">
-      <div class="progressbar"><div style="width:${pct}%"></div></div>
-      <span class="gap-progress-txt">${pctLabel}</span>
+    <div class="gap-progress-mini" id="gapProgressMini">
+      <div class="progressbar"><div id="gapProgressFill" style="width:${pct}%"></div></div>
+      <span class="gap-progress-txt" id="gapProgressTxt">${pctLabel}</span>
     </div>
     ${cardsHtml}
-    ${doneHtml}`;
+    <div id="gapDoneBanner">${doneHtml}</div>`;
+}
+/* Aktualisiert nur Fortschrittsbalken + Text + Fertig-Banner, ohne die Karten
+   neu zu rendern (siehe gapChoose: verhindert Layout-Sprung beim Klicken). */
+function updateGapProgress(gaps, mode){
+  const isDe = mode==="learn-de";
+  const isEn = mode==="learn-bis-en";
+  const total = gaps.length;
+  const solvedCount = gaps.filter((g,i)=>state.gapSolved && state.gapSolved[i]).length;
+  const pct = total ? Math.round(solvedCount/total*100) : 0;
+  const pctLabel = isDe ? `${solvedCount} sa ${total} nahuman` : isEn ? `${solvedCount} of ${total} solved` : `${solvedCount} von ${total} gelöst`;
+  const fill = document.getElementById("gapProgressFill");
+  if(fill) fill.style.width = pct + "%";
+  const txt = document.getElementById("gapProgressTxt");
+  if(txt) txt.textContent = pctLabel;
+  const banner = document.getElementById("gapDoneBanner");
+  if(banner){
+    banner.innerHTML = (total>0 && solvedCount>=total)
+      ? `<div class="gap-done-banner">🎉 ${isDe ? `Nahuman ang tanang ${total} ka Lückensätze — maayo kaayo!` : isEn ? `All ${total} fill-in-the-blanks solved — great job!` : `Alle ${total} Lückensätze gelöst — super gemacht!`}</div>`
+      : "";
+  }
 }
 function gapChoose(i, optIdx, btnEl){
   const mode = currentMode();
@@ -14541,13 +14561,25 @@ function gapChoose(i, optIdx, btnEl){
   const choicesBox = document.getElementById("gapChoices"+i);
   const buttons = choicesBox ? [...choicesBox.querySelectorAll("button")] : [];
   if(chosen === g.answer){
-    buttons.forEach(b=>{ b.disabled = true; });
-    btnEl.classList.add("correct");
+    buttons.forEach((b,bi)=>{
+      b.disabled = true;
+      b.classList.add(options[bi]===g.answer ? "correct" : "dim");
+    });
     if(!state.gapSolved) state.gapSolved = {};
     state.gapSolved[i] = true;
     touchDaily(); touchStreak(); saveState();
     showBadgeToasts(checkAchievements());
-    renderGapQuiz(gaps, mode);
+    // Nur diese eine Karte aktualisieren (kein Full-Re-Render der Liste), damit
+    // die Position der übrigen Karten stabil bleibt, wenn man schnell weiterklickt.
+    const card = document.getElementById("gapCard"+i);
+    if(card) card.classList.add("solved");
+    const fullSentence = g.sentence.replace("___", g.answer);
+    const feedbackEl = document.getElementById("gapFeedback"+i);
+    if(feedbackEl){
+      feedbackEl.classList.add("show");
+      feedbackEl.innerHTML = `✓ <b>${fullSentence}</b> ${isDe ? speakDeBtn(fullSentence) : speakBtn(fullSentence,'')} — ${g.translation}`;
+    }
+    updateGapProgress(gaps, mode);
   } else {
     btnEl.classList.add("wrong");
     setTimeout(()=>{ btnEl.classList.remove("wrong"); }, 500);
