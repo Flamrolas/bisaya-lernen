@@ -509,6 +509,177 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
   main{max-width:1000px;}
 }
 </style>
+<style id="fx-style">
+/* ===== v0.36.0: Zonen-Navigation, Heute, Lernpfad, Hör-Studio, Reise-Karte, Effekte ===== */
+:root{--zone:#7b5ea7; --zone-soft:rgba(123,94,167,.12);}
+body[data-zone="heute"]{--zone:#7b5ea7; --zone-soft:rgba(123,94,167,.12);}
+body[data-zone="verstehen"]{--zone:#c1502e; --zone-soft:rgba(193,80,46,.12);}
+body[data-zone="hoeren"]{--zone:#3a6ea5; --zone-soft:rgba(58,110,165,.13);}
+body[data-zone="ueben"]{--zone:#2f7a5f; --zone-soft:rgba(47,122,95,.13);}
+body[data-zone="weg"]{--zone:#b8860b; --zone-soft:rgba(184,134,11,.16);}
+
+/* --- Zonen-Navigation --- */
+nav.tabs#tabs{display:none !important;}
+nav.zone-nav{display:block; padding:12px 16px 10px; background:var(--panel); border-bottom:1px solid var(--line); font-family:inherit;}
+nav.zone-nav .zone-row, nav.zone-nav .sub-row{max-width:880px; margin-left:auto; margin-right:auto;}
+.zone-row{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+nav.zone-nav .zone-btn{
+  --zc:#7b5ea7;
+  background:#fff; color:var(--zc); border:2px solid var(--zc); border-radius:14px;
+  padding:8px 14px; font-weight:700; font-size:0.92rem; cursor:pointer;
+}
+nav.zone-nav .zone-btn[data-zone="heute"]{--zc:#7b5ea7;}
+nav.zone-nav .zone-btn[data-zone="verstehen"]{--zc:#c1502e;}
+nav.zone-nav .zone-btn[data-zone="hoeren"]{--zc:#3a6ea5;}
+nav.zone-nav .zone-btn[data-zone="ueben"]{--zc:#2f7a5f;}
+nav.zone-nav .zone-btn[data-zone="weg"]{--zc:#b8860b;}
+nav.zone-nav .zone-btn.active{background:var(--zc); color:#fff;}
+nav.zone-nav .sub-row{
+  display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
+  margin-top:10px; padding:8px; border-radius:14px; background:var(--zone-soft);
+}
+nav.zone-nav .sub-row button{
+  background:#fff; border:1px solid var(--zone); color:var(--ink);
+  border-radius:999px; padding:6px 13px; font-weight:600; font-size:0.85rem; cursor:pointer;
+}
+nav.zone-nav .sub-row button.active{background:var(--zone); color:#fff;}
+body[data-zone] .view.active > .card:first-child,
+body[data-zone] .view.active > div[id$="Box"]:first-child > .card:first-child,
+body[data-zone] .view.active > div[id$="List"]:first-child > .card:first-child,
+body[data-zone] .view.active > div[id$="Box"]:first-child + .card{border-top:5px solid var(--zone);}
+body[data-zone] .view.active > .card:first-child > h2,
+body[data-zone] .view.active > div[id$="Box"]:first-child > .card:first-child h2,
+body[data-zone] .view.active > div[id$="List"]:first-child > .card:first-child > h2{color:var(--zone);}
+@media(max-width:560px){
+  nav.zone-nav .zone-btn{padding:7px 10px; font-size:0.82rem;}
+  nav.zone-nav .sub-row button{padding:6px 10px; font-size:0.8rem;}
+}
+
+/* --- Heute --- */
+.today-head{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;}
+.today-head h2{margin:0 0 2px;}
+.today-chips{display:flex; gap:6px; flex-wrap:wrap;}
+.chip-pill{background:var(--chip); border-radius:999px; padding:4px 10px; font-weight:700; font-size:0.82rem;}
+.plan-list{list-style:none; padding:0; margin:14px 0 10px;}
+.plan-item{
+  --pc:#c1502e;
+  display:flex; align-items:center; gap:12px; padding:12px; margin-bottom:8px;
+  border-radius:12px; border:2px solid var(--pc); background:#fff;
+}
+.plan-item[data-zone="verstehen"]{--pc:#c1502e;}
+.plan-item[data-zone="hoeren"]{--pc:#3a6ea5;}
+.plan-item[data-zone="ueben"]{--pc:#2f7a5f;}
+.plan-item.done{background:rgba(47,122,95,.09); border-color:var(--accent2);}
+.plan-ico{font-size:1.5rem; width:36px; text-align:center; flex-shrink:0;}
+.plan-txt{flex:1; display:flex; flex-direction:column; gap:2px; min-width:0;}
+.plan-txt span{font-size:0.85rem; color:var(--sub);}
+.plan-item button{background:var(--pc); color:#fff; border:none; border-radius:999px; padding:7px 14px; font-weight:700; cursor:pointer; flex-shrink:0;}
+.plan-item.done button{background:var(--accent2);}
+
+/* --- Lernpfad --- */
+.lp-head{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.lp-head h3{margin:0;}
+.lp-stars span{color:#d8cbb0; font-size:1.35rem;}
+.lp-stars span.on{color:#e0a526;}
+.lp-steps{list-style:none; padding:0; margin:10px 0;}
+.lp-step{display:flex; gap:12px; padding:10px; margin-bottom:8px; border-radius:12px; border:1px solid var(--line); background:#fff;}
+.lp-step.current{border-color:var(--accent3); box-shadow:0 0 0 3px rgba(58,110,165,.15);}
+.lp-step.done{background:rgba(47,122,95,.09); border-color:var(--accent2);}
+.lp-n{width:30px; height:30px; border-radius:50%; background:var(--chip); display:flex; align-items:center; justify-content:center; font-weight:800; flex-shrink:0;}
+.lp-step.done .lp-n{background:var(--accent2); color:#fff;}
+.lp-body{flex:1; display:flex; flex-direction:column; gap:4px; min-width:0;}
+.lp-body > span{font-size:0.85rem; color:var(--sub);}
+.lp-actions,.lp-apply{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
+.lp-apply input{flex:1; min-width:170px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit;}
+.lp-controls{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.lp-status{font-size:0.85rem; color:var(--sub);}
+.lp-card button.secondary, .fx-modal button.secondary{background:var(--chip); color:var(--ink); border:1px solid var(--line);}
+.line-block.lp-cur, .story-line.lp-cur{background:rgba(58,110,165,.08); border-radius:10px; box-shadow:0 0 0 2px rgba(58,110,165,.35);}
+.tok.lp-hi .w, .lp-w.lp-hi{color:#fff; background:var(--accent3); border-radius:6px; padding:0 6px;}
+.lp-passive .line-block, .lp-passive .story-line{opacity:.22; filter:blur(2px); transition:opacity .3s, filter .3s;}
+.lp-passive .line-block.lp-cur, .lp-passive .story-line.lp-cur{opacity:.85; filter:none;}
+.lesson-tile .lp-stars{margin-top:6px;}
+.lesson-tile .lp-stars span{font-size:1rem;}
+
+/* --- Reise-Karte --- */
+.map-summary{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0;}
+.map-wrap{
+  border-radius:14px; padding:14px 10px; border:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(214,236,240,.75), rgba(251,247,240,.9));
+}
+.map-leg{font-size:0.82rem; color:var(--sub); margin:2px 0 6px 4px;}
+.map-row{margin-bottom:14px;}
+.map-track{position:relative; display:flex; align-items:flex-start; gap:6px;}
+.map-row.rev .map-track{flex-direction:row-reverse;}
+.map-track::before{content:""; position:absolute; left:6%; right:6%; top:22px; border-top:4px dashed rgba(184,134,11,.55); z-index:0;}
+.map-node{
+  position:relative; z-index:1; flex:1; min-width:0; max-width:64px; background:none; border:none; padding:0; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+}
+.map-dot{
+  width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:0.95rem; border:3px solid var(--line); background:#fff; color:var(--sub);
+}
+.map-node.done .map-dot{background:var(--accent2); border-color:var(--accent2); color:#fff;}
+.map-node.current .map-dot{border-color:var(--accent); color:var(--accent); animation:mapPulse 1.6s infinite;}
+.map-stars{font-size:0.7rem; line-height:1; display:flex; gap:1px;}
+.map-stars span{color:#d8cbb0;}
+.map-stars span.on{color:#e0a526;}
+.map-stamp{
+  position:relative; z-index:1; flex:1; min-width:0; max-width:76px; text-align:center; font-size:0.7rem;
+  border:3px dashed var(--line); border-radius:50%; aspect-ratio:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.8); color:var(--sub); filter:grayscale(1); opacity:.7;
+}
+.map-stamp span{font-size:1.3rem; line-height:1;}
+.map-stamp.on{border:3px solid #b8860b; color:#7a5a08; filter:none; opacity:1; transform:rotate(-8deg); background:#fff8e1;}
+@keyframes mapPulse{0%,100%{box-shadow:0 0 0 0 rgba(193,80,46,.5);}50%{box-shadow:0 0 0 9px rgba(193,80,46,0);}}
+
+/* --- Effekte --- */
+.fx-confetti{position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:10001;}
+.fx-confetti span{position:absolute; top:-20px; opacity:0; animation:fxFall linear forwards;}
+@keyframes fxFall{
+  0%{opacity:1; transform:translate(0,-20px) rotate(0);}
+  100%{opacity:.9; transform:translate(var(--dx,0),105vh) rotate(var(--rot,540deg));}
+}
+.fx-pop{position:fixed; z-index:10002; transform:translateX(-50%); pointer-events:none; font-weight:800; font-size:1.05rem; color:var(--accent2); text-shadow:0 1px 0 #fff, 0 2px 8px rgba(0,0,0,.2); animation:fxPopUp 1.2s ease-out forwards;}
+@keyframes fxPopUp{0%{opacity:0; margin-top:0;}15%{opacity:1;}100%{opacity:0; margin-top:-56px;}}
+.fx-modal-overlay{position:fixed; inset:0; background:rgba(30,16,8,.55); display:flex; align-items:center; justify-content:center; z-index:10000; padding:16px; animation:fxFade .2s;}
+.fx-modal{background:var(--panel); border-radius:20px; padding:26px 22px; max-width:400px; width:100%; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.4); animation:fxBounce .45s;}
+.fx-modal h3{margin:6px 0; font-family:'Fredoka',cursive; font-size:1.5rem; color:var(--accent);}
+.fx-modal p{margin:6px 0;}
+.fx-modal-icon{font-size:3.2rem; line-height:1;}
+.fx-stars-big{font-size:2.2rem; letter-spacing:4px; margin:8px 0;}
+.fx-stars-big span{color:#d8cbb0; display:inline-block;}
+.fx-stars-big span.on{color:#e0a526; animation:fxStar .5s both;}
+.fx-stars-big span.on:nth-child(2){animation-delay:.25s;}
+.fx-stars-big span.on:nth-child(3){animation-delay:.5s;}
+.fx-hint{font-size:0.85rem; color:var(--sub); text-align:left; margin:8px 0;}
+.fx-stamp{display:inline-flex; flex-direction:column; align-items:center; border:3px solid #b8860b; color:#7a5a08; background:#fff8e1; border-radius:50%; width:104px; height:104px; justify-content:center; transform:rotate(-8deg); margin:8px 0; font-size:2rem;}
+.fx-stamp b{font-size:0.9rem;}
+.fx-stamp small{font-size:0.62rem;}
+@keyframes fxFade{from{opacity:0;}to{opacity:1;}}
+@keyframes fxBounce{0%{transform:scale(.7); opacity:0;}60%{transform:scale(1.06); opacity:1;}100%{transform:scale(1);}}
+@keyframes fxStar{0%{transform:scale(0) rotate(-90deg);}70%{transform:scale(1.4) rotate(10deg);}100%{transform:scale(1) rotate(0);}}
+.fx-toast{position:fixed; left:50%; bottom:70px; transform:translateX(-50%); background:#2b2420; color:#fff; padding:10px 18px; border-radius:999px; z-index:10003; font-size:0.9rem; transition:opacity .6s; max-width:90vw;}
+.fx-toast.fade{opacity:0;}
+.fx-mute{position:fixed; left:12px; bottom:12px; z-index:9990; width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--panel); box-shadow:0 3px 10px rgba(0,0,0,.2); font-size:1.15rem; cursor:pointer; padding:0; color:var(--ink);}
+@media (prefers-reduced-motion: reduce){
+  .fx-modal, .fx-pop, .map-node.current .map-dot, .fx-stars-big span.on{animation:none;}
+}
+
+/* Buttons (Bisaya hat keinen globalen Button-Stil) */
+.lp-card button, .fx-modal button, .plan-item button{font-family:inherit; cursor:pointer;}
+.lp-card button:not(.secondary), .fx-modal button:not(.secondary), #hoerBox .btnrow button:not(.secondary){
+  background:var(--accent3); color:#fff; border:none; border-radius:999px; padding:8px 16px; font-weight:700; font-size:0.88rem; cursor:pointer; font-family:inherit;
+}
+.lp-card button.secondary, .fx-modal button.secondary, #hoerBox button.secondary{
+  background:var(--chip); color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; font-weight:600; font-size:0.85rem; cursor:pointer; font-family:inherit;
+}
+.lp-card .backlink{display:inline-block; margin-bottom:6px;}
+.lp-apply button{flex-shrink:0;}
+nav.zone-nav button{font-family:inherit;}
+
+</style>
 </head>
 <body>
 
@@ -679,6 +850,8 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
   </div>
 </header>
 
+<nav class="zone-nav" id="zoneNav"></nav>
+
 <nav class="tabs" id="tabs">
   <button data-view="start" class="active"><span class="mode-bis-only">Start</span><span class="mode-de-only">Sugod</span><span class="mode-en-only">Start</span></button>
   <button data-view="methode"><span class="mode-bis-only">Methode</span><span class="mode-de-only">Pamaagi</span><span class="mode-en-only">Method</span></button>
@@ -701,6 +874,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 
 <!-- START -->
 <section class="view active" id="view-start">
+  <div id="todayBox"></div>
   <div class="card mode-bis-only">
     <h2>Willkommen!</h2>
     <p>Bisaya (Cebuano) ist die Sprache, die in Cebu, Davao und weiten Teilen der Visayas und Mindanaos gesprochen wird. Der Ansatz ist die <b>Idee von Vera F. Birkenbihl</b>. Sie war Trainerin, Autorin und Pionierin des „gehirn-gerechten" Lernens und Lehrens.</p>
@@ -754,7 +928,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.51.0</div>
+  <div class="version-tag">v1.52.0</div>
 </section>
 
 <!-- METHODE -->
@@ -1099,6 +1273,10 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 </section>
 
 <!-- FORTSCHRITT -->
+<section class="view" id="view-hoeren"><div id="hoerBox"></div></section>
+
+<section class="view" id="view-karte"><div id="mapBox"></div></section>
+
 <section class="view" id="view-fortschritt">
   <div class="card">
     <h2 class="mode-bis-only">Dein Fortschritt</h2>
@@ -1108,6 +1286,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
       <div class="stat"><div class="num" id="statKnown">0</div><div class="lbl mode-bis-only">Wörter gekonnt</div><div class="lbl mode-de-only">Mga pulong nahibaw-an</div><div class="lbl mode-en-only">Words known</div></div>
       <div class="stat"><div class="num" id="statLearning">0</div><div class="lbl mode-bis-only">in Übung</div><div class="lbl mode-de-only">gibansay pa</div><div class="lbl mode-en-only">in practice</div></div>
       <div class="stat"><div class="num" id="statLessons">0/30</div><div class="lbl mode-bis-only">Lektionen abgeschlossen</div><div class="lbl mode-de-only">Leksyon nahuman</div><div class="lbl mode-en-only">Lessons completed</div></div>
+      <div class="stat"><div class="num" id="statStars">0</div><div class="lbl mode-bis-only">Sterne</div><div class="lbl mode-de-only">Mga Bituon</div><div class="lbl mode-en-only">Stars</div></div>
     </div>
     <div class="progressbar"><div id="overallBar" style="width:0%"></div></div>
     <p class="small mode-bis-only" style="margin-top:16px;">Dein Fortschritt wird nur lokal in diesem Browser gespeichert (localStorage) — nicht in der Cloud. Öffne die Datei immer im selben Browser, um deinen Stand zu behalten.</p>
@@ -13723,7 +13902,16 @@ function answerQuiz(i){
   const q = quizState.questions[quizState.idx];
   const chosen = q.options[i];
   const correct = chosen === q.correct;
-  if(correct){ quizState.correctCount++; quizState.sessionCorrect++; }
+  if(correct){
+    quizState.correctCount++; quizState.sessionCorrect++;
+    quizState.combo = (quizState.combo||0) + 1;
+    fxSound(quizState.combo >= 3 ? "combo" : "correct", quizState.combo);
+    fxPop(quizState.combo >= 3 ? "🔥 "+quizState.combo+" "+T3("in Folge!","sunod-sunod!","in a row!") : "+1 XP");
+    planAdd("practice",1);
+  } else {
+    quizState.combo = 0;
+    fxSound("wrong");
+  }
   quizState.sessionTotal++;
   document.querySelectorAll("#quizOptions .quiz-opt").forEach((btn,idx)=>{
     btn.disabled = true;
@@ -13780,6 +13968,7 @@ function renderCardComplete(){
     <p class="small">${sessionLabel}: ${quizState.sessionCorrect} / ${quizState.sessionTotal}</p>
     <button class="action primary" onclick="drawNextCard()">${isBis?"Sunod nga Kard →":isEn?"Next Card →":"Nächste Karte →"}</button>
   </div>`;
+  fxSound(perfect ? "complete" : "done"); if(perfect) fxConfetti(80);
   showBadgeToasts(newly);
   if(document.querySelector('nav.tabs button[data-view="fortschritt"].active')) renderProgress();
 }
@@ -14084,9 +14273,12 @@ function wendMarkCard(status){
     }
   }
   touchDaily(); touchStreak();
+  const fxWas = state.words[v.bis] === "known";
   state.words[v.bis] = status;
   saveState();
   showBadgeToasts(checkAchievements());
+  if(status === "known" && !fxWas){ fxSound("correct"); fxPop("+1 XP"); planAdd("practice",1); }
+  else if(status !== "known"){ fxSound("click"); }
   wendNextCard();
 }
 function wendNextCard(){ wendDeckIdx++; wendShowCard(); wendUpdateProgressLabel(); }
@@ -14469,6 +14661,7 @@ function ldPlace(kind, idx, lineIdx, itemIdx){
   const item = st.items[itemIdx];
   if(item.type === "decoy"){
     st.wrongDecoyIdx = itemIdx;
+    fxSound("wrong");
     reopen();
     return;
   }
@@ -14482,8 +14675,10 @@ function ldPlace(kind, idx, lineIdx, itemIdx){
       const done = ldDoneMap(deckKey);
       done[lineIdx] = true;
       saveState();
+      fxSound("done"); fxPop(T3("✓ Zeile!","✓ Linya!","✓ Line!")); planAdd("understand",1);
     } else {
       st.wrong = true;
+      fxSound("wrong");
     }
   }
   reopen();
@@ -14662,6 +14857,7 @@ function sbPlace(lessonId, lineIdx, dir, itemIdx){
   const item = st.items[itemIdx];
   if(item.type === "decoy"){
     st.wrongDecoyIdx = itemIdx;
+    fxSound("wrong");
     openLesson(lessonId, {scroll:false});
     return;
   }
@@ -14675,8 +14871,10 @@ function sbPlace(lessonId, lineIdx, dir, itemIdx){
       const done = sbDoneMap(lessonId);
       done[lineIdx+"_"+dir] = true;
       saveState();
+      fxSound("done"); fxPop(T3("✓ Satz!","✓ Tudling-pulong!","✓ Sentence!")); planAdd("understand",1);
     } else {
       st.wrong = true;
+      fxSound("wrong");
     }
   }
   openLesson(lessonId, {scroll:false});
@@ -15041,9 +15239,12 @@ function markCard(status){
     }
   }
   touchDaily(); touchStreak();
+  const fxWas = state.words[v.bis] === "known";
   state.words[v.bis] = status;
   saveState();
   showBadgeToasts(checkAchievements());
+  if(status === "known" && !fxWas){ fxSound("correct"); fxPop("+1 XP"); planAdd("practice",1); }
+  else if(status !== "known"){ fxSound("click"); }
   nextCard();
 }
 function nextCard(){ deckIdx++; showCard(); }
@@ -15272,6 +15473,7 @@ function gapChoose(i, optIdx, btnEl){
     state.gapSolved[i] = true;
     touchDaily(); touchStreak(); saveState();
     showBadgeToasts(checkAchievements());
+    fxSound("correct"); fxPop("+1 XP", btnEl); planAdd("practice",1);
     // Nur diese eine Karte aktualisieren (kein Full-Re-Render der Liste), damit
     // die Position der übrigen Karten stabil bleibt, wenn man schnell weiterklickt.
     const card = document.getElementById("gapCard"+i);
@@ -15285,6 +15487,7 @@ function gapChoose(i, optIdx, btnEl){
     updateGapProgress(gaps, mode);
   } else {
     btnEl.classList.add("wrong");
+    fxSound("wrong");
     setTimeout(()=>{ btnEl.classList.remove("wrong"); }, 500);
   }
 }
@@ -15525,6 +15728,826 @@ if("serviceWorker" in navigator){
     });
   });
 }
+</script>
+<script>
+/* ============ MOTIVATIONS-UPGRADE v1.52.0 (Bisaya) ============
+   Effekte & Töne, Zonen-Navigation, Heute-Seite, Birkenbihl-Lernpfad, Hör-Studio, Reise-Karte.
+   Dreisprachig (Deutsch / Bisaya / Englisch je nach Lernmodus). Läuft NACH dem Hauptscript und
+   ergänzt/umhüllt dessen Funktionen (goView, saveState, openLesson, ...). */
+
+/* ---------- Hilfsfunktionen ---------- */
+function fxPersist(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function lpEsc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+// Dreisprachiger Text: (Deutsch-Modus, Bisaya-Oberfläche = learn-de, Englisch-Modus)
+function T3(de, bis, en){
+  const m = currentMode();
+  return m === "learn-de" ? bis : (m === "learn-bis-en" ? en : de);
+}
+function fxGoLesson(id){
+  goView("lektionen");
+  const v = document.getElementById("view-lektionen");
+  if(v && v.classList.contains("active")) openLesson(id);
+}
+
+/* ---------- Töne (WebAudio, synthetisch -> keine Dateien, keine Lizenzfragen) ---------- */
+const FX = {
+  ctx:null,
+  reduced(){ try{ return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches); }catch(e){ return false; } },
+  ensure(){
+    if(!this.ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      try{ this.ctx = new AC(); }catch(e){ return null; }
+    }
+    if(this.ctx.state === "suspended" && this.ctx.resume) this.ctx.resume();
+    return this.ctx;
+  },
+  tone(freq, start, dur, type, gain){
+    const ctx = this.ensure(); if(!ctx) return;
+    const t0 = ctx.currentTime + start;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain || 0.12, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t0); o.stop(t0 + dur + 0.03);
+  },
+  seq(freqs, step, dur, type, gain){ freqs.forEach((f,i)=>this.tone(f, i*step, dur, type, gain)); }
+};
+function fxSound(kind, n){
+  if(state && state.fxMuted) return;
+  try{
+    switch(kind){
+      case "word":     FX.tone(540,0,0.09,"sine",0.08); break;
+      case "click":    FX.tone(420,0,0.04,"square",0.03); break;
+      case "correct":  FX.seq([660,880],0.09,0.18,"triangle",0.12); break;
+      case "wrong":    FX.seq([240,180],0.12,0.2,"sawtooth",0.05); break;
+      case "done":     FX.seq([523,659,784],0.08,0.2,"triangle",0.12); break;
+      case "combo":    { const b = 520 + Math.min(n||3,10)*40; FX.seq([b,b*1.25,b*1.5],0.07,0.16,"triangle",0.12); break; }
+      case "star":     FX.seq([988,1319],0.09,0.22,"sine",0.12); break;
+      case "badge":    FX.seq([784,988,1175],0.1,0.25,"triangle",0.12); break;
+      case "goal":     FX.seq([659,784,988,1319],0.1,0.28,"triangle",0.12); break;
+      case "complete": FX.seq([523,659,784,1047],0.11,0.3,"triangle",0.13); FX.tone(1568,0.5,0.5,"sine",0.06); break;
+      case "levelup":  FX.seq([392,523,659,784,1047],0.09,0.28,"triangle",0.13); FX.tone(1568,0.55,0.6,"sine",0.07); break;
+    }
+  }catch(e){}
+}
+function fxMuteBtn(){
+  let b = document.getElementById("fxMute");
+  if(!b){
+    b = document.createElement("button");
+    b.id = "fxMute"; b.className = "fx-mute";
+    b.onclick = ()=>{ state.fxMuted = !state.fxMuted; saveState(); fxMuteBtn(); if(!state.fxMuted) fxSound("correct"); };
+    document.body.appendChild(b);
+  }
+  b.textContent = state.fxMuted ? "🔇" : "🔊";
+  b.title = state.fxMuted ? T3("Töne einschalten","I-on ang tingog","Turn sound on") : T3("Töne ausschalten","I-off ang tingog","Turn sound off");
+  b.setAttribute("aria-label", b.title);
+}
+
+/* ---------- Konfetti, Popups, Toasts, Feier-Fenster ---------- */
+function fxConfetti(count){
+  if(FX.reduced()) return;
+  const wrap = document.createElement("div");
+  wrap.className = "fx-confetti";
+  const colors = ["#c1502e","#2f7a5f","#3a6ea5","#e0a526","#d9534f","#7b5ea7"];
+  const n = count || 60;
+  for(let i=0;i<n;i++){
+    const s = document.createElement("span");
+    s.style.left = (Math.random()*100)+"%";
+    s.style.background = colors[i%colors.length];
+    s.style.animationDelay = (Math.random()*0.5)+"s";
+    s.style.animationDuration = (1.6+Math.random()*1.4)+"s";
+    s.style.setProperty("--dx", (Math.random()*240-120)+"px");
+    s.style.setProperty("--rot", (360+Math.random()*720)+"deg");
+    s.style.width = (6+Math.random()*6)+"px";
+    s.style.height = (8+Math.random()*8)+"px";
+    wrap.appendChild(s);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(()=>wrap.remove(), 3800);
+}
+function fxPop(text, el){
+  if(FX.reduced()) return;
+  const p = document.createElement("div");
+  p.className = "fx-pop";
+  p.textContent = text;
+  let x = window.innerWidth/2, y = window.innerHeight/3;
+  if(el && el.getBoundingClientRect){ const r = el.getBoundingClientRect(); x = r.left + r.width/2; y = r.top; }
+  p.style.left = x+"px"; p.style.top = y+"px";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(), 1300);
+}
+function fxToast(msg){
+  const t = document.createElement("div");
+  t.className = "fx-toast";
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.classList.add("fade"), 2600);
+  setTimeout(()=>t.remove(), 3300);
+}
+let fxModalQueue = [];
+let fxModalOpen = false;
+function fxCelebrate(o){
+  fxModalQueue.push(o);
+  if(!fxModalOpen) fxShowNext();
+}
+function fxShowNext(){
+  const o = fxModalQueue.shift();
+  if(!o){ fxModalOpen = false; return; }
+  fxModalOpen = true;
+  const ov = document.createElement("div");
+  ov.className = "fx-modal-overlay";
+  const btns = (o.buttons||[]).map((b,i)=>`<button class="secondary" data-i="${i}">${b.label}</button>`).join("");
+  ov.innerHTML = `<div class="fx-modal" role="dialog" aria-modal="true">
+    <div class="fx-modal-icon">${o.icon||"🎉"}</div>
+    <h3>${o.title||""}</h3>
+    ${o.sub ? `<p>${o.sub}</p>` : ""}
+    ${o.html||""}
+    <div class="btnrow" style="margin-top:14px;">${btns}<button data-close="1">${T3("Weiter","Sunod","Continue")}</button></div>
+  </div>`;
+  const close = ()=>{ ov.remove(); fxModalOpen = false; setTimeout(fxShowNext, 250); };
+  ov.addEventListener("click", e=>{
+    const b = e.target.closest("button");
+    if(b && b.dataset.i !== undefined){ close(); const fn = o.buttons[+b.dataset.i].onclick; if(fn) setTimeout(fn, 0); }
+    else if((b && b.dataset.close) || e.target === ov){ close(); }
+  });
+  document.body.appendChild(ov);
+  fxSound(o.sound || "complete");
+  if(o.confetti !== false) fxConfetti(o.confettiCount || 70);
+  if(o.afterShow) o.afterShow();
+}
+
+/* Level-Up beim Speichern erkennen */
+const _fxSaveOrig = saveState;
+let fxLevelBusy = false;
+window.saveState = function(){
+  _fxSaveOrig();
+  fxLevelCheck();
+};
+function fxLevelCheck(){
+  if(fxLevelBusy) return;
+  try{
+    const li = levelInfo();
+    if(typeof state.fxLevel !== "number"){ state.fxLevel = li.level; fxPersist(); return; }
+    if(li.level > state.fxLevel){
+      fxLevelBusy = true;
+      state.fxLevel = li.level; fxPersist();
+      const nm = T3(li.name.de, li.name.bis, li.name.en);
+      fxCelebrate({icon:"🚀", title:"Level "+li.level+"!",
+        sub:T3("Du bist jetzt: <b>"+nm+"</b>", "Karon ikaw: <b>"+nm+"</b>", "You are now: <b>"+nm+"</b>"), sound:"levelup"});
+      fxLevelBusy = false;
+    }
+  }catch(e){ fxLevelBusy = false; }
+}
+
+/* Abzeichen-Töne + Tagesziel-Feier */
+const _fxBadgeOrig = showBadgeToasts;
+window.showBadgeToasts = function(b){
+  if(b && b.length){ fxSound("badge"); fxConfetti(30); }
+  return _fxBadgeOrig(b);
+};
+const _fxCheckOrig = checkAchievements;
+window.checkAchievements = function(){
+  const before = state.dailyGoalHitDate === todayStr();
+  const res = _fxCheckOrig();
+  if(!before && state.dailyGoalHitDate === todayStr()){
+    fxCelebrate({icon:"🎯",
+      title:T3("Tagesziel erreicht!","Nakab-ot ang tumong sa adlaw!","Daily goal reached!"),
+      sub:T3("Du hast heute "+DAILY_GOAL_XP+" XP gesammelt — weiter so!","Nakakuha ka og "+DAILY_GOAL_XP+" XP karon — padayon!","You earned "+DAILY_GOAL_XP+" XP today — keep it up!"),
+      sound:"goal", confettiCount:50});
+  }
+  return res;
+};
+
+/* ---------- Sterne, Stempel, Tagesplan ---------- */
+const STAMPS = [
+  {n:5,  city:"Cebu",      ico:"🏙️"},
+  {n:10, city:"Bohol",     ico:"🐒"},
+  {n:15, city:"Siquijor",  ico:"🌴"},
+  {n:20, city:"Dumaguete", ico:"⛱️"},
+  {n:25, city:"Davao",     ico:"🦅"},
+  {n:30, city:"Siargao",   ico:"🏄"}
+];
+function lessonsDoneCount(){ return Object.values(state.lessonsDone||{}).filter(Boolean).length; }
+function stampsEarned(){ const c = lessonsDoneCount(); return STAMPS.filter(s=>c>=s.n).length; }
+function lessonStars(id){
+  if(!(state.lessonsDone||{})[id]) return 0;
+  const f = (state.lp && state.lp[id]) || {};
+  return 1 + ((f.active && f.passive) ? 1 : 0) + (f.apply ? 1 : 0);
+}
+function totalStars(){ return LESSONS.reduce((a,l)=>a+lessonStars(l.id), 0); }
+function starsHtml(n){ return [1,2,3].map(i=>`<span class="${i<=n?'on':''}">★</span>`).join(""); }
+function nextLessonId(){ const l = LESSONS.find(x=>!(state.lessonsDone||{})[x.id]); return l ? l.id : null; }
+
+ACHIEVEMENTS.push(
+  {id:"plan1",   icon:"📅", cond:s=>s.planDays>=1,   de:"Ersten Tagesplan geschafft",     bis:"Una nga Plano sa Adlaw Nahuman",  en:"First daily plan done"},
+  {id:"plan7",   icon:"📅", cond:s=>s.planDays>=7,   de:"7 Tagespläne geschafft",          bis:"7 ka Plano sa Adlaw Nahuman",     en:"7 daily plans done"},
+  {id:"stars10", icon:"⭐", cond:s=>s.stars>=10,     de:"10 Sterne gesammelt",             bis:"10 ka Bituon Nakolekta",          en:"10 stars collected"},
+  {id:"stars45", icon:"🌟", cond:s=>s.stars>=45,     de:"45 Sterne gesammelt",             bis:"45 ka Bituon Nakolekta",          en:"45 stars collected"},
+  {id:"stamp1",  icon:"🛂", cond:s=>s.stamps>=1,     de:"Ersten Reise-Stempel erhalten",   bis:"Una nga Selyo sa Panaw Nakuha",   en:"First journey stamp earned"},
+  {id:"listen1", icon:"🎧", cond:s=>s.listenRuns>=1, de:"Zum ersten Mal bewusst gehört",   bis:"Una nga Tinuyo nga Pagpaminaw",   en:"First mindful listening"}
+);
+const _fxStatsOrig = achievementStats;
+window.achievementStats = function(){
+  const b = _fxStatsOrig();
+  b.planDays = state.planDays || 0;
+  b.stars = totalStars();
+  b.stamps = stampsEarned();
+  b.listenRuns = state.listenRuns || 0;
+  return b;
+};
+
+const PLAN_UNDERSTAND_GOAL = 3;
+const PLAN_PRACTICE_GOAL = 5;
+function planGet(){
+  const t = todayStr();
+  if(!state.plan || state.plan.date !== t){
+    state.plan = {date:t, understand:0, listen:false, practice:0, celebrated:false};
+  }
+  return state.plan;
+}
+function planDone(p){ return p.understand >= PLAN_UNDERSTAND_GOAL && p.listen && p.practice >= PLAN_PRACTICE_GOAL; }
+function planMark(key){ const p = planGet(); if(p[key] === true) return; p[key] = true; planAfter(); }
+function planAdd(key, n){ const p = planGet(); p[key] = (p[key]||0) + (n||1); planAfter(); }
+function planAfter(){
+  const p = planGet();
+  if(planDone(p) && !p.celebrated){
+    p.celebrated = true;
+    state.planDays = (state.planDays||0) + 1;
+    saveState();
+    fxCelebrate({icon:"📅",
+      title:T3("Tagesplan geschafft!","Nahuman ang plano sa adlaw!","Daily plan complete!"),
+      sub:T3("Verstehen, Hören, Üben — alles erledigt. Das ist Birkenbihl in Aktion.",
+             "Pagsabot, pagpaminaw, pagbansay — humana tanan. Kini si Birkenbihl sa aksyon.",
+             "Understand, listen, practice — all done. That's Birkenbihl in action."),
+      sound:"complete"});
+    showBadgeToasts(checkAchievements());
+  } else {
+    fxPersist();
+  }
+  const sv = document.getElementById("view-start");
+  if(sv && sv.classList.contains("active")) renderToday();
+}
+
+/* ---------- Zonen-Navigation ---------- */
+// Jede View: [id, Deutsch, Bisaya, Englisch]
+const ZONES = [
+  {id:"heute",     label:["🏠 Heute","🏠 Karon","🏠 Today"],               def:"start",
+   views:[["start","Heute","Karon","Today"]]},
+  {id:"verstehen", label:["🧭 Verstehen","🧭 Sabta","🧭 Understand"],      def:"lektionen",
+   views:[["methode","Methode","Pamaagi","Method"],["lektionen","Lektionen","Mga Leksyon","Lessons"],
+          ["geschichten","📖 Geschichten","📖 Sugilanon","📖 Stories"],["lieder","🎵 Lieder","🎵 mga Awit","🎵 Songs"],
+          ["grammatik","Grammatik","Gramatika","Grammar"]]},
+  {id:"hoeren",    label:["🎧 Hören","🎧 Paminaw","🎧 Listen"],           def:"hoeren",
+   views:[["hoeren","Hör-Studio","Paminaw-Studio","Listening Studio"]]},
+  {id:"ueben",     label:["🧩 Üben","🧩 Bansay","🧩 Practice"],           def:"wortschatz",
+   views:[["wortschatz","Wortschatz","Bokabularyo","Vocabulary"],["wendungen","Wendungen","Pulong-pulong","Phrases"],
+          ["anwenden","Anwenden","Gamiton","Practice"],["quiz","🧩 Quiz","🧩 Quiz","🧩 Quiz"]]},
+  {id:"weg",       label:["🏆 Dein Weg","🏆 Imong Dalan","🏆 Your Path"], def:"karte",
+   views:[["karte","🗺️ Reise","🗺️ Panaw","🗺️ Journey"],["fortschritt","Fortschritt","Kalamboan","Progress"],
+          ["bestenliste","🏆 Bestenliste","🏆 Ranggo","🏆 Leaderboard"],["vip","⭐ VIP","⭐ VIP","⭐ VIP"],
+          ["support","Support","Tabang","Support"],["danke","💛 Special Thanks","💛 Daghang Salamat","💛 Special Thanks"]]}
+];
+GATED_VIEWS.push("hoeren","karte");
+function zonePick(arr){ const m = currentMode(); return m === "learn-de" ? arr[1] : (m === "learn-bis-en" ? arr[2] : arr[0]); }
+function zoneViewLabel(v){ const m = currentMode(); return m === "learn-de" ? v[2] : (m === "learn-bis-en" ? v[3] : v[1]); }
+function zoneOf(view){ return ZONES.find(z=>z.views.some(v=>v[0]===view)) || ZONES[0]; }
+let fxCurView = "start";
+function zoneRender(view){
+  const nav = document.getElementById("zoneNav");
+  if(!nav) return;
+  fxCurView = view;
+  const z = zoneOf(view);
+  document.body.dataset.zone = z.id;
+  const views = z.views.filter(v=> v[0] !== "vip" || (typeof VIP_FEATURE_ENABLED !== "undefined" && VIP_FEATURE_ENABLED));
+  nav.innerHTML =
+    `<div class="zone-row">${ZONES.map(zz=>`<button class="zone-btn${zz.id===z.id?' active':''}" data-zone="${zz.id}" onclick="zoneGo('${zz.id}')">${zonePick(zz.label)}</button>`).join("")}</div>` +
+    (views.length > 1
+      ? `<div class="sub-row">${views.map(v=>`<button data-view="${v[0]}" class="${v[0]===view?'active':''}" onclick="goView('${v[0]}')">${zoneViewLabel(v)}</button>`).join("")}</div>`
+      : "");
+}
+function zoneGo(id){ const z = ZONES.find(x=>x.id===id); if(z) goView(z.def); }
+
+const _fxGoViewOrig = goView;
+window.goView = function(name){
+  lpStop();
+  _fxGoViewOrig(name);
+  const el = document.getElementById("view-"+name);
+  if(el && el.classList.contains("active")){
+    zoneRender(name);
+    if(name === "start") renderToday();
+    if(name === "hoeren") renderHoerStudio();
+    if(name === "karte") renderMap();
+  }
+};
+const _fxSetModeOrig = setMode;
+window.setMode = function(mode){
+  _fxSetModeOrig(mode);
+  zoneRender(fxCurView);
+  fxMuteBtn();
+  const act = (document.querySelector("section.view.active")||{}).id;
+  if(act === "view-start") renderToday();
+  if(act === "view-hoeren") renderHoerStudio();
+  if(act === "view-karte") renderMap();
+};
+
+/* ---------- Heute-Seite ---------- */
+function fxGreeting(){
+  const h = new Date().getHours();
+  if(currentMode() === "learn-de") return h < 12 ? "Guten Morgen" : (h < 18 ? "Guten Tag" : "Guten Abend");
+  return h < 11 ? "Maayong buntag" : (h < 14 ? "Maayong udto" : (h < 18 ? "Maayong hapon" : "Maayong gabii"));
+}
+function renderToday(){
+  const box = document.getElementById("todayBox");
+  if(!box) return;
+  const mode = currentMode();
+  const p = planGet();
+  const li = levelInfo();
+  const nl = nextLessonId();
+  const nlObj = nl ? LESSONS.find(x=>x.id===nl) : null;
+  const lastDone = [...LESSONS].reverse().find(x=>(state.lessonsDone||{})[x.id]);
+  const listenId = nl || (lastDone ? lastDone.id : 1);
+  const listenObj = LESSONS.find(x=>x.id===listenId);
+  const pr = (typeof loadProfile === "function") ? loadProfile() : null;
+  const nm = pr && pr.name ? ", "+lpEsc(pr.name) : "";
+  const uDone = p.understand >= PLAN_UNDERSTAND_GOAL, pDone = p.practice >= PLAN_PRACTICE_GOAL;
+  const doneN = (uDone?1:0) + (p.listen?1:0) + (pDone?1:0);
+  const un = Math.min(p.understand, PLAN_UNDERSTAND_GOAL), pn = Math.min(p.practice, PLAN_PRACTICE_GOAL);
+  const lessonWord = T3("Lektion","Leksyon","Lesson");
+  const understandTxt = nlObj
+    ? (mode === "learn-de"
+        ? `${lessonWord} ${nlObj.id}: ${nlObj.title} · basaha ug markahi ang leksyon (${un}/${PLAN_UNDERSTAND_GOAL})`
+        : T3(`${lessonWord} ${nlObj.id}: ${nlObj.title} · ${un}/${PLAN_UNDERSTAND_GOAL} Sätze gebaut`, "", `${lessonWord} ${nlObj.id}: ${nlObj.title} · ${un}/${PLAN_UNDERSTAND_GOAL} sentences built`))
+    : T3("Alle Lektionen geschafft — wiederhole eine!","Nahuman na tanang leksyon — balika ang usa!","All lessons done — revisit one!");
+  const listenTxt = T3(`${lessonWord} ${listenId}${listenObj?": "+listenObj.title:""} — einmal bewusst hören`,
+                       `${lessonWord} ${listenId}${listenObj?": "+listenObj.title:""} — paminaw sa makausa`,
+                       `${lessonWord} ${listenId}${listenObj?": "+listenObj.title:""} — listen mindfully once`);
+  const practiceTxt = T3(`${pn}/${PLAN_PRACTICE_GOAL} richtige Aufgaben (Karteikarten, Quiz, Lückensätze)`,
+                         `${pn}/${PLAN_PRACTICE_GOAL} sakto nga buluhaton (kard, quiz, lückensätze)`,
+                         `${pn}/${PLAN_PRACTICE_GOAL} correct tasks (flashcards, quiz, fill-in-the-blanks)`);
+  const go = T3("Los","Sugdi","Go"), again = T3("✓ Nochmal","✓ Usab","✓ Again");
+  box.innerHTML = `
+  <div class="card today-card">
+    <div class="today-head">
+      <div><h2>${fxGreeting()}${nm}!</h2><p class="small">${T3("Dein Tagesplan nach Birkenbihl — drei kleine Schritte.","Imong plano sa adlaw sumala ni Birkenbihl — tulo ka gagmay nga lakang.","Your daily plan, Birkenbihl style — three small steps.")}</p></div>
+      <div class="today-chips">
+        <span class="chip-pill" title="Streak">🔥 ${state.streak||0}</span>
+        <span class="chip-pill">Level ${li.level}</span>
+        <span class="chip-pill" title="${T3("Sterne","Bituon","Stars")}">⭐ ${totalStars()}</span>
+      </div>
+    </div>
+    <ol class="plan-list">
+      <li class="plan-item${uDone?' done':''}" data-zone="verstehen">
+        <span class="plan-ico">🧭</span>
+        <div class="plan-txt"><b>${T3("Verstehen","Sabta","Understand")}</b><span>${understandTxt}</span></div>
+        <button onclick="fxGoLesson(${nl||1})">${uDone?again:go}</button>
+      </li>
+      <li class="plan-item${p.listen?' done':''}" data-zone="hoeren">
+        <span class="plan-ico">🎧</span>
+        <div class="plan-txt"><b>${T3("Hören","Paminaw","Listen")}</b><span>${listenTxt}</span></div>
+        <button onclick="hoerStart(${listenId})">${p.listen?again:go}</button>
+      </li>
+      <li class="plan-item${pDone?' done':''}" data-zone="ueben">
+        <span class="plan-ico">🧩</span>
+        <div class="plan-txt"><b>${T3("Üben","Bansay","Practice")}</b><span>${practiceTxt}</span></div>
+        <button onclick="todayPractice()">${pDone?again:go}</button>
+      </li>
+    </ol>
+    <div class="progressbar"><div style="width:${Math.round(doneN/3*100)}%"></div></div>
+    <p class="small" style="margin-top:6px;">${doneN}/3 ${T3("erledigt","nahuman","done")}${doneN===3?T3(" — Tagesplan geschafft! 🎉"," — Nahuman ang plano! 🎉"," — Daily plan done! 🎉"):""}</p>
+  </div>`;
+}
+function todayPractice(){
+  try{ if(levelInfo().level >= QUIZ_MIN_LEVEL && quizAvailablePoolSize() > 0){ goView("quiz"); return; } }catch(e){}
+  goView("wortschatz");
+}
+
+/* ---------- Birkenbihl-Lernpfad: Zeilen-Normalisierung + Player ---------- */
+// Vereinheitlicht Lektions- und Story-Zeilen je nach Modus:
+//   text = Zielsprache (Bisaya, bzw. Deutsch im learn-de-Modus) fuer Audio, tokens = Wörter [wort, glosse]
+function lpNormLine(line, fromStory){
+  const mode = currentMode();
+  const isEn = mode === "learn-bis-en";
+  if(mode === "learn-de"){
+    const txt = fromStory ? line.de : line.natural;
+    return {text:txt, kind:"de", tokens:String(txt).split(" ").map(w=>[w,""]), pron:"", native:"", other:line.bis};
+  }
+  const txt = line.bis;
+  const native = fromStory ? (isEn ? (line.en || line.de) : line.de)
+                           : (isEn ? (line.naturalEn || line.natural) : line.natural);
+  let tokens;
+  if(!fromStory){
+    const dec = isEn ? (line.decodeEn || line.decode) : line.decode;
+    tokens = dec.map(d=>[d[0], d[1]]);
+  } else {
+    tokens = String(txt).split(" ").map(w=>[w,""]);
+  }
+  return {text:txt, kind:"bis", tokens, pron:line.pron || "", native, other:""};
+}
+function lpStudioLineHtml(n, i){
+  if(n.kind === "de"){
+    return `<div class="story-line" data-lp-i="${i}">
+      <div class="de-line">${n.tokens.map((t,k)=>`<span class="lp-w" data-lp-w="${k}">${lpEsc(t[0])}</span>`).join(" ")} ${speakDeBtn(n.text)}</div>
+      <div class="bis-line">${lpEsc(n.other)}</div>
+    </div>`;
+  }
+  return `<div class="line-block" data-lp-i="${i}">
+    <div class="interlinear">${n.tokens.map((t,k)=>`<div class="tok" data-lp-w="${k}"><div class="w">${lpEsc(t[0])}</div>${t[1]?`<div class="g">${lpEsc(t[1])}</div>`:""}</div>`).join("")}</div>
+    <div class="pron">${speakBtn(n.text, n.pron)} ${lpEsc(n.pron)}</div>
+    <div class="natural"><b>→</b> ${lpEsc(n.native)}</div>
+  </div>`;
+}
+let lpRun = null;
+function lpRootEl(run){ return document.querySelector(run.root); }
+function lpSetStatusId(id, txt){ const el = document.getElementById(id); if(el) el.textContent = txt; }
+function lpClearHi(rootSel){
+  const r = document.querySelector(rootSel);
+  if(!r) return;
+  r.querySelectorAll(".lp-cur").forEach(e=>e.classList.remove("lp-cur"));
+  r.querySelectorAll(".lp-hi").forEach(e=>e.classList.remove("lp-hi"));
+  r.classList.remove("lp-passive");
+}
+function lpMarkLine(run, i, scroll){
+  const r = lpRootEl(run); if(!r) return;
+  r.querySelectorAll(".lp-cur").forEach(e=>e.classList.remove("lp-cur"));
+  const ln = r.querySelector('[data-lp-i="'+i+'"]');
+  if(ln){ ln.classList.add("lp-cur"); if(scroll) ln.scrollIntoView({behavior:"smooth", block:"center"}); }
+}
+function lpMarkWord(run, i, w){
+  const r = lpRootEl(run); if(!r) return;
+  const ln = r.querySelector('[data-lp-i="'+i+'"]'); if(!ln) return;
+  ln.querySelectorAll(".lp-hi").forEach(e=>e.classList.remove("lp-hi"));
+  const we = ln.querySelector('[data-lp-w="'+w+'"]');
+  if(we) we.classList.add("lp-hi");
+}
+function lpStop(){
+  if(!lpRun) return;
+  const run = lpRun;
+  lpRun = null;
+  try{ if(run.audio){ run.audio.onended = null; run.audio.onerror = null; run.audio.onplaying = null; run.audio.pause(); } }catch(e){}
+  try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
+  if(run.raf) cancelAnimationFrame(run.raf);
+  lpClearHi(run.root);
+  lpSetStatusId(run.statusId, "");
+}
+function lpWait(ms){ return new Promise(res=>setTimeout(res, ms)); }
+function lpAudioKey(n){
+  const map = n.kind === "de" ? (typeof AUDIO_MAP_DE !== "undefined" ? AUDIO_MAP_DE : null) : (typeof AUDIO_MAP !== "undefined" ? AUDIO_MAP : null);
+  if(!map) return null;
+  const t = n.text;
+  const key = map[t] ? t : (map[String(t).toLowerCase()] ? String(t).toLowerCase() : null);
+  return key ? "audio/"+map[key] : null;
+}
+function lpPlayLine(run, n, i, withWords){
+  return new Promise(resolve=>{
+    const text = n.text;
+    let settled = false, looping = false;
+    const weights = n.tokens.map(t=>String(t[0]).length+1);
+    const total = weights.reduce((a,b)=>a+b,0) || 1;
+    const done = ()=>{ if(settled) return; settled = true; if(run.raf){ cancelAnimationFrame(run.raf); run.raf = 0; } resolve(); };
+    const loop = getFrac=>{
+      if(!withWords || looping) return;
+      looping = true;
+      const step = ()=>{
+        if(settled || lpRun !== run) return;
+        const f = Math.min(0.999, Math.max(0, getFrac()));
+        let acc = 0, wi = weights.length-1;
+        for(let k=0;k<weights.length;k++){ acc += weights[k]/total; if(f <= acc){ wi = k; break; } }
+        lpMarkWord(run, i, wi);
+        run.raf = requestAnimationFrame(step);
+      };
+      step();
+    };
+    const tts = ()=>{
+      if(settled || lpRun !== run){ done(); return; }
+      const est = Math.max(1200, String(text).length*80);
+      const t0 = performance.now();
+      if(!window.speechSynthesis){ loop(()=>(performance.now()-t0)/est); setTimeout(done, est); return; }
+      try{ window.speechSynthesis.cancel(); }catch(e){}
+      let say = text, voice;
+      if(n.kind === "de"){ voice = pickVoice(["de"]); }
+      else {
+        voice = pickVoice(["fil","tl","es"]);
+        if(!voice){ voice = pickVoice(["en"]); say = (n.pron || text).replace(/-/g," "); }
+      }
+      const u = new SpeechSynthesisUtterance(say);
+      if(voice) u.voice = voice;
+      u.rate = n.kind === "de" ? 0.88 : 0.82; u.onend = done; u.onerror = done;
+      window.speechSynthesis.speak(u);
+      loop(()=>(performance.now()-t0)/est);
+      setTimeout(done, est*3+4000);
+    };
+    const url = lpAudioKey(n);
+    if(url){
+      // Ein einziges Audio-Element pro Durchlauf wiederverwenden (iOS/Safari blockiert sonst
+      // neu erzeugte Audio-Objekte, die nicht direkt aus einem Klick heraus starten).
+      const a = run.audio || (run.audio = new Audio());
+      a.src = url;
+      let fellBack = false;
+      const fb = ()=>{ if(fellBack || settled) return; fellBack = true; tts(); };
+      a.onended = done;
+      a.onerror = fb;
+      a.onplaying = ()=>{ loop(()=> (a.duration && isFinite(a.duration)) ? a.currentTime/a.duration : a.currentTime/Math.max(1.2, String(text).length*0.08)); };
+      a.play().catch(fb);
+      setTimeout(()=>{ if(!settled && !fellBack && a.paused && a.currentTime === 0) fb(); }, 6000);
+    } else {
+      tts();
+    }
+  });
+}
+async function lpStart(opts){
+  lpStop();
+  const run = {mode:opts.mode, root:opts.root, statusId:opts.statusId, audio:null, raf:0};
+  try{ run.audio = new Audio(); }catch(e){ run.audio = null; }
+  lpRun = run;
+  const root = document.querySelector(opts.root);
+  if(root && opts.mode === "passive") root.classList.add("lp-passive");
+  const rounds = opts.mode === "passive" ? (opts.rounds || 3) : 1;
+  const n = opts.lines.length;
+  for(let r=1;r<=rounds;r++){
+    for(let i=0;i<n;i++){
+      if(lpRun !== run) return;
+      lpMarkLine(run, i, opts.mode === "active");
+      lpSetStatusId(run.statusId, (opts.mode === "active"
+          ? T3("Aktiv hören","Aktibong pagpaminaw","Active listening")
+          : T3("Passiv hören — Durchgang "+r+"/"+rounds, "Pasibong pagpaminaw — higayon "+r+"/"+rounds, "Passive listening — pass "+r+"/"+rounds))
+        + " · " + T3("Zeile","Linya","Line") + " " + (i+1) + "/" + n);
+      await lpPlayLine(run, opts.lines[i], i, opts.mode === "active");
+      if(lpRun !== run) return;
+      await lpWait(opts.mode === "active" ? 700 : 1800);
+    }
+  }
+  if(lpRun !== run) return;
+  lpClearHi(opts.root);
+  lpRun = null;
+  lpSetStatusId(opts.statusId, T3("✓ Fertig!","✓ Human na!","✓ Done!"));
+  if(opts.onDone) opts.onDone();
+}
+function lpFlag(id){ state.lp = state.lp || {}; state.lp[id] = state.lp[id] || {}; return state.lp[id]; }
+function lpFinished(src, mode){
+  state.listenRuns = (state.listenRuns||0) + 1;
+  let lessonId = null, starGain = false;
+  if(src && src[0] === "L"){
+    lessonId = +src.slice(1);
+    const before = lessonStars(lessonId);
+    lpFlag(lessonId)[mode] = true;
+    starGain = lessonStars(lessonId) > before;
+  }
+  fxSound(starGain ? "star" : "done");
+  fxPop(starGain ? T3("⭐ Stern!","⭐ Bituon!","⭐ Star!") : T3("🎧 Gehört!","🎧 Nadungog!","🎧 Heard!"));
+  planMark("listen");
+  saveState();
+  showBadgeToasts(checkAchievements());
+  const el = document.getElementById("lektionenList");
+  if(lessonId && el && el.querySelector(".lp-card") && document.getElementById("view-lektionen").classList.contains("active")){
+    openLesson(lessonId, {scroll:false});
+  }
+}
+function lpLessonStart(id, mode){
+  const l = LESSONS.find(x=>x.id===id); if(!l) return;
+  fxSound("click");
+  const lines = l.lines.map(line=>lpNormLine(line,false));
+  lpStart({mode, lines, root:"#lektionenList", statusId:"lpStatusL", rounds:3, onDone:()=>lpFinished("L"+id, mode)});
+}
+function lpDraft(id, val){ lpFlag(id).draft = val; }
+function lpApplySave(id){
+  const inp = document.getElementById("lpApplyInput");
+  const val = (inp ? inp.value : "").trim();
+  if(val.split(/\s+/).filter(Boolean).length < 3){
+    fxToast(T3("Schreib mindestens 3 Wörter — am besten einen ganzen Satz.","Pagsulat og labing menos 3 ka pulong — maayo kung tibuok nga tudling-pulong.","Write at least 3 words — ideally a whole sentence."));
+    return;
+  }
+  const before = lessonStars(id);
+  const f = lpFlag(id);
+  f.apply = val; f.draft = val;
+  const gain = lessonStars(id) > before;
+  touchDaily(); touchStreak();
+  saveState();
+  fxSound(gain ? "star" : "correct");
+  fxPop(gain ? T3("⭐ Stern!","⭐ Bituon!","⭐ Star!") : T3("✓ Gespeichert","✓ Natipigan","✓ Saved"), inp);
+  planAdd("practice", 1);
+  showBadgeToasts(checkAchievements());
+  openLesson(id, {scroll:false});
+}
+function lpCardHtml(l){
+  const mode = currentMode();
+  const f = (state.lp && state.lp[l.id]) || {};
+  const isDone = !!(state.lessonsDone||{})[l.id];
+  const s1 = mode === "learn-de" ? isDone : sbAllDone(l.id, l);
+  const s2 = !!f.active, s3 = !!f.passive, s4 = !!f.apply;
+  const flags = [s1,s2,s3,s4];
+  const cur = flags.findIndex(x=>!x);
+  const cls = i => flags[i] ? "done" : (i === cur ? "current" : "");
+  const draft = f.draft !== undefined ? f.draft : (f.apply || "");
+  const back = T3("← alle Lektionen","← tanang Leksyon","← all lessons");
+  const step1 = mode === "learn-de"
+    ? ["Basaha", "Basaha ang matag linya ug i-markahi ang leksyon nga nahuman."]
+    : [T3("Dekodieren","","Decode"),
+       T3("Lies Wort für Wort, dann baue die Sätze unten nach ("+sbDoneCount(l.id)+"/"+sbTasksForLesson(l)+").","",
+          "Read word by word, then rebuild the sentences below ("+sbDoneCount(l.id)+"/"+sbTasksForLesson(l)+").")];
+  return `<div class="card lp-card">
+    <span class="backlink" onclick="renderLessonList()">${back}</span>
+    <div class="lp-head"><h3>${T3("🧭 Dein Lernpfad","🧭 Imong Lakang","🧭 Your Learning Path")}</h3><span class="lp-stars">${starsHtml(lessonStars(l.id))}</span></div>
+    <p class="small">${T3("Birkenbihl in vier Schritten — jeder Schritt hakt sich selbst ab. ⭐ Lektion abschließen · ⭐⭐ zusätzlich aktiv &amp; passiv hören · ⭐⭐⭐ zusätzlich anwenden.",
+                         "Birkenbihl sa upat ka lakang — kada lakang kusog nga mamarkahan. ⭐ nahuman ang leksyon · ⭐⭐ dugang aktibo ug pasibo nga pagpaminaw · ⭐⭐⭐ dugang paggamit.",
+                         "Birkenbihl in four steps — each step ticks itself off. ⭐ finish the lesson · ⭐⭐ plus active &amp; passive listening · ⭐⭐⭐ plus using it.")}${isDone ? "" : T3(" Die Sterne gibt es, sobald du die Lektion abgeschlossen hast."," Makuha ang mga bituon kung nahuman na ang leksyon."," You get the stars once the lesson is marked complete.")}</p>
+    <ol class="lp-steps">
+      <li class="lp-step ${cls(0)}"><span class="lp-n">${s1?"✓":"1"}</span><div class="lp-body"><b>${step1[0]}</b><span>${step1[1]}</span></div></li>
+      <li class="lp-step ${cls(1)}"><span class="lp-n">${s2?"✓":"2"}</span><div class="lp-body"><b>${T3("Aktiv hören","Aktibong Pagpaminaw","Active listening")}</b><span>${T3("Jede Zeile wird vorgelesen, die Dekodierung leuchtet Wort für Wort mit.","Mabasa ang matag linya ug modan-ag ang matag pulong.","Each line is read aloud while the decoding lights up word by word.")}</span>
+        <div class="lp-actions"><button onclick="lpLessonStart(${l.id},'active')">${T3("▶ Aktiv hören","▶ Aktibo","▶ Listen actively")}</button></div></div></li>
+      <li class="lp-step ${cls(2)}"><span class="lp-n">${s3?"✓":"3"}</span><div class="lp-body"><b>${T3("Passiv hören","Pasibong Pagpaminaw","Passive listening")}</b><span>${T3("Drei Durchgänge nebenbei — Text verblasst, du kannst kritzeln, aufräumen, spazieren.","Tulo ka higayon sa kilid — mawala ang teksto, makasulat-sulat ka o maglimpyo.","Three passes in the background — the text fades, doodle, tidy up or go for a walk.")}</span>
+        <div class="lp-actions"><button onclick="lpLessonStart(${l.id},'passive')">${T3("▶ Passiv hören (3×)","▶ Pasibo (3×)","▶ Listen passively (3×)")}</button></div></div></li>
+      <li class="lp-step ${cls(3)}"><span class="lp-n">${s4?"✓":"4"}</span><div class="lp-body"><b>${T3("Anwenden","Gamita","Use it")}</b><span>${T3("Schreib (und sprich laut) einen eigenen Satz mit Wörtern aus dieser Lektion.","Pagsulat (ug isulti) og kaugalingong tudling-pulong gamit ang mga pulong sa leksyon.","Write (and say aloud) your own sentence using words from this lesson.")}</span>
+        <div class="lp-apply"><input id="lpApplyInput" type="text" maxlength="200" value="${lpEsc(draft)}" placeholder="${T3("Dein eigener Satz …","Imong kaugalingong tudling-pulong …","Your own sentence …")}" oninput="lpDraft(${l.id},this.value)"><button onclick="lpApplySave(${l.id})">${s4 ? T3("Aktualisieren","I-update","Update") : T3("Speichern","I-save","Save")}</button></div></div></li>
+    </ol>
+    <div class="lp-controls"><button class="secondary" onclick="lpStop()">${T3("■ Stopp","■ Undang","■ Stop")}</button><span id="lpStatusL" class="lp-status"></span></div>
+  </div>`;
+}
+// Ergänzt die (unveränderte) Original-Lektionsansicht: Marker für das Mitleuchten + Lernpfad-Karte.
+function lpEnhanceLesson(id){
+  const l = LESSONS.find(x=>x.id===id); if(!l) return;
+  const el = document.getElementById("lektionenList"); if(!el) return;
+  const mode = currentMode();
+  const blocks = el.querySelectorAll(mode === "learn-de" ? ".story-line" : ".line-block");
+  blocks.forEach((b,i)=>{
+    b.setAttribute("data-lp-i", i);
+    if(mode === "learn-de"){
+      const de = b.querySelector(".de-line");
+      const line = l.lines[i];
+      if(de && line){
+        de.innerHTML = String(line.natural).split(" ").map((w,k)=>`<span class="lp-w" data-lp-w="${k}">${lpEsc(w)}</span>`).join(" ") + " " + speakDeBtn(line.natural);
+      }
+    } else {
+      b.querySelectorAll(".tok").forEach((t,k)=>t.setAttribute("data-lp-w", k));
+    }
+  });
+  const bl = el.querySelector(".backlink");
+  if(bl) bl.style.display = "none";
+  el.insertAdjacentHTML("afterbegin", lpCardHtml(l));
+}
+const _fxOpenLessonOrig = openLesson;
+window.openLesson = function(id, opts){
+  _fxOpenLessonOrig(id, opts);
+  try{ lpEnhanceLesson(id); }catch(e){ console.error("Lernpfad:", e); }
+};
+const _fxRenderLessonListOrig = renderLessonList;
+window.renderLessonList = function(){
+  lpStop();
+  _fxRenderLessonListOrig();
+  // Sterne + Haken in die Kacheln ergänzen
+  const el = document.getElementById("lektionenList");
+  if(!el) return;
+  const tiles = el.querySelectorAll(".lesson-tile");
+  tiles.forEach((t,i)=>{
+    const l = LESSONS[i]; if(!l) return;
+    t.insertAdjacentHTML("beforeend", `<div class="lp-stars">${starsHtml(lessonStars(l.id))}</div>`);
+  });
+};
+
+/* ---------- Hör-Studio ---------- */
+let hoerSel = null, hoerRounds = 3;
+function hoerLinesOf(sel){
+  if(!sel) return [];
+  if(sel[0] === "L"){ const l = LESSONS.find(x=>x.id === +sel.slice(1)); return l ? l.lines.map(x=>lpNormLine(x,false)) : []; }
+  const s = STORIES_DATA[+sel.slice(1)]; return s ? s.lines.map(x=>lpNormLine(x,true)) : [];
+}
+function hoerStart(id){ hoerSel = "L"+id; goView("hoeren"); }
+function hoerChange(v){ hoerSel = v; lpStop(); renderHoerStudio(); }
+function hoerGo(mode){
+  const lines = hoerLinesOf(hoerSel);
+  if(!lines.length) return;
+  const r = document.getElementById("hoerRounds");
+  if(r) hoerRounds = +r.value || 3;
+  fxSound("click");
+  const sel = hoerSel;
+  lpStart({mode, lines, root:"#hoerLines", statusId:"lpStatusH", rounds:hoerRounds, onDone:()=>lpFinished(sel, mode)});
+}
+function renderHoerStudio(){
+  const box = document.getElementById("hoerBox");
+  if(!box) return;
+  const mode = currentMode();
+  const isEn = mode === "learn-bis-en";
+  if(!hoerSel) hoerSel = "L"+(nextLessonId() || 1);
+  const lessonWord = T3("Lektion","Leksyon","Lesson");
+  const optsL = LESSONS.map(l=>`<option value="L${l.id}"${hoerSel==="L"+l.id?" selected":""}>${lessonWord} ${l.id}: ${lpEsc(l.title)}</option>`).join("");
+  const optsS = STORIES_DATA.map((s,i)=>`<option value="S${i}"${hoerSel==="S"+i?" selected":""}>${lpEsc(isEn ? (s.titleEn || s.title) : s.title)}</option>`).join("");
+  const lines = hoerLinesOf(hoerSel);
+  box.innerHTML = `
+  <div class="card">
+    <h2>${T3("🎧 Hör-Studio","🎧 Paminaw-Studio","🎧 Listening Studio")}</h2>
+    <p>${T3("Birkenbihl trennt zwei Arten des Hörens: <b>aktiv</b> — du hörst jede Zeile und liest dabei die Wort-für-Wort-Dekodierung mit — und <b>passiv</b> — der Text läuft nebenbei, während du etwas anderes tust (kochen, spazieren, kritzeln). Beides baut Klang-Vertrautheit auf, ohne zu büffeln.",
+            "Duha ang matang sa pagpaminaw ni Birkenbihl: <b>aktibo</b> — maminaw ka sa matag linya ug basahon ang decode — ug <b>pasibo</b> — modagan ang teksto sa kilid samtang naghimo ka og lain (pagluto, paglakaw, pagsulat-sulat). Ang duha nagtukod og pamilyar sa tingog nga walay pagmemorya.",
+            "Birkenbihl separates two kinds of listening: <b>active</b> — you hear each line while reading the word-for-word decoding — and <b>passive</b> — the text plays in the background while you do something else (cooking, walking, doodling). Both build familiarity with the sound, without cramming.")}</p>
+    <label class="small" for="hoerSelect">${T3("Material","Materyal","Material")}</label><br>
+    <select id="hoerSelect" onchange="hoerChange(this.value)">
+      <optgroup label="${T3("Lektionen","Mga Leksyon","Lessons")}">${optsL}</optgroup>
+      <optgroup label="${T3("Geschichten","Mga Sugilanon","Stories")}">${optsS}</optgroup>
+    </select>
+    <div class="btnrow" style="justify-content:flex-start; align-items:center;">
+      <button onclick="hoerGo('active')">${T3("▶ Aktiv hören","▶ Aktibo","▶ Listen actively")}</button>
+      <button onclick="hoerGo('passive')">${T3("▶ Passiv hören","▶ Pasibo","▶ Listen passively")}</button>
+      <select id="hoerRounds" title="${T3("Durchgänge beim passiven Hören","Mga higayon sa pasibo","Passes for passive listening")}">
+        ${[1,3,5].map(n=>`<option value="${n}"${hoerRounds===n?" selected":""}>${n}× ${T3("passiv","pasibo","passive")}</option>`).join("")}
+      </select>
+      <button class="secondary" onclick="lpStop()">${T3("■ Stopp","■ Undang","■ Stop")}</button>
+    </div>
+    <div id="lpStatusH" class="lp-status"></div>
+  </div>
+  <div class="card" id="hoerLines">${lines.map((n,i)=>lpStudioLineHtml(n,i)).join("")}</div>`;
+}
+
+/* ---------- Lektion abschließen (Feier) ---------- */
+const _fxToggleLessonOrig = toggleLessonDone;
+window.toggleLessonDone = function(id){
+  const wasDone = !!(state.lessonsDone||{})[id];
+  const stampsBefore = stampsEarned();
+  _fxToggleLessonOrig(id);
+  if(!wasDone && (state.lessonsDone||{})[id]){
+    planAdd("understand", PLAN_UNDERSTAND_GOAL);
+    const stampsAfter = stampsEarned();
+    fxLessonComplete(id, stampsAfter > stampsBefore ? STAMPS[stampsAfter-1] : null);
+    openLesson(id, {scroll:false});
+  }
+};
+function fxLessonComplete(id, stamp){
+  const l = LESSONS.find(x=>x.id===id);
+  const stars = lessonStars(id);
+  const f = (state.lp && state.lp[id]) || {};
+  const hints = [];
+  if(!(f.active && f.passive)) hints.push(T3("⭐⭐ Höre die Lektion aktiv und passiv (Lernpfad Schritt 2 und 3).","⭐⭐ Paminaw sa leksyon nga aktibo ug pasibo (lakang 2 ug 3).","⭐⭐ Listen to the lesson actively and passively (steps 2 and 3)."));
+  if(!f.apply) hints.push(T3("⭐⭐⭐ Schreib einen eigenen Satz (Lernpfad Schritt 4).","⭐⭐⭐ Sulati ang kaugalingong tudling-pulong (lakang 4).","⭐⭐⭐ Write your own sentence (step 4)."));
+  const nxt = LESSONS.find(x=>x.id === id+1);
+  const buttons = [];
+  if(nxt) buttons.push({label:T3("Nächste Lektion ➜","Sunod nga Leksyon ➜","Next lesson ➜"), onclick:()=>fxGoLesson(id+1)});
+  buttons.push({label:T3("🗺️ Reise-Karte","🗺️ Mapa sa Panaw","🗺️ Journey map"), onclick:()=>goView("karte")});
+  fxCelebrate({
+    icon: stamp ? stamp.ico : "🏅",
+    title: T3("Lektion "+id+" geschafft!","Leksyon "+id+" nahuman!","Lesson "+id+" done!"),
+    sub: l ? lpEsc(l.title) : "",
+    html: `<div class="fx-stars-big">${starsHtml(stars)}</div>` +
+      (stamp ? `<div class="fx-stamp">${stamp.ico}<b>${stamp.city}</b><small>${T3("Neuer Reise-Stempel!","Bag-ong selyo sa panaw!","New journey stamp!")}</small></div>` : "") +
+      (hints.length ? `<div class="fx-hint">${hints.join("<br>")}</div>` : `<div class="fx-hint">${T3("Alle drei Sterne — stark!","Tulo ka bituon — kusgan!","All three stars — great!")}</div>`),
+    buttons,
+    sound: "complete",
+    confettiCount: stamp ? 110 : 70,
+    afterShow: ()=>{ for(let k=0;k<stars;k++) setTimeout(()=>fxSound("star"), 700 + k*250); }
+  });
+}
+const _fxRenderProgressOrig = renderProgress;
+window.renderProgress = function(){
+  _fxRenderProgressOrig();
+  const e = document.getElementById("statStars");
+  if(e) e.textContent = totalStars()+"/"+(LESSONS.length*3);
+};
+
+/* ---------- Reise-Karte ---------- */
+function renderMap(){
+  const box = document.getElementById("mapBox");
+  if(!box) return;
+  const done = lessonsDoneCount();
+  const nl = nextLessonId();
+  let rows = "";
+  for(let r=0;r<6;r++){
+    const st = STAMPS[r];
+    const reached = done >= st.n;
+    const nodes = [1,2,3,4,5].map(k=>{
+      const id = r*5+k;
+      const d = !!(state.lessonsDone||{})[id];
+      const c = d ? "done" : (id === nl ? "current" : "todo");
+      const l = LESSONS.find(x=>x.id===id);
+      return `<button class="map-node ${c}" onclick="fxGoLesson(${id})" title="${T3("Lektion","Leksyon","Lesson")} ${id}${l?': '+lpEsc(l.title):''}">
+        <span class="map-dot">${d?"✓":id}</span><span class="map-stars">${starsHtml(lessonStars(id))}</span></button>`;
+    }).join("");
+    const stampTitle = reached ? T3("Stempel erhalten","Selyo nakuha","Stamp earned")
+      : T3("Noch "+(st.n-done)+" Lektion(en) bis "+st.city, (st.n-done)+" pa ka leksyon hangtod "+st.city, (st.n-done)+" lesson(s) to go until "+st.city);
+    rows += `<div class="map-row${r%2?' rev':''}">
+      <div class="map-leg">📍 ${T3("Etappe","Yugto","Leg")} ${r+1} → <b>${st.city}</b>${reached?" ✓":""}</div>
+      <div class="map-track">${nodes}<div class="map-stamp${reached?' on':''}" title="${stampTitle}"><span>${st.ico}</span><b>${st.city}</b></div></div>
+    </div>`;
+  }
+  box.innerHTML = `
+  <div class="card">
+    <h2>${T3("🗺️ Deine Reise durch Visayas & Mindanao","🗺️ Imong Panaw sa Kabisay-an ug Mindanao","🗺️ Your Journey through the Visayas & Mindanao")}</h2>
+    <p>${T3("Jede Lektion ist eine Station auf dem Weg von Cebu nach Siargao. Alle fünf Lektionen gibt es einen Reise-Stempel, für jede Lektion bis zu drei Sterne.",
+            "Ang matag leksyon usa ka estasyon gikan sa Cebu padulong sa Siargao. Matag lima ka leksyon adunay selyo sa panaw, ug hangtod tulo ka bituon matag leksyon.",
+            "Each lesson is a stop on the way from Cebu to Siargao. Every five lessons you get a journey stamp, and up to three stars per lesson.")}</p>
+    <div class="map-summary">
+      <div class="stat"><div class="num">${done}/${LESSONS.length}</div><div class="lbl">${T3("Lektionen","Leksyon","Lessons")}</div></div>
+      <div class="stat"><div class="num">${totalStars()}/${LESSONS.length*3}</div><div class="lbl">${T3("Sterne","Bituon","Stars")}</div></div>
+      <div class="stat"><div class="num">${stampsEarned()}/${STAMPS.length}</div><div class="lbl">${T3("Stempel","Selyo","Stamps")}</div></div>
+    </div>
+    <div class="map-wrap">${rows}</div>
+  </div>`;
+}
+
+/* ---------- Start ---------- */
+fxMuteBtn();
+zoneRender("start");
+renderToday();
+
 </script>
 </body>
 </html>
