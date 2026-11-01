@@ -929,7 +929,7 @@ nav.zone-nav button{font-family:inherit;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.55.0</div>
+  <div class="version-tag">v1.56.0</div>
 </section>
 
 <!-- METHODE -->
@@ -1275,6 +1275,8 @@ nav.zone-nav button{font-family:inherit;}
 
 <!-- FORTSCHRITT -->
 <section class="view" id="view-wiederholen"><div id="revBox"></div></section>
+
+<section class="view" id="view-spiele"><div id="gameBox"></div></section>
 
 <section class="view" id="view-hoeren"><div id="hoerBox"></div></section>
 
@@ -20546,6 +20548,449 @@ window.renderToday = function(){
   _revTodayOrig();
   try{ revTodayExtra(); wkMaybeRecap(); }catch(e){ console.log("rev-today", e && e.message); }
 };
+
+</script>
+<script>
+/* ============ MOTIVATIONS-PAKET 2 v1.56.0 (Bisaya) ============
+   Streak-Schutz, Meilensteine, Wort des Tages, Spiele (Memory, Paminaw & Tipa), Bonus-Momente, Reise-Tipps.
+   Dreisprachig je nach Lernmodus. */
+const G_TX_DE = {
+  fzTitle:"Streak gerettet!", fzSub:"Dein ❄️ Streak-Schutz hat einen verpassten Tag überbrückt. Noch {n} übrig.",
+  fzEarn:"Neuer Streak-Schutz!", fzEarnSub:"7 Tage in Folge — du hast einen ❄️ Streak-Schutz verdient (max. 2). Er rettet deine Serie, wenn du einmal einen Tag verpasst.",
+  fzLabel:"Streak-Schutz",
+  msTitle:"{n} Wörter!", msNext:"Nächstes Ziel", msNextLine:"{n} Wörter — noch {left}", msAll:"Alle Meilensteine erreicht — Wahnsinn!",
+  wotdT:"Wort des Tages", wotdKnow:"✅ Kann ich", wotdPractice:"🔁 Noch üben", wotdDone:"Erledigt ✓",
+  gamesT:"Spiele", gamesD:"Memory und Hör & tippe — Lernen mit Spaß.", gamesIntro:"Spielerisch wiederholen: Wörter, die du schon kennst, kommen bevorzugt dran.", go:"Los", play:"Spielen",
+  memT:"Memory", memD:"Finde die Paare: Wort und Übersetzung.", memWin:"Alle Paare gefunden!", moves:"Züge", again:"Neu mischen", backBtn:"Zurück",
+  typT:"Hör & tippe", typD:"Hör das Wort und tippe es.", typWin:"Runde geschafft!", hear:"🔊 Nochmal hören", clue:"Bedeutung", typPh:"Tippe das Wort …",
+  check:"Prüfen", next:"Weiter", right:"Richtig!", wrongAns:"Fast — richtig ist:",
+  factT:"Wusstest du?", tipsT:"Reise-Tipps", tipLocked:"noch {n} Lektion(en)"
+};
+const G_TX_BIS = {
+  fzTitle:"Nakaluwas ang Streak!", fzSub:"Ang imong ❄️ Streak-Panalipod nagtabon sa usa ka nalaktawan nga adlaw. {n} na lang ang nahabilin.",
+  fzEarn:"Bag-ong Streak-Panalipod!", fzEarnSub:"7 ka adlaw nga sunod-sunod — nakuha nimo ang ❄️ Streak-Panalipod (hangtod 2). Luwason niini ang imong serye kon makalaktaw ka og usa ka adlaw.",
+  fzLabel:"Streak-Panalipod",
+  msTitle:"{n} ka pulong!", msNext:"Sunod nga tumong", msNextLine:"{n} ka pulong — {left} na lang", msAll:"Nahuman nimo ang tanang tumong — katingalahan!",
+  wotdT:"Pulong sa Adlaw", wotdKnow:"✅ Kaya na nako", wotdPractice:"🔁 Bansayon pa", wotdDone:"Human na ✓",
+  gamesT:"Dula", gamesD:"Memory ug Paminaw & Tipa — makat-on nga malipayon.", gamesIntro:"Balika sa dula: ang mga pulong nga nahibaw-an na nimo mauna.", go:"Sugdi", play:"Dula",
+  memT:"Memory", memD:"Pangitaa ang magtinan-away: pulong ug hubad.", memWin:"Nakit-an ang tanang pares!", moves:"lakang", again:"Sagulan pag-usab", backBtn:"Balik",
+  typT:"Paminaw & Tipa", typD:"Paminawa ang pulong ug i-tipa kini.", typWin:"Nahuman ang hugna!", hear:"🔊 Paminawa pag-usab", clue:"Kahulogan", typPh:"I-tipa ang pulong …",
+  check:"Susiha", next:"Sunod", right:"Sakto!", wrongAns:"Hapit na — ang sakto mao:",
+  factT:"Nahibaw-an ba nimo?", tipsT:"Tambag sa Panaw", tipLocked:"{n} pa ka leksyon"
+};
+const G_TX_EN = {
+  fzTitle:"Streak saved!", fzSub:"Your ❄️ streak shield covered a missed day. {n} left.",
+  fzEarn:"New streak shield!", fzEarnSub:"7 days in a row — you earned a ❄️ streak shield (max 2). It saves your streak if you miss a day.",
+  fzLabel:"Streak shield",
+  msTitle:"{n} words!", msNext:"Next goal", msNextLine:"{n} words — {left} to go", msAll:"All milestones reached — amazing!",
+  wotdT:"Word of the day", wotdKnow:"✅ I know this", wotdPractice:"🔁 Still practicing", wotdDone:"Done ✓",
+  gamesT:"Games", gamesD:"Memory and Listen & type — learning with fun.", gamesIntro:"Review playfully: words you already know come first.", go:"Go", play:"Play",
+  memT:"Memory", memD:"Find the pairs: word and translation.", memWin:"All pairs found!", moves:"moves", again:"Reshuffle", backBtn:"Back",
+  typT:"Listen & type", typD:"Listen to the word and type it.", typWin:"Round complete!", hear:"🔊 Listen again", clue:"Meaning", typPh:"Type the word …",
+  check:"Check", next:"Next", right:"Correct!", wrongAns:"Almost — the answer is:",
+  factT:"Did you know?", tipsT:"Travel tips", tipLocked:"{n} more lesson(s)"
+};
+const G_MS_TEXT3 = {
+  10:["Dein erster Wortschatz steht — die Basis ist gelegt.","Naa na ang imong unang bokabularyo — natukod na ang pundasyon.","Your first vocabulary is in place — the foundation is laid."],
+  25:["Du kannst dich vorstellen und grüßen.","Makahimo ka na mag-introduce ug mosaludo.","You can introduce yourself and greet people."],
+  50:["Genug für die ersten kleinen Sätze.","Igo na para sa unang gagmay nga tudling-pulong.","Enough for your first short sentences."],
+  100:["Genug für einfache Alltagssätze.","Igo na para sa yano nga adlaw-adlaw nga mga tudling-pulong.","Enough for simple everyday sentences."],
+  200:["Du verstehst die Wörter der wichtigsten Alltagsthemen.","Masabtan na nimo ang mga pulong sa labing importante nga mga hilisgutan.","You understand the words of the most important everyday topics."],
+  300:["Genug für einfache Gespräche beim Reisen.","Igo na para sa yano nga pag-istorya sa pagbiyahe.","Enough for simple conversations while travelling."],
+  500:["Du kannst dich in den meisten Alltagssituationen verständigen.","Makasabot ka na sa kadaghanan sa adlaw-adlaw nga sitwasyon.","You can get by in most everyday situations."],
+  750:["Dein Wortschatz trägt dich schon durch längere Gespräche.","Ang imong bokabularyo makadala na nimo sa mas taas nga pag-istorya.","Your vocabulary already carries you through longer conversations."],
+  1000:["Tausend Wörter — du sprichst die Sprache wirklich.","Usa ka libo ka pulong — nagsulti ka na gyud sa pinulongan.","A thousand words — you truly speak the language."],
+  1500:["Fortgeschrittener Wortschatz — beeindruckend!","Abante nga bokabularyo — katingalahan!","Advanced vocabulary — impressive!"],
+  2000:["Zweitausend Wörter — das ist Meisterklasse!","Duha ka libo ka pulong — master class!","Two thousand words — master class!"]
+};
+const G_TIPS3 = [
+  ["Cebu City gilt als älteste Stadt der Philippinen — probier Lechon, knuspriges Spanferkel.","Ang Cebu City giisip nga labing karaan nga siyudad sa Pilipinas — tilawi ang lechon.","Cebu City is considered the oldest city in the Philippines — try lechon, crispy roast pig."],
+  ["Die Chocolate Hills und die winzigen Koboldmakis (Tarsier) sind Bohols Wahrzeichen.","Ang Chocolate Hills ug ang gagmay nga tarsier mao ang simbolo sa Bohol.","The Chocolate Hills and the tiny tarsiers are Bohol's trademarks."],
+  ["Die „Feuerinsel“ — bekannt für Mythen, Wasserfälle und ruhige Strände.","Ang „Isla sa Kalayo“ — inila tungod sa mga sugilanon, busay ug hilom nga baybayon.","The “Island of Fire” — known for myths, waterfalls and quiet beaches."],
+  ["Die „Stadt der sanften Menschen“ mit der Strandpromenade Rizal Boulevard.","Ang „Siyudad sa Malumo nga mga Tawo“ nga adunay Rizal Boulevard sa daplin sa dagat.","The “City of Gentle People” with its seaside promenade, Rizal Boulevard."],
+  ["Davao ist berühmt für die Durian-Frucht und den Philippinen-Adler.","Inila ang Davao tungod sa durian ug sa Philippine Eagle.","Davao is famous for durian fruit and the Philippine Eagle."],
+  ["Surf-Hauptstadt der Philippinen: Cloud 9 ist der bekannteste Surfspot.","Ang kapital sa surfing sa Pilipinas: ang Cloud 9 mao ang labing inila nga surfing spot.","Surfing capital of the Philippines: Cloud 9 is the best-known surf spot."]
+];
+const G_FACTS_BIS3 = [
+  ["Bisaya kennt zwei Arten von „wir“: kita (mit dir) und kami (ohne dich).","Ang Bisaya adunay duha ka klase sa „kita“: kita (apil ka) ug kami (dili apil ka).","Bisaya has two kinds of “we”: kita (including you) and kami (excluding you)."],
+  ["Bisaya wird so geschrieben, wie man es spricht — was du liest, sprichst du.","Ang Bisaya gisulat sama sa pagsulti niini — unsay imong basahon, mao usab ang imong ipamulong.","Bisaya is written the way it is spoken — what you read is what you say."],
+  ["„ngano“ (warum) beginnt mit dem Laut „ng“ wie in „sing“.","Ang „ngano“ (nganong) nagsugod sa tingog nga „ng“ sama sa „sing“.","“ngano” (why) starts with the “ng” sound as in “sing”."],
+  ["Die Betonung liegt meistens auf der vorletzten Silbe.","Ang pagpasiugda kasagaran anaa sa ikaduhang silaba gikan sa katapusan.","The stress usually falls on the second-to-last syllable."],
+  ["Mit „Maayong buntag“ wünschst du einen guten Morgen.","Sa „Maayong buntag“ imong gibati ang maayong pagsugod sa adlaw.","With “Maayong buntag” you wish someone a good morning."],
+  ["„Salamat“ heißt danke — „daghang salamat“ vielen Dank.","Ang „Salamat“ nagpasabot og danke — ang „daghang salamat“ daghang salamat.","“Salamat” means thank you — “daghang salamat” means thank you very much."]
+];
+const G_FACTS_DE_BIS = [
+  "Ang German adunay tulo ka gender: der, die, das.",
+  "Ang mga nombre sa German kanunay nga gisulat sa dako nga letra.",
+  "Ang „ß“ gitawag og „Eszett“ ug gipamulong nga „ss“.",
+  "Ang mga tambalang pulong sa German mahimong taas kaayo, sama sa „Donaudampfschifffahrtsgesellschaft“.",
+  "Ang „Danke“ nagpasabot og salamat; ang „Bitte“ nagpasabot og palihug o walay sapayan.",
+  "Ang mga pulong sama sa „Kindergarten“ ug „Rucksack“ gigamit usab sa uban nga pinulongan."
+];
+function gModeIdx(){ const m = currentMode(); return m === "learn-de" ? 1 : (m === "learn-bis-en" ? 2 : 0); }
+const G = {
+  tx: ()=>[G_TX_DE, G_TX_BIS, G_TX_EN][gModeIdx()],
+  pool: ()=>allVocab(),
+  key: v=>v.bis,
+  target: v=>currentMode() === "learn-de" ? v.de : v.bis,
+  front: v=>currentMode() === "learn-de" ? v.de : v.bis,
+  back: v=>{ const m = currentMode(); return m === "learn-de" ? v.bis : (m === "learn-bis-en" ? (v.en || v.de) : v.de); },
+  speakTarget: (t, b)=>{ if(currentMode() === "learn-de") speakDe(t, b); else speak(t, "", b); },
+  sentences: ()=>{
+    const m = currentMode(), out = [];
+    LESSONS.forEach(l=>l.lines.forEach(x=>{
+      if(m === "learn-de") out.push({t:x.natural, n:x.bis});
+      else out.push({t:x.bis, n:(m === "learn-bis-en" ? (x.naturalEn || x.natural) : x.natural)});
+    }));
+    return out;
+  },
+  msText: n=>(G_MS_TEXT3[n] || [])[gModeIdx()] || "",
+  tips: ()=>G_TIPS3.map(t=>t[gModeIdx()]),
+  facts: ()=>currentMode() === "learn-de" ? G_FACTS_DE_BIS : G_FACTS_BIS3.map(f=>f[gModeIdx()]),
+  season: d=>{
+    const md = d.slice(5), i = gModeIdx();
+    if(md >= "12-24" && md <= "12-26") return ["🎄 Frohe Weihnachten — Malipayong Pasko!", "🎄 Malipayong Pasko!", "🎄 Merry Christmas — Malipayong Pasko!"][i];
+    if(md === "01-01") return ["🎆 Frohes neues Jahr — Malipayong Bag-ong Tuig!", "🎆 Malipayong Bag-ong Tuig!", "🎆 Happy New Year — Malipayong Bag-ong Tuig!"][i];
+    return "";
+  },
+  go: n=>goView(n),
+  zoneEntry: ["spiele", "🎮 Spiele", "🎮 Dula", "🎮 Games"]
+};
+const _gNavOrig = goView;
+window.goView = function(name){ _gNavOrig(name); gOnView(name); };
+const _gSetModeOrig = setMode;
+window.setMode = function(mode){
+  _gSetModeOrig(mode);
+  try{
+    const el = document.getElementById("view-spiele");
+    if(el && el.classList.contains("active")){ gm = {type:null}; renderGames(); }
+  }catch(e){}
+};
+/* ---------- gemeinsamer Teil (Streak-Schutz, Meilensteine, Wort des Tages, Spiele, Bonus-Momente, Reise-Tipps) ---------- */
+(function(){
+  try{
+    const st = document.createElement("style");
+    st.textContent = `
+.g-card{margin-top:10px;}
+.g-card h3{margin:0 0 6px;}
+.g-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.g-word{font-size:1.5rem;font-weight:700;}
+.g-sub{font-size:.9rem;opacity:.75;}
+.g-ex{margin-top:8px;padding:8px 10px;border-left:3px solid var(--accent,#c1502e);background:rgba(0,0,0,.04);border-radius:6px;font-size:.92rem;}
+.g-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.g-chip{padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.06);font-size:.85rem;}
+.g-menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.g-menu .card{margin:0;}
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.mem-card{min-height:64px;padding:6px;border-radius:10px;border:2px solid rgba(0,0,0,.12);background:var(--card,#fff);font-size:.9rem;line-height:1.2;word-break:break-word;cursor:pointer;}
+.mem-card.open{background:#fff4d6;border-color:#e0a82e;}
+.mem-card.done{background:#dff3e0;border-color:#4a9a55;opacity:.75;}
+.typ-input{width:100%;box-sizing:border-box;padding:10px;font-size:1.1rem;margin-top:10px;border-radius:8px;border:2px solid rgba(0,0,0,.2);}
+.typ-ok{color:#2f7d3a;font-weight:700;} .typ-bad{color:#b3392a;font-weight:700;}
+@media (max-width:480px){.mem-grid{grid-template-columns:repeat(3,1fr);}}
+`;
+    (document.head || document.documentElement).appendChild(st);
+  }catch(e){}
+})();
+
+/* ---------- Hilfen ---------- */
+function gSpeak(enc, btn){ try{ G.speakTarget(decodeURIComponent(enc), btn); }catch(e){} }
+function gSpeakBtn(text){ return `<button class="speak-btn" onclick="event.stopPropagation(); gSpeak('${encodeURIComponent(text)}', this)">🔊</button>`; }
+function gPoolOk(){ return G.pool().filter(v=>!(v.vip && typeof isVipActive === "function" && !isVipActive())); }
+function gPoolMap(){ const m = {}; G.pool().forEach(v=>{ const k = G.key(v); if(k && !(k in m)) m[k] = v; }); return m; }
+function gShuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function gHash(s){ let h = 0; for(const c of String(s)) h = (h*31 + c.charCodeAt(0)) >>> 0; return h; }
+function gKnown(){ return Object.values(state.words || {}).filter(x=>x === "known").length; }
+function gDayOf(str){ return Math.floor(Date.parse(str) / 86400000); }
+
+/* ---------- Streak-Schutz ---------- */
+const _gTouchStreak = touchStreak;
+window.touchStreak = function(){
+  const T = G.tx();
+  const today = todayStr();
+  if(state.lastActiveDate && state.lastActiveDate !== today && (state.freezes || 0) > 0){
+    if(gDayOf(today) - gDayOf(state.lastActiveDate) === 2){
+      state.freezes--;
+      state.lastActiveDate = todayStr(-1);
+      state.freezeUsed = (state.freezeUsed || 0) + 1;
+      fxCelebrate({icon:"❄️", title:T.fzTitle, sub:T.fzSub.replace("{n}", state.freezes), sound:"complete"});
+    }
+  }
+  _gTouchStreak();
+  if(state.streak > 0 && state.streak % 7 === 0 && state.freezeAt !== state.streak){
+    state.freezeAt = state.streak;
+    if((state.freezes || 0) < 2){
+      state.freezes = (state.freezes || 0) + 1;
+      fxCelebrate({icon:"❄️", title:T.fzEarn, sub:T.fzEarnSub, sound:"complete"});
+    }
+  }
+};
+
+/* ---------- Meilensteine ---------- */
+const G_MS = [10, 25, 50, 100, 200, 300, 500, 750, 1000, 1500, 2000];
+function gMsCheck(){
+  const n = gKnown();
+  if(state.msInit === undefined){
+    state.msDone = G_MS.filter(m=>n >= m);
+    state.msInit = 1;
+    return;
+  }
+  state.msDone = state.msDone || [];
+  const fresh = G_MS.filter(m=>n >= m && !state.msDone.includes(m));
+  if(!fresh.length) return;
+  state.msDone.push(...fresh);
+  const top = fresh[fresh.length - 1];
+  const T = G.tx();
+  fxCelebrate({icon:"🎯", title:T.msTitle.replace("{n}", top), sub:G.msText(top), sound:"complete", confettiCount:110});
+}
+const _gSaveOrig = saveState;
+window.saveState = function(){
+  try{ gMsCheck(); }catch(e){}
+  _gSaveOrig();
+};
+function gMsNext(){ const n = gKnown(); return G_MS.find(m=>m > n) || null; }
+
+/* ---------- Wort des Tages ---------- */
+function gWotd(){
+  const map = gPoolMap();
+  const t = todayStr();
+  if(state.wotd && state.wotd.date === t && map[state.wotd.key]) return map[state.wotd.key];
+  const w = state.words || {};
+  const pool = gPoolOk().filter(v=>{ const s = G.target(v); return s && s.length <= 30; });
+  if(!pool.length) return null;
+  const unk = pool.filter(v=>w[G.key(v)] !== "known");
+  const arr = unk.length ? unk : pool;
+  const v = arr[gHash(t) % arr.length];
+  state.wotd = {date:t, key:G.key(v), done:false};
+  fxPersist();
+  return v;
+}
+function gExample(v){
+  const tgt = String(G.target(v)).toLowerCase();
+  if(tgt.length < 3) return null;
+  let re = null;
+  try{ re = new RegExp("(^|[^\\p{L}])" + tgt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "($|[^\\p{L}])", "iu"); }catch(e){ return null; }
+  return G.sentences().find(s=>s.t && re.test(s.t)) || null;
+}
+function gWotdMark(status){
+  const v = gWotd();
+  if(!v) return;
+  touchDaily(); touchStreak();
+  state.words = state.words || {};
+  const was = state.words[G.key(v)] === "known";
+  state.words[G.key(v)] = status;
+  if(state.wotd) state.wotd.done = true;
+  saveState();
+  if(status === "known" && !was){ fxSound("correct"); fxPop("+1 XP"); planAdd("practice", 1); showBadgeToasts(checkAchievements()); }
+  else fxSound("click");
+  renderToday();
+}
+function gTodayExtra(){
+  const box = document.getElementById("todayBox");
+  if(!box) return;
+  const T = G.tx();
+  let h = "";
+  const sea = G.season(todayStr());
+  if(sea) h += `<p class="small" style="margin:8px 2px 0;">${sea}</p>`;
+  // Streak-Schutz + Meilenstein
+  const fz = state.freezes || 0, nm = gMsNext(), n = gKnown();
+  h += `<div class="card g-card"><div class="g-row"><b>🎯 ${T.msNext}</b><span class="g-chip" title="${T.fzLabel}">❄️ ${fz}/2</span></div>`;
+  if(nm){
+    const prev = [0, ...G_MS].filter(m=>m <= n).pop();
+    const pct = Math.round((n - prev) / (nm - prev) * 100);
+    h += `<p style="margin:6px 0 4px;">${T.msNextLine.replace("{n}", nm).replace("{left}", nm - n)}</p><div class="progressbar"><div style="width:${pct}%"></div></div><p class="small" style="margin-top:4px;">${G.msText(nm)}</p>`;
+  } else h += `<p>${T.msAll}</p>`;
+  h += `</div>`;
+  // Wort des Tages
+  const v = gWotd();
+  if(v){
+    const ex = gExample(v), done = state.wotd && state.wotd.done;
+    h += `<div class="card g-card"><div class="g-row"><b>☀️ ${T.wotdT}</b>${done ? `<span class="g-chip">${T.wotdDone}</span>` : ""}</div>
+      <div class="g-word">${lpEsc(G.front(v))} ${gSpeakBtn(G.target(v))}</div>
+      <div class="g-sub">${lpEsc(G.back(v) || "")}</div>
+      ${ex ? `<div class="g-ex">${lpEsc(ex.t)} ${gSpeakBtn(ex.t)}<br><span class="g-sub">${lpEsc(ex.n || "")}</span></div>` : ""}
+      ${done ? "" : `<div class="g-chips"><button onclick="gWotdMark('known')">${T.wotdKnow}</button><button onclick="gWotdMark('learning')">${T.wotdPractice}</button></div>`}
+    </div>`;
+  }
+  h += `<div class="card g-card g-row"><div><b>🎮 ${T.gamesT}</b><div class="g-sub">${T.gamesD}</div></div><button onclick="G.go('spiele')">${T.go}</button></div>`;
+  box.innerHTML += h;
+}
+const _gTodayOrig = renderToday;
+window.renderToday = function(){
+  _gTodayOrig();
+  try{ gTodayExtra(); }catch(e){ console.log("g-today", e && e.message); }
+};
+
+/* ---------- Bonus-Momente („Wusstest du?“) ---------- */
+const _gPlanAddOrig = planAdd;
+window.planAdd = function(key, n){
+  _gPlanAddOrig(key, n);
+  if(key !== "practice") return;
+  try{
+    const t = todayStr();
+    if(!state.bonus || state.bonus.date !== t) state.bonus = {date:t, n:0};
+    if(state.bonus.n < 3 && Math.random() < 0.12){
+      state.bonus.n++;
+      const f = G.facts();
+      const msg = f[Math.floor(Math.random() * f.length)];
+      fxSound("combo", 4); fxConfetti(35);
+      fxToast("✨ " + G.tx().factT + " " + msg);
+      fxPersist();
+    }
+  }catch(e){}
+};
+
+/* ---------- Reise-Tipps ---------- */
+const _gMapOrig = renderMap;
+window.renderMap = function(){
+  _gMapOrig();
+  try{
+    const box = document.getElementById("mapBox");
+    if(!box) return;
+    const T = G.tx(), done = lessonsDoneCount();
+    const rows = STAMPS.map((s, i)=>{
+      const ok = done >= s.n;
+      return `<li>${ok ? `<b>${s.ico} ${s.city}</b> — ${lpEsc(G.tips()[i] || "")}` : `🔒 ${s.city} — ${T.tipLocked.replace("{n}", s.n - done)}`}</li>`;
+    }).join("");
+    box.innerHTML += `<div class="card g-card"><h3>📌 ${T.tipsT}</h3><ul style="margin:6px 0 0 18px;padding:0;">${rows}</ul></div>`;
+  }catch(e){}
+};
+
+/* ---------- Spiele ---------- */
+let gm = {type:null};
+function gGamePool(maxLen, strict){
+  const w = state.words || {};
+  let p = gPoolOk().filter(v=>{
+    const a = String(G.front(v) || ""), b = String(G.back(v) || "");
+    if(!a || !b || a.length > maxLen || b.length > maxLen) return false;
+    if(strict && /[\/(),;]/.test(G.target(v))) return false;
+    return true;
+  });
+  const learned = gShuffle(p.filter(v=>w[G.key(v)] === "known" || w[G.key(v)] === "learning"));
+  const rest = gShuffle(p.filter(v=>!(w[G.key(v)] === "known" || w[G.key(v)] === "learning")));
+  return learned.concat(rest);
+}
+function gMenu(){
+  gm = {type:null};
+  const T = G.tx();
+  return `<div class="card"><h2>🎮 ${T.gamesT}</h2><p class="small">${T.gamesIntro}</p>
+    <div class="g-menu">
+      <div class="card"><h3>🃏 ${T.memT}</h3><p class="small">${T.memD}</p><button onclick="gStart('mem')">${T.play}</button></div>
+      <div class="card"><h3>🎧 ${T.typT}</h3><p class="small">${T.typD}</p><button onclick="gStart('typ')">${T.play}</button></div>
+    </div></div>`;
+}
+function gStart(type){
+  const T = G.tx();
+  if(type === "mem"){
+    const words = gGamePool(22, false).slice(0, 6);
+    if(words.length < 4){ gm = {type:null}; renderGames(); return; }
+    const cards = [];
+    words.forEach((v, i)=>{ cards.push({pair:i, side:"f", text:G.front(v), v}); cards.push({pair:i, side:"b", text:G.back(v), v}); });
+    gm = {type:"mem", cards:gShuffle(cards), open:[], done:{}, moves:0, lock:false, total:words.length, found:0};
+  } else {
+    const words = gGamePool(22, true).slice(0, 5);
+    if(words.length < 3){ gm = {type:null}; renderGames(); return; }
+    gm = {type:"typ", words, i:0, score:0, state:"ask", last:""};
+    setTimeout(()=>{ try{ G.speakTarget(G.target(words[0]), null); }catch(e){} }, 50);
+  }
+  renderGames();
+}
+function gMemFlip(idx){
+  if(gm.type !== "mem" || gm.lock) return;
+  const c = gm.cards[idx];
+  if(!c || gm.done[idx] || gm.open.includes(idx)) return;
+  gm.open.push(idx);
+  if(c.side === "f"){ try{ G.speakTarget(G.target(c.v), null); }catch(e){} } else fxSound("click");
+  if(gm.open.length === 2){
+    gm.moves++;
+    const [a, b] = gm.open, ca = gm.cards[a], cb = gm.cards[b];
+    if(ca.pair === cb.pair && ca.side !== cb.side){
+      gm.done[a] = gm.done[b] = true; gm.open = []; gm.found++;
+      fxSound("correct"); fxPop("+1");
+      if(gm.found === gm.total){
+        const T = G.tx();
+        state.gamesPlayed = (state.gamesPlayed || 0) + 1;
+        planAdd("practice", 2);
+        saveState();
+        fxCelebrate({icon:"🃏", title:T.memWin, sub:`${gm.moves} ${T.moves}`, sound:"complete"});
+      }
+    } else {
+      gm.lock = true;
+      setTimeout(()=>{ gm.open = []; gm.lock = false; renderGames(); }, 800);
+    }
+  }
+  renderGames();
+}
+function gNorm(s){ return String(s || "").toLowerCase().replace(/ß/g, "ss").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, ""); }
+function gTypCheck(){
+  if(gm.type !== "typ" || gm.state !== "ask") return;
+  const inp = document.getElementById("typInput");
+  const val = inp ? inp.value : "";
+  const v = gm.words[gm.i];
+  const ok = gNorm(val) === gNorm(G.target(v)) && gNorm(val) !== "";
+  gm.state = ok ? "right" : "wrong";
+  gm.last = val;
+  if(ok){ gm.score++; fxSound("correct"); fxPop("+1"); } else fxSound("wrong");
+  renderGames();
+}
+function gTypNext(){
+  if(gm.type !== "typ") return;
+  gm.i++;
+  if(gm.i >= gm.words.length){
+    const T = G.tx();
+    state.gamesPlayed = (state.gamesPlayed || 0) + 1;
+    planAdd("practice", Math.max(1, gm.score));
+    saveState();
+    fxCelebrate({icon:"🎧", title:T.typWin, sub:`${gm.score} / ${gm.words.length}`, sound:"complete", confetti:gm.score >= 3});
+    gm = {type:null};
+  } else {
+    gm.state = "ask"; gm.last = "";
+    try{ G.speakTarget(G.target(gm.words[gm.i]), null); }catch(e){}
+  }
+  renderGames();
+}
+function gTypHear(){ if(gm.type === "typ") try{ G.speakTarget(G.target(gm.words[gm.i]), null); }catch(e){} }
+function renderGames(){
+  const box = document.getElementById("gameBox");
+  if(!box) return;
+  const T = G.tx();
+  if(gm.type === "mem"){
+    const grid = gm.cards.map((c, i)=>{
+      const open = gm.open.includes(i), done = !!gm.done[i];
+      return `<button class="mem-card${done ? " done" : (open ? " open" : "")}" onclick="gMemFlip(${i})">${(open || done) ? lpEsc(c.text) : "❔"}</button>`;
+    }).join("");
+    box.innerHTML = `<div class="card"><div class="g-row"><h2>🃏 ${T.memT}</h2><button onclick="gStart('mem')">↻ ${T.again}</button></div>
+      <p class="small">${gm.found}/${gm.total} · ${gm.moves} ${T.moves}</p><div class="mem-grid">${grid}</div>
+      <p style="margin-top:12px;"><button onclick="gm={type:null};renderGames()">${T.backBtn}</button></p></div>`;
+    return;
+  }
+  if(gm.type === "typ"){
+    const v = gm.words[gm.i];
+    let res = "";
+    if(gm.state === "right") res = `<p class="typ-ok">✓ ${T.right} ${lpEsc(G.target(v))}</p>`;
+    if(gm.state === "wrong") res = `<p class="typ-bad">${T.wrongAns} <b>${lpEsc(G.target(v))}</b></p>`;
+    box.innerHTML = `<div class="card"><h2>🎧 ${T.typT}</h2><p class="small">${gm.i + 1} / ${gm.words.length} · ${gm.score} ✓</p>
+      <div class="g-row"><button onclick="gTypHear()">${T.hear}</button><span class="g-sub">${T.clue}: <b>${lpEsc(G.back(v))}</b></span></div>
+      <input id="typInput" class="typ-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${T.typPh}" ${gm.state !== "ask" ? "disabled" : ""} value="${lpEsc(gm.last)}" onkeydown="if(event.key==='Enter'){ ${gm.state === "ask" ? "gTypCheck()" : "gTypNext()"}; }">
+      ${res}
+      <div class="g-chips">${gm.state === "ask" ? `<button onclick="gTypCheck()">${T.check}</button>` : `<button onclick="gTypNext()">${T.next}</button>`}<button onclick="gm={type:null};renderGames()">${T.backBtn}</button></div></div>`;
+    return;
+  }
+  box.innerHTML = gMenu();
+}
+
+/* ---------- Einbindung ---------- */
+(function(){
+  try{
+    const z = ZONES.find(x=>x.id === "ueben");
+    if(z && !z.views.some(v=>v[0] === "spiele")) z.views.push(G.zoneEntry);
+    GATED_VIEWS.push("spiele");
+  }catch(e){}
+})();
+function gOnView(name){
+  const el = document.getElementById("view-" + name);
+  if(name === "spiele" && el && el.classList.contains("active")) renderGames();
+}
 
 </script>
 <script>
