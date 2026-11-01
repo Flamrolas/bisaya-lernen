@@ -929,7 +929,7 @@ nav.zone-nav button{font-family:inherit;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.54.0</div>
+  <div class="version-tag">v1.55.0</div>
 </section>
 
 <!-- METHODE -->
@@ -1274,6 +1274,8 @@ nav.zone-nav button{font-family:inherit;}
 </section>
 
 <!-- FORTSCHRITT -->
+<section class="view" id="view-wiederholen"><div id="revBox"></div></section>
+
 <section class="view" id="view-hoeren"><div id="hoerBox"></div></section>
 
 <section class="view" id="view-karte"><div id="mapBox"></div></section>
@@ -20267,6 +20269,283 @@ function renderMap(){
 fxMuteBtn();
 zoneRender("start");
 renderToday();
+
+</script>
+<script>
+/* ============ WIEDERHOLUNG + WOCHENRÜCKBLICK ============
+   Spaced Repetition (3/7/21/60 Tage) mit Wiederhol-Session, Heute-Karte und Wochenrückblick.
+   Läuft NACH dem Motivations-Skript und umhüllt dessen Funktionen. */
+
+const REV_TXS = {
+  de: {
+    due: "Wörter warten auf dich", none: "Heute ist nichts fällig", show: "Antwort zeigen", ok: "✅ Gewusst", miss: "🔁 Nochmal",
+    start: "Wiederholung starten", mastered: "gefestigt", title: "Wiederholen", go: "Los",
+    explain: "Wörter, die du als „kann ich“ oder „noch üben“ markierst, kommen nach 1, 3, 7, 21 und 60 Tagen wieder. Wenn du sie gewusst hast, wird der Abstand größer — so landen sie im Langzeitgedächtnis.",
+    doneT: "Wiederholung geschafft!", week: "Diese Woche", weekT: "Wochenrückblick", prevWeek: "Letzte Woche",
+    days: "aktive Tage", newW: "neue Wörter", revs: "Wiederholungen", plans: "Tagespläne", stars: "Sterne"
+  },
+  bis: {
+    due: "ka pulong naghulat nimo", none: "Wala'y angay balikon karon", show: "Ipakita ang tubag", ok: "✅ Nahibaw-an", miss: "🔁 Balik pa",
+    start: "Sugdi ang Balik-balik", mastered: "lig-on na", title: "Balik-balik", go: "Sugdi",
+    explain: "Ang mga pulong nga imong gimarkahan nga „kaya na nako“ o „bansayon pa“ mobalik human sa 1, 3, 7, 21 ug 60 ka adlaw. Kon nahibaw-an nimo, mas layo ang sunod — mao nay paagi aron mosulod sa dugay nga panumduman.",
+    doneT: "Nahuman ang Balik-balik!", week: "Kini nga semana", weekT: "Pagbalik-tan sa Semana", prevWeek: "Miaging semana",
+    days: "aktibong adlaw", newW: "bag-ong pulong", revs: "balik-balik", plans: "plano sa adlaw", stars: "bituon"
+  },
+  en: {
+    due: "words waiting", none: "Nothing due today", show: "Show answer", ok: "✅ Got it", miss: "🔁 Again",
+    start: "Start review", mastered: "mastered", title: "Review", go: "Go",
+    explain: "Words you mark as “I know this” or “still practicing” come back after 1, 3, 7, 21 and 60 days. If you knew them, the gap grows — that's how they reach long-term memory.",
+    doneT: "Review complete!", week: "This week", weekT: "Weekly recap", prevWeek: "Last week",
+    days: "active days", newW: "new words", revs: "reviews", plans: "daily plans", stars: "stars"
+  }
+};
+const REV_CFG = {
+  key: "bis",
+  pool: ()=>allVocab(),
+  get tx(){ const m = currentMode(); return m === "learn-de" ? REV_TXS.bis : (m === "learn-bis-en" ? REV_TXS.en : REV_TXS.de); },
+  front: v=> currentMode() === "learn-de" ? v.de : v.bis,
+  frontBtn: v=> currentMode() === "learn-de" ? speakDeBtn(v.de) : speakBtn(v.bis, v.pron),
+  back: v=> { const m = currentMode(); return m === "learn-de" ? v.bis : (m === "learn-bis-en" ? v.en : v.de); },
+  sub: v=> currentMode() === "learn-de" ? (v.cat || "") : (v.pron || "")
+};
+
+const SRS_AFTER = [3, 7, 21, 60, 60];
+const REV_BATCH = 10;
+const REV_CSS = `
+.rev-today{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;}
+.rev-today b{display:block;} .rev-today span{font-size:.85rem;opacity:.75;}
+.wk-line{margin:8px 2px 0;opacity:.8;}
+.rev-card{text-align:center;padding:28px 18px;min-height:150px;cursor:pointer;}
+.rev-card .rev-front{font-size:1.7rem;font-weight:700;}
+.rev-card .rev-back{margin-top:14px;font-size:1.2rem;}
+.rev-card .rev-sub{display:block;margin-top:6px;font-size:.85rem;opacity:.7;}
+.rev-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.rev-stats{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 14px;}
+.rev-stats div{text-align:center;} .rev-stats b{display:block;font-size:1.5rem;}
+`;
+(function(){
+  try{
+    const st = document.createElement("style");
+    st.textContent = REV_CSS;
+    (document.head || document.documentElement).appendChild(st);
+  }catch(e){}
+})();
+
+/* ---------- Datenhaltung ---------- */
+function srsDay(off){ return Math.floor(Date.parse(todayStr(off)) / 86400000); }
+function srsStore(){ state.srs = state.srs || {}; return state.srs; }
+function srsPool(){
+  if(!srsPool._m){
+    const m = {};
+    REV_CFG.pool().forEach(v=>{ const k = v[REV_CFG.key]; if(k && !(k in m)) m[k] = v; });
+    srsPool._m = m;
+  }
+  return srsPool._m;
+}
+function srsSync(){
+  const s = srsStore(), w = state.words || {}, t = srsDay(0);
+  const keys = Object.keys(w);
+  if(!state.srsSeeded){
+    let i = 0;
+    keys.forEach(k=>{
+      if(s[k]) return;
+      if(w[k] === "known"){ s[k] = {b:1, d:t + 1 + (i % 30)}; i++; }
+      else if(w[k] === "learning"){ s[k] = {b:0, d:t + 1 + (i % 3)}; i++; }
+    });
+    state.srsSeeded = 1;
+    fxPersist();
+    return;
+  }
+  const wk = wkGet();
+  keys.forEach(k=>{
+    if(s[k]) return;
+    if(w[k] === "known" || w[k] === "learning"){
+      s[k] = {b:0, d:t + 1};
+      if(w[k] === "known") wk.newWords++;
+    }
+  });
+}
+function srsDue(){
+  srsSync();
+  const s = srsStore(), t = srsDay(0), pool = srsPool();
+  const vipOn = (typeof isVipActive === "function") ? isVipActive() : true;
+  return Object.keys(s).filter(k=>s[k].d <= t && pool[k] && !(pool[k].vip && !vipOn)).sort((a,b)=>s[a].d - s[b].d);
+}
+function srsMastered(){
+  const s = srsStore(), w = state.words || {};
+  return Object.keys(s).filter(k=>s[k].b >= 4 && w[k] === "known").length;
+}
+
+const _srsSaveOrig = saveState;
+window.saveState = function(){
+  try{ srsSync(); }catch(e){}
+  _srsSaveOrig();
+};
+
+/* ---------- Wochenstatistik ---------- */
+function wkId(){
+  const d = new Date(todayStr() + "T00:00:00Z");
+  const day = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - day);
+  return d.toISOString().slice(0, 10);
+}
+function wkNew(){ return {id:wkId(), days:{}, newWords:0, reviews:0, planStart:state.planDays || 0, starsStart:totalStars(), shown:false}; }
+function wkGet(){
+  if(!state.wk) state.wk = wkNew();
+  if(state.wk.id !== wkId()){
+    const prev = state.wk;
+    prev.pd = (state.planDays || 0) - prev.planStart;
+    prev.st = totalStars() - prev.starsStart;
+    if(!prev.shown && Object.keys(prev.days).length) state.wkPending = prev;
+    state.wk = wkNew();
+  }
+  return state.wk;
+}
+function wkStats(r, live){
+  return {
+    days: Object.keys(r.days).length, newW: r.newWords, revs: r.reviews,
+    pd: live ? (state.planDays || 0) - r.planStart : (r.pd || 0),
+    st: live ? totalStars() - r.starsStart : (r.st || 0)
+  };
+}
+function wkRecap(r, live, label){
+  const s = wkStats(r, live), T = REV_CFG.tx;
+  fxCelebrate({icon:"📅", title:T.weekT,
+    sub: `${label}: ${s.days} ${T.days}, ${s.newW} ${T.newW}, ${s.revs} ${T.revs}, ${s.pd} ${T.plans}, ${s.st} ${T.stars}.`,
+    sound:"complete"});
+}
+function wkMaybeRecap(){
+  const cur = wkGet();
+  if(state.wkPending){
+    const p = state.wkPending;
+    state.wkPending = null;
+    p.shown = true;
+    fxPersist();
+    wkRecap(p, false, REV_CFG.tx.prevWeek);
+    return;
+  }
+  const isSunday = new Date(todayStr() + "T00:00:00Z").getUTCDay() === 0;
+  if(isSunday && !cur.shown && Object.keys(cur.days).length){
+    cur.shown = true;
+    fxPersist();
+    wkRecap(cur, true, REV_CFG.tx.week);
+  }
+}
+const _wkTouchOrig = touchDaily;
+window.touchDaily = function(){
+  _wkTouchOrig();
+  try{ wkGet().days[todayStr()] = 1; }catch(e){}
+};
+
+/* ---------- Wiederhol-Session ---------- */
+let revQ = [], revI = 0, revShown = false, revOk = 0, revMiss = 0, revRetry = {}, revActive = false;
+function revStart(){
+  const due = srsDue();
+  if(!due.length){ renderReview(); return; }
+  revQ = due.slice(0, REV_BATCH); revI = 0; revShown = false; revOk = 0; revMiss = 0; revRetry = {}; revActive = true;
+  renderReview();
+}
+function revShow(){ revShown = true; renderReview(); }
+function revAnswer(ok){
+  const k = revQ[revI], e = srsStore()[k], t = srsDay(0);
+  if(!e){ revNext(); return; }
+  touchDaily(); touchStreak();
+  if(!revRetry[k]){
+    wkGet().reviews++;
+    if(ok){
+      e.d = t + SRS_AFTER[e.b]; e.b = Math.min(e.b + 1, 4); revOk++;
+      fxSound("correct"); fxPop("+1");
+      planAdd("practice", 1);
+    } else {
+      e.b = 0; e.d = t + 1; revMiss++; revRetry[k] = 1; revQ.push(k);
+      fxSound("click");
+    }
+    saveState();
+  }
+  revNext();
+}
+function revNext(){
+  revI++; revShown = false;
+  if(revI >= revQ.length){
+    revActive = false;
+    state.revSessions = (state.revSessions || 0) + 1;
+    saveState();
+    fxCelebrate({icon:"🔁", title:REV_CFG.tx.doneT, sub:`${revOk} ✅ · ${revMiss} 🔁`, sound:"complete"});
+  }
+  renderReview();
+}
+function renderReview(){
+  const box = document.getElementById("revBox");
+  if(!box) return;
+  const T = REV_CFG.tx, pool = srsPool();
+  if(revActive && revQ[revI]){
+    const v = pool[revQ[revI]];
+    if(!v){ revNext(); return; }
+    const pct = Math.round(revI / revQ.length * 100);
+    box.innerHTML = `
+    <div class="card">
+      <h2>🔁 ${T.title}</h2>
+      <div class="progressbar"><div style="width:${pct}%"></div></div>
+      <p class="small">${revI + 1} / ${revQ.length}</p>
+      <div class="card rev-card" ${revShown ? "" : 'onclick="revShow()"'}>
+        <div class="rev-front">${lpEsc(REV_CFG.front(v))} ${REV_CFG.frontBtn(v)}</div>
+        ${revShown ? `<div class="rev-back">${lpEsc(REV_CFG.back(v) || "")}<span class="rev-sub">${lpEsc(REV_CFG.sub(v))}</span></div>` : `<p class="small" style="margin-top:18px;">${T.show}</p>`}
+      </div>
+      <div class="rev-actions">
+        ${revShown ? `<button onclick="revAnswer(false)">${T.miss}</button><button onclick="revAnswer(true)">${T.ok}</button>` : `<button onclick="revShow()">${T.show}</button>`}
+      </div>
+    </div>`;
+    return;
+  }
+  const due = srsDue().length, n = Math.min(due, REV_BATCH);
+  box.innerHTML = `
+  <div class="card">
+    <h2>🔁 ${T.title}</h2>
+    <div class="rev-stats">
+      <div><b>${due}</b><span class="small">${T.due}</span></div>
+      <div><b>${srsMastered()}</b><span class="small">${T.mastered}</span></div>
+    </div>
+    ${due ? `<div class="rev-actions" style="justify-content:flex-start;"><button onclick="revStart()">🔁 ${T.start} (${n})</button></div>` : `<p>${T.none} 🎉</p>`}
+    <p class="small" style="margin-top:14px;">${T.explain}</p>
+  </div>`;
+}
+
+/* ---------- Einbindung: Zone Üben, Heute-Seite ---------- */
+(function(){
+  try{
+    const z = ZONES.find(x=>x.id === "ueben");
+    if(z && !z.views.some(v=>v[0] === "wiederholen")) z.views.splice(1, 0, ["wiederholen", "🔁 Wiederholen", "🔁 Balik-balik", "🔁 Review"]);
+    GATED_VIEWS.push("wiederholen");
+  }catch(e){}
+})();
+const _revShowOrig = goView;
+window.goView = function(name){
+  _revShowOrig(name);
+  const el = document.getElementById("view-" + name);
+  if(name === "wiederholen" && el && el.classList.contains("active")) renderReview();
+};
+function revTodayExtra(){
+  const box = document.getElementById("todayBox");
+  if(!box) return;
+  const T = REV_CFG.tx, due = srsDue().length, s = wkStats(wkGet(), true);
+  box.innerHTML += `
+  <div class="card rev-today">
+    <div><b>🔁 ${T.title}</b><span>${due ? due + " " + T.due : T.none} · ${srsMastered()} ${T.mastered}</span></div>
+    <button onclick="goView('wiederholen')">${due ? T.go : "✓"}</button>
+  </div>
+  <p class="small wk-line">📅 ${T.week}: ${s.days} ${T.days} · ${s.newW} ${T.newW} · ${s.revs} ${T.revs}</p>`;
+}
+const _revSetModeOrig = setMode;
+window.setMode = function(mode){
+  _revSetModeOrig(mode);
+  const el = document.getElementById("view-wiederholen");
+  if(el && el.classList.contains("active")) renderReview();
+};
+const _revTodayOrig = renderToday;
+window.renderToday = function(){
+  _revTodayOrig();
+  try{ revTodayExtra(); wkMaybeRecap(); }catch(e){ console.log("rev-today", e && e.message); }
+};
 
 </script>
 <script>
