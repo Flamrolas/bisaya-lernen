@@ -929,7 +929,7 @@ nav.zone-nav button{font-family:inherit;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.56.0</div>
+  <div class="version-tag">v1.57.0</div>
 </section>
 
 <!-- METHODE -->
@@ -20564,7 +20564,8 @@ const G_TX_DE = {
   memT:"Memory", memD:"Finde die Paare: Wort und Übersetzung.", memWin:"Alle Paare gefunden!", moves:"Züge", again:"Neu mischen", backBtn:"Zurück",
   typT:"Hör & tippe", typD:"Hör das Wort und tippe es.", typWin:"Runde geschafft!", hear:"🔊 Nochmal hören", clue:"Bedeutung", typPh:"Tippe das Wort …",
   check:"Prüfen", next:"Weiter", right:"Richtig!", wrongAns:"Fast — richtig ist:",
-  factT:"Wusstest du?", tipsT:"Reise-Tipps", tipLocked:"noch {n} Lektion(en)"
+  factT:"Wusstest du?", tipsT:"Reise-Tipps", tipLocked:"noch {n} Lektion(en)",
+  aiNote:"Illustrationen: KI-generiert."
 };
 const G_TX_BIS = {
   fzTitle:"Nakaluwas ang Streak!", fzSub:"Ang imong ❄️ Streak-Panalipod nagtabon sa usa ka nalaktawan nga adlaw. {n} na lang ang nahabilin.",
@@ -20576,7 +20577,8 @@ const G_TX_BIS = {
   memT:"Memory", memD:"Pangitaa ang magtinan-away: pulong ug hubad.", memWin:"Nakit-an ang tanang pares!", moves:"lakang", again:"Sagulan pag-usab", backBtn:"Balik",
   typT:"Paminaw & Tipa", typD:"Paminawa ang pulong ug i-tipa kini.", typWin:"Nahuman ang hugna!", hear:"🔊 Paminawa pag-usab", clue:"Kahulogan", typPh:"I-tipa ang pulong …",
   check:"Susiha", next:"Sunod", right:"Sakto!", wrongAns:"Hapit na — ang sakto mao:",
-  factT:"Nahibaw-an ba nimo?", tipsT:"Tambag sa Panaw", tipLocked:"{n} pa ka leksyon"
+  factT:"Nahibaw-an ba nimo?", tipsT:"Tambag sa Panaw", tipLocked:"{n} pa ka leksyon",
+  aiNote:"Mga ilustrasyon: gihimo sa AI."
 };
 const G_TX_EN = {
   fzTitle:"Streak saved!", fzSub:"Your ❄️ streak shield covered a missed day. {n} left.",
@@ -20588,7 +20590,8 @@ const G_TX_EN = {
   memT:"Memory", memD:"Find the pairs: word and translation.", memWin:"All pairs found!", moves:"moves", again:"Reshuffle", backBtn:"Back",
   typT:"Listen & type", typD:"Listen to the word and type it.", typWin:"Round complete!", hear:"🔊 Listen again", clue:"Meaning", typPh:"Type the word …",
   check:"Check", next:"Next", right:"Correct!", wrongAns:"Almost — the answer is:",
-  factT:"Did you know?", tipsT:"Travel tips", tipLocked:"{n} more lesson(s)"
+  factT:"Did you know?", tipsT:"Travel tips", tipLocked:"{n} more lesson(s)",
+  aiNote:"Illustrations: AI-generated."
 };
 const G_MS_TEXT3 = {
   10:["Dein erster Wortschatz steht — die Basis ist gelegt.","Naa na ang imong unang bokabularyo — natukod na ang pundasyon.","Your first vocabulary is in place — the foundation is laid."],
@@ -20654,7 +20657,8 @@ const G = {
     return "";
   },
   go: n=>goView(n),
-  zoneEntry: ["spiele", "🎮 Spiele", "🎮 Dula", "🎮 Games"]
+  zoneEntry: ["spiele", "🎮 Spiele", "🎮 Dula", "🎮 Games"],
+  cityImg: i=>"images/reise/" + ["cebu","bohol","siquijor","dumaguete","davao","siargao"][i] + ".webp"
 };
 const _gNavOrig = goView;
 window.goView = function(name){ _gNavOrig(name); gOnView(name); };
@@ -20687,6 +20691,14 @@ window.setMode = function(mode){
 .mem-card.done{background:#dff3e0;border-color:#4a9a55;opacity:.75;}
 .typ-input{width:100%;box-sizing:border-box;padding:10px;font-size:1.1rem;margin-top:10px;border-radius:8px;border:2px solid rgba(0,0,0,.2);}
 .typ-ok{color:#2f7d3a;font-weight:700;} .typ-bad{color:#b3392a;font-weight:700;}
+.trip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:8px;}
+.trip-tile{position:relative;border-radius:12px;overflow:hidden;background:#f4ead8;border:1px solid rgba(0,0,0,.1);}
+.trip-tile img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
+.trip-tile.off img{filter:grayscale(1) brightness(.55) blur(3px);}
+.trip-tile.noimg img{display:none;}
+.trip-cap{padding:8px 10px;font-size:.88rem;}
+.trip-cap b{display:block;font-size:1rem;}
+.trip-cap span{opacity:.85;}
 @media (max-width:480px){.mem-grid{grid-template-columns:repeat(3,1fr);}}
 `;
     (document.head || document.documentElement).appendChild(st);
@@ -20848,11 +20860,13 @@ window.renderMap = function(){
     const box = document.getElementById("mapBox");
     if(!box) return;
     const T = G.tx(), done = lessonsDoneCount();
-    const rows = STAMPS.map((s, i)=>{
+    const tiles = STAMPS.map((s, i)=>{
       const ok = done >= s.n;
-      return `<li>${ok ? `<b>${s.ico} ${s.city}</b> — ${lpEsc(G.tips()[i] || "")}` : `🔒 ${s.city} — ${T.tipLocked.replace("{n}", s.n - done)}`}</li>`;
+      const img = (G.cityImg && G.cityImg(i)) ? `<img loading="lazy" alt="${lpEsc(s.city)}" src="${G.cityImg(i)}" onerror="this.parentNode.classList.add('noimg')">` : "";
+      const cap = ok ? lpEsc(G.tips()[i] || "") : "🔒 " + T.tipLocked.replace("{n}", s.n - done);
+      return `<div class="trip-tile ${ok ? "on" : "off"}${img ? "" : " noimg"}">${img}<div class="trip-cap"><b>${s.ico} ${s.city}</b><span>${cap}</span></div></div>`;
     }).join("");
-    box.innerHTML += `<div class="card g-card"><h3>📌 ${T.tipsT}</h3><ul style="margin:6px 0 0 18px;padding:0;">${rows}</ul></div>`;
+    box.innerHTML += `<div class="card g-card"><h3>📌 ${T.tipsT}</h3><div class="trip-grid">${tiles}</div><p class="small" style="margin-top:8px;opacity:.7;">${T.aiNote}</p></div>`;
   }catch(e){}
 };
 
