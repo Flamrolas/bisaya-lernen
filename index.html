@@ -512,6 +512,7 @@ body.mode-en .origin-pill.mode-en-only{display:inline-flex;}
 }
 </style>
 <style id="fx-style">
+#view-start:not(.show-about) > :not(#todayBox){display:none;}
 /* ===== v0.36.0: Zonen-Navigation, Heute, Lernpfad, Hör-Studio, Reise-Karte, Effekte ===== */
 :root{--zone:#7b5ea7; --zone-soft:rgba(123,94,167,.12);}
 body[data-zone="heute"]{--zone:#7b5ea7; --zone-soft:rgba(123,94,167,.12);}
@@ -930,7 +931,7 @@ nav.zone-nav button{font-family:inherit;}
     <h3>Unsa imong makat-onan niini nga modyul</h3>
     <p>Mga Leksyon ug Mga Sugilanon nga naggamit sa mao gihapong mga panid — apan karon German ang una nga linya, Bisaya ang sunod, aron makita nimo kung giunsa "molihok" ang German. Dugang pa: usa ka Bokabularyo Trainer nga adunay Bisaya ug German nga bahin sa matag pulong, uban sa 🔊 aron madungog ang German nga paglitok.</p>
   </div>
-  <div class="version-tag">v1.57.0</div>
+  <div class="version-tag">v1.58.0</div>
 </section>
 
 <!-- METHODE -->
@@ -20531,7 +20532,7 @@ function revTodayExtra(){
   const box = document.getElementById("todayBox");
   if(!box) return;
   const T = REV_CFG.tx, due = srsDue().length, s = wkStats(wkGet(), true);
-  box.innerHTML += `
+  window.todayMoreHtml = (window.todayMoreHtml || "") + `
   <div class="card rev-today">
     <div><b>🔁 ${T.title}</b><span>${due ? due + " " + T.due : T.none} · ${srsMastered()} ${T.mastered}</span></div>
     <button onclick="goView('wiederholen')">${due ? T.go : "✓"}</button>
@@ -20826,7 +20827,7 @@ function gTodayExtra(){
     </div>`;
   }
   h += `<div class="card g-card g-row"><div><b>🎮 ${T.gamesT}</b><div class="g-sub">${T.gamesD}</div></div><button onclick="G.go('spiele')">${T.go}</button></div>`;
-  box.innerHTML += h;
+  window.todayMoreHtml = (window.todayMoreHtml || "") + h;
 }
 const _gTodayOrig = renderToday;
 window.renderToday = function(){
@@ -21006,6 +21007,173 @@ function gOnView(name){
   const el = document.getElementById("view-" + name);
   if(name === "spiele" && el && el.classList.contains("active")) renderGames();
 }
+
+</script>
+<script>
+/* ============ STRUKTUR v1.58.0 (Bisaya): geführter Start, „Weiter geht's“, 4 Bereiche ============ */
+const S_TX_DE = {
+  startT:"Hier starten", startS:"In drei kleinen Schritten legst du los.", step1:"So lernst du (1 Minute)", step2:"Lektion 1 machen", step3:"10 Wörter üben",
+  go:"Los", skip:"Ich kenne mich aus — überspringen",
+  methodT:"So funktioniert's",
+  methodL:["<b>Dekodieren:</b> Jedes Wort wird einzeln übersetzt — so siehst du, wie die Sprache denkt.","<b>Aktiv hören:</b> Lies mit und sprich laut nach.","<b>Passiv hören:</b> Lass die Sprache nebenbei laufen.","<b>Anwenden:</b> Bau eigene Sätze und sprich mit echten Menschen."],
+  readyT:"Du bist startklar!", readyS:"Ab jetzt zeigt dir „Weiter geht's“ jeden Tag den nächsten Schritt.",
+  nextT:"Weiter geht's", nRevT:"{n} Wörter wiederholen", nRevS:"Kurz auffrischen, damit sie bleiben.", nUndT:"Lektion {n}: {title}", nUndS:"Baue die Sätze Wort für Wort.",
+  nLisT:"Lektion {n} anhören", nLisS:"Einmal bewusst zuhören.", nPraT:"Üben: {x}/{y} richtige Aufgaben", nPraS:"Karteikarten, Quiz oder Lückensätze.",
+  nDoneT:"Tagesplan geschafft! 🎉", nDoneS:"Wenn du magst: ein Spiel oder das Wort des Tages.", play:"Spielen",
+  pU:"Verstehen", pL:"Hören", pP:"Üben", more:"Mehr für heute", about:"Über diese App"
+};
+const S_TX_BIS = {
+  startT:"Sugdi dinhi", startS:"Sa tulo ka gagmay nga lakang makasugod ka.", step1:"Unsaon pagkat-on (1 minuto)", step2:"Buhata ang Leksyon 1", step3:"Bansayi ang 10 ka pulong",
+  go:"Sugdi", skip:"Nahibaw-an ko na — laktawi",
+  methodT:"Unsaon paglihok",
+  methodL:["<b>I-decode:</b> Ang matag pulong gihubad nga usa-usa — makita nimo kung giunsa paghunahuna sa pinulongan.","<b>Aktibong pamati:</b> Basaha ug isulti kusog.","<b>Pasibo nga pamati:</b> Pasagdi ang pinulongan nga mo-play sa luyo.","<b>Gamita:</b> Paghimo og kaugalingong mga tudling-pulong ug makigsulti sa tinuod nga mga tawo."],
+  readyT:"Andam ka na!", readyS:"Gikan karon, ang „Padayon ta“ mopakita sa sunod nga lakang matag adlaw.",
+  nextT:"Padayon ta", nRevT:"Balika ang {n} ka pulong", nRevS:"Paspas nga balik aron dili malimtan.", nUndT:"Leksyon {n}: {title}", nUndS:"Tukora ang mga tudling-pulong pulong-por-pulong.",
+  nLisT:"Paminawa ang Leksyon {n}", nLisS:"Usa ka higayon nga tinuyo nga pamati.", nPraT:"Bansay: {x}/{y} ka sakto", nPraS:"Mga kard, quiz o nawala nga pulong.",
+  nDoneT:"Nahuman ang plano sa adlaw! 🎉", nDoneS:"Kon gusto ka: usa ka dula o ang Pulong sa Adlaw.", play:"Dula",
+  pU:"Sabta", pL:"Paminaw", pP:"Bansay", more:"Dugang karon", about:"Mahitungod niini nga app"
+};
+const S_TX_EN = {
+  startT:"Start here", startS:"Get going in three small steps.", step1:"How you'll learn (1 minute)", step2:"Do lesson 1", step3:"Practise 10 words",
+  go:"Go", skip:"I know my way around — skip",
+  methodT:"How it works",
+  methodL:["<b>Decode:</b> Every word is translated one by one — you see how the language thinks.","<b>Active listening:</b> Read along and repeat out loud.","<b>Passive listening:</b> Let the language play in the background.","<b>Use it:</b> Build your own sentences and talk to real people."],
+  readyT:"You're ready to go!", readyS:"From now on “Continue” shows you the next step every day.",
+  nextT:"Continue", nRevT:"Review {n} words", nRevS:"A quick refresh so they stay.", nUndT:"Lesson {n}: {title}", nUndS:"Build the sentences word by word.",
+  nLisT:"Listen to lesson {n}", nLisS:"One focused listen.", nPraT:"Practice: {x}/{y} correct", nPraS:"Flashcards, quiz or gap sentences.",
+  nDoneT:"Daily plan complete! 🎉", nDoneS:"If you like: a game or the word of the day.", play:"Play",
+  pU:"Understand", pL:"Listen", pP:"Practise", more:"More for today", about:"About this app"
+};
+const S = {
+  tx: ()=>[S_TX_DE, S_TX_BIS, S_TX_EN][gModeIdx()],
+  zoneLearn: ["🧭 Lernen", "🧭 Pagkat-on", "🧭 Learn"],
+  greet: h=>currentMode() === "learn-de" ? (h < 12 ? "Guten Morgen" : (h < 18 ? "Guten Tag" : "Guten Abend")) : (h < 12 ? "Maayong buntag" : (h < 18 ? "Maayong hapon" : "Maayong gabii")),
+  go: n=>goView(n),
+  goLesson: id=>fxGoLesson(id),
+  goLessonCall: id=>`fxGoLesson(${id})`
+};
+/* ---------- Struktur: geführter Start, „Weiter geht's“, aufgeräumte Heute-Seite, 4 Bereiche ---------- */
+(function(){
+  try{
+    const st = document.createElement("style");
+    st.textContent = `
+#view-start:not(.show-about) > :not(#todayBox){display:none;}
+.s-hello{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 2px 10px;}
+.s-hello h2{margin:0;font-size:1.25rem;}
+.s-hero{padding:22px 18px;border-radius:16px;border:2px solid var(--zone,#c1502e);background:var(--zone-soft,rgba(193,80,46,.1));}
+.s-hero h3{margin:0 0 4px;font-size:1.3rem;}
+.s-hero .s-sub{margin:0 0 14px;opacity:.8;}
+.s-big{font-size:1.15rem;padding:13px 26px;border-radius:12px;font-weight:700;cursor:pointer;}
+.s-steps{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px;}
+.s-steps li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.65);border:1px solid rgba(0,0,0,.08);}
+.s-steps li.done{opacity:.6;} .s-steps li.now{border-color:var(--zone,#c1502e);box-shadow:0 0 0 2px var(--zone-soft,rgba(193,80,46,.2));}
+.s-num{flex:0 0 28px;height:28px;border-radius:50%;background:var(--zone,#c1502e);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.s-pills{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px;}
+.s-pill{padding:5px 12px;border-radius:999px;background:rgba(0,0,0,.06);font-size:.88rem;}
+.s-pill.on{background:#dff3e0;color:#25602d;}
+.s-more{margin-top:14px;} .s-more > summary{cursor:pointer;font-weight:700;padding:8px 2px;}
+.s-link{background:none;border:none;color:inherit;opacity:.7;text-decoration:underline;cursor:pointer;font-size:.9rem;padding:6px 2px;}
+.s-meth li{margin:6px 0;text-align:left;}
+`;
+    (document.head || document.documentElement).appendChild(st);
+  }catch(e){}
+})();
+
+/* ---------- 4 Bereiche statt 5 ---------- */
+(function(){
+  try{
+    const idOf = v=>v[0];
+    const rank = (list)=>(a,b)=>{ const ia = list.indexOf(idOf(a)), ib = list.indexOf(idOf(b)); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib); };
+    const learn = ZONES.find(z=>z.id === "verstehen"), listen = ZONES.find(z=>z.id === "hoeren"), practice = ZONES.find(z=>z.id === "ueben");
+    if(learn && listen){
+      learn.views = learn.views.concat(listen.views).sort(rank(["lektionen","hoeren","storys","geschichten","lieder","methode","aussprache","grammatik"]));
+      learn.label = S.zoneLearn;
+      ZONES.splice(ZONES.indexOf(listen), 1);
+    }
+    if(practice) practice.views.sort(rank(["wortschatz","wiederholen","wendungen","anwenden","quiz","spiele"]));
+  }catch(e){ console.log("zones", e && e.message); }
+})();
+
+/* ---------- Hilfen ---------- */
+function sOb(){ state.ob = state.ob || {}; return state.ob; }
+function sMarked(){ return Object.keys(state.words || {}).filter(k=>state.words[k]).length; }
+function sObSteps(){
+  const ob = sOb(), l1 = !!(state.lessonsDone || {})[1];
+  return [{done: !!ob.method || l1}, {done: l1}, {done: sMarked() >= 10}];
+}
+const _sRevNext = revNext;
+window.revNext = function(){
+  const was = revActive;
+  _sRevNext();
+  if(was && !revActive){ state.revDate = todayStr(); fxPersist(); }
+};
+function sMethod(){
+  const T = S.tx();
+  fxCelebrate({icon:"🧠", title:T.methodT, confetti:false, sound:"click",
+    html:`<ol class="s-meth" style="padding-left:20px;">${T.methodL.map(x=>`<li>${x}</li>`).join("")}</ol>`,
+    afterShow:()=>{ sOb().method = 1; fxPersist(); try{ renderToday(); }catch(e){} }});
+}
+function sSkip(){ state.obDone = 1; fxPersist(); renderToday(); }
+function sStepGo(i){
+  if(i === 0) sMethod();
+  else if(i === 1) S.goLesson(1);
+  else S.go("wortschatz");
+}
+function sNext(){
+  const T = S.tx(), p = planGet(), due = srsDue().length, nl = nextLessonId(), nlObj = nl ? LESSONS.find(x=>x.id === nl) : null;
+  const last = [...LESSONS].reverse().find(x=>(state.lessonsDone || {})[x.id]);
+  const listenId = nl || (last ? last.id : 1);
+  const uDone = p.understand >= PLAN_UNDERSTAND_GOAL, pDone = p.practice >= PLAN_PRACTICE_GOAL;
+  if(due > 0 && state.revDate !== todayStr()) return {t:T.nRevT.replace("{n}", due), s:T.nRevS, b:T.go, c:"S.go('wiederholen')"};
+  if(!uDone) return {t:T.nUndT.replace("{n}", nl || 1).replace("{title}", nlObj ? nlObj.title : ""), s:T.nUndS, b:T.go, c:S.goLessonCall(nl || 1)};
+  if(!p.listen) return {t:T.nLisT.replace("{n}", listenId), s:T.nLisS, b:T.go, c:`hoerStart(${listenId})`};
+  if(!pDone) return {t:T.nPraT.replace("{x}", Math.min(p.practice, PLAN_PRACTICE_GOAL)).replace("{y}", PLAN_PRACTICE_GOAL), s:T.nPraS, b:T.go, c:"todayPractice()"};
+  return {t:T.nDoneT, s:T.nDoneS, b:T.play, c:"S.go('spiele')"};
+}
+function sBuildToday(){
+  const box = document.getElementById("todayBox");
+  if(!box) return;
+  const T = S.tx();
+  const steps = sObSteps(), allDone = steps.every(s=>s.done);
+  if(!state.obInit){
+    state.obInit = 1;
+    if(allDone || (lessonsDoneCount() >= 1 && sMarked() >= 10)) state.obDone = 1;
+    fxPersist();
+  }
+  if(!state.obDone && allDone){
+    state.obDone = 1; fxPersist();
+    fxCelebrate({icon:"🚀", title:T.readyT, sub:T.readyS, sound:"complete"});
+  }
+  const li = levelInfo(), p = planGet();
+  const h = new Date().getHours();
+  const pr = (typeof loadProfile === "function") ? loadProfile() : null;
+  const nm = pr && pr.name ? ", " + lpEsc(pr.name) : "";
+  let html = `<div class="s-hello"><h2>${S.greet(h)}${nm}!</h2>
+    <div class="today-chips"><span class="chip-pill" title="Streak">🔥 ${state.streak || 0}</span><span class="chip-pill">Level ${li.level}</span><span class="chip-pill">⭐ ${totalStars()}</span></div></div>`;
+  if(!state.obDone){
+    const now = steps.findIndex(s=>!s.done);
+    const labels = [T.step1, T.step2, T.step3];
+    html += `<div class="s-hero"><h3>🚀 ${T.startT}</h3><p class="s-sub">${T.startS}</p>
+      <ol class="s-steps">${steps.map((s, i)=>`<li class="${s.done ? "done" : (i === now ? "now" : "")}"><span class="s-num">${s.done ? "✓" : i + 1}</span><span>${labels[i]}</span></li>`).join("")}</ol>
+      <button class="s-big" onclick="sStepGo(${now < 0 ? 0 : now})">${T.go} ➜</button>
+      <p><button class="s-link" onclick="sSkip()">${T.skip}</button></p></div>`;
+  } else {
+    const n = sNext();
+    const uDone = p.understand >= PLAN_UNDERSTAND_GOAL, pDone = p.practice >= PLAN_PRACTICE_GOAL;
+    html += `<div class="s-hero"><h3>➜ ${T.nextT}</h3><p style="margin:0 0 2px;font-size:1.1rem;"><b>${n.t}</b></p><p class="s-sub">${n.s}</p>
+      <button class="s-big" onclick="${n.c}">${n.b}</button>
+      <div class="s-pills"><span class="s-pill${uDone ? " on" : ""}">${uDone ? "✓" : "○"} ${T.pU}</span><span class="s-pill${p.listen ? " on" : ""}">${p.listen ? "✓" : "○"} ${T.pL}</span><span class="s-pill${pDone ? " on" : ""}">${pDone ? "✓" : "○"} ${T.pP}</span></div></div>`;
+    if(window.todayMoreHtml) html += `<details class="s-more" ${window.sMoreOpen ? "open" : ""} ontoggle="window.sMoreOpen=this.open"><summary>${T.more}</summary>${window.todayMoreHtml}</details>`;
+  }
+  html += `<p class="s-about"><button class="s-link" onclick="document.getElementById('view-start').classList.toggle('show-about')">ℹ️ ${T.about}</button></p>`;
+  box.innerHTML = html;
+}
+const _sTodayOrig = renderToday;
+window.renderToday = function(){
+  window.todayMoreHtml = "";
+  _sTodayOrig();
+  try{ sBuildToday(); }catch(e){ console.log("s-today", e && e.message); }
+};
 
 </script>
 <script>
