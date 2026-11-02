@@ -21175,6 +21175,9 @@ window.renderToday = function(){
   try{ sBuildToday(); }catch(e){ console.log("s-today", e && e.message); }
 };
 
+/* ---------- Erstes Rendern nach dem Umbau ---------- */
+try{ zoneRender(typeof fxCurView !== "undefined" && fxCurView ? fxCurView : "start"); renderToday(); }catch(e){ console.log("s-init", e && e.message); }
+
 </script>
 <script>
 /* Anonymer Seitenaufruf-Zähler (nur Zahl pro Tag in der eigenen Firestore-Datenbank, nichts auf dem Gerät gespeichert).
